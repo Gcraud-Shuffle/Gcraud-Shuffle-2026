@@ -1,0 +1,3 @@
+../Core/Src/UART.c:50:6:get_IR	8
+../Core/Src/UART.c:100:6:get_LINE	7
+../Core/Src/UART.c:154:6:get_ESP32	7

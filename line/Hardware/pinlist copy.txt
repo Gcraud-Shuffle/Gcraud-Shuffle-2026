@@ -1,0 +1,1570 @@
+Pinlist
+
+Exported from Line Board v5.sch at 2026/06/17 9:35
+
+EAGLE Version 9.7.0 Copyright (c) 1988-2026 Autodesk, Inc.
+
+Part              Pad      Pin        Dir      Net
+
++3.3V             A        A          pas      N$1
+                  C        C          pas      GND
+
+1                 1        C          pas      +3.3V
+                  2        E          pas      R1-IN
+
+2                 1        C          pas      +3.3V
+                  2        E          pas      R2-IN
+
+3                 1        C          pas      +3.3V
+                  2        E          pas      R3-IN
+
+4                 1        C          pas      +3.3V
+                  2        E          pas      R4-IN
+
+5                 1        C          pas      +3.3V
+                  2        E          pas      R5-IN
+
+6                 1        C          pas      +3.3V
+                  2        E          pas      R6-IN
+
+7                 1        C          pas      +3.3V
+                  2        E          pas      L1-IN
+
+8                 1        C          pas      +3.3V
+                  2        E          pas      L2-IN
+
+9                 1        C          pas      +3.3V
+                  2        E          pas      L3-IN
+
+10                1        C          pas      +3.3V
+                  2        E          pas      L4-IN
+
+11                1        C          pas      +3.3V
+                  2        E          pas      L5-IN
+
+12                1        C          pas      +3.3V
+                  2        E          pas      L6-IN
+
+13                1        C          pas      +3.3V
+                  2        E          pas      B1-IN
+
+14                1        C          pas      +3.3V
+                  2        E          pas      B1-IN
+
+15                1        C          pas      +3.3V
+                  2        E          pas      B3-IN
+
+16                1        C          pas      +3.3V
+                  2        E          pas      B4-IN
+
+17                1        C          pas      +3.3V
+                  2        E          pas      B2-IN
+
+18                1        C          pas      +3.3V
+                  2        E          pas      B2-IN
+
+19                1        C          pas      +3.3V
+                  2        E          pas      S1-IN
+
+20                1        C          pas      +3.3V
+                  2        E          pas      S2-IN
+
+21                1        C          pas      +3.3V
+                  2        E          pas      S3-IN
+
+22                1        C          pas      +3.3V
+                  2        E          pas      S4-IN
+
+23                1        C          pas      +3.3V
+                  2        E          pas      S5-IN
+
+24                1        C          pas      +3.3V
+                  2        E          pas      S6-IN
+
+25                1        C          pas      +3.3V
+                  2        E          pas      S7-IN
+
+26                1        C          pas      +3.3V
+                  2        E          pas      S8-IN
+
+27                1        C          pas      +3.3V
+                  2        E          pas      S9-IN
+
+28                1        C          pas      +3.3V
+                  2        E          pas      S10-IN
+
+29                1        C          pas      +3.3V
+                  2        E          pas      S11-IN
+
+30                1        C          pas      +3.3V
+                  2        E          pas      S12-IN
+
+31                1        C          pas      +3.3V
+                  2        E          pas      S13-IN
+
+32                1        C          pas      +3.3V
+                  2        E          pas      S14-IN
+
+33                1        C          pas      +3.3V
+                  2        E          pas      S15-IN
+
+34                1        C          pas      +3.3V
+                  2        E          pas      S16-IN
+
+35                1        C          pas      +3.3V
+                  2        E          pas      S17-IN
+
+36                1        C          pas      +3.3V
+                  2        E          pas      S18-IN
+
+37                1        C          pas      +3.3V
+                  2        E          pas      S19-IN
+
+38                1        C          pas      +3.3V
+                  2        E          pas      S20-IN
+
+39                1        C          pas      +3.3V
+                  2        E          pas      S21-IN
+
+40                1        C          pas      +3.3V
+                  2        E          pas      S22-IN
+
+41                1        C          pas      +3.3V
+                  2        E          pas      S23-IN
+
+42                1        C          pas      +3.3V
+                  2        E          pas      S24-IN
+
+43                1        C          pas      +3.3V
+                  2        E          pas      S25-IN
+
+44                1        C          pas      +3.3V
+                  2        E          pas      S26-IN
+
+45                1        C          pas      +3.3V
+                  2        E          pas      S27-IN
+
+46                1        C          pas      +3.3V
+                  2        E          pas      S28-IN
+
+47                1        C          pas      +3.3V
+                  2        E          pas      S29-IN
+
+48                1        C          pas      +3.3V
+                  2        E          pas      S30-IN
+
+49                1        C          pas      +3.3V
+                  2        E          pas      S31-IN
+
+50                1        C          pas      +3.3V
+                  2        E          pas      S32-IN
+
+51                1        C          pas      +3.3V
+                  2        E          pas      RR1-IN
+
+52                1        C          pas      +3.3V
+                  2        E          pas      RR2-IN
+
+53                1        C          pas      +3.3V
+                  2        E          pas      BR1-IN
+
+54                1        C          pas      +3.3V
+                  2        E          pas      BR2-IN
+
+55                1        C          pas      +3.3V
+                  2        E          pas      BR3-IN
+
+57                1        C          pas      +3.3V
+                  2        E          pas      RR3-IN
+
+59                1        C          pas      +3.3V
+                  2        E          pas      LR1-IN
+
+60                1        C          pas      +3.3V
+                  2        E          pas      LR2-IN
+
+61                1        C          pas      +3.3V
+                  2        E          pas      LR3-IN
+
+63                1        C          pas      +3.3V
+                  2        E          pas      ANALOG-1
+
+C1                1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C2                1        P$1        pas      GND
+                  2        P$2        pas      +3.3V
+
+C3                1        P$1        pas      OUT_5V
+                  2        P$2        pas      GND
+
+C4                1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C5                1        P$1        pas      GND
+                  2        P$2        pas      +3.3V
+
+C6                1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C7                1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C8                1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C9                1        P$1        pas      GND
+                  2        P$2        pas      +3.3V
+
+C10               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C11               1        P$1        pas      OUT_5V
+                  2        P$2        pas      GND
+
+C12               1        P$1        pas      LED_OUT
+                  2        P$2        pas      GND
+
+C14               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C15               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C17               1        P$1        pas      GND
+                  2        P$2        pas      +3.3V
+
+C18               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C19               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C20               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C22               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C23               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C24               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C25               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C26               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C27               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C28               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C29               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C30               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C31               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C32               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C33               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C34               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C35               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C36               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C37               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C38               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C39               +        P$1+       pas      +3.3V
+                  -        P$2-       pas      GND
+
+C40               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C41               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C42               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C43               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C44               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C45               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C46               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+C47               1        P$1        pas      OUT_5V
+                  2        P$2        pas      GND
+
+C48               1        P$1        pas      +3.3V
+                  2        P$2        pas      GND
+
+D1                A        A          pas      N$55
+                  C        C          pas      GND
+
+D2                A        A          pas      N$2
+                  C        C          pas      GND
+
+D3                A        A          pas      N$3
+                  C        C          pas      GND
+
+D4                A        A          pas      N$4
+                  C        C          pas      GND
+
+D5                A        A          pas      N$5
+                  C        C          pas      GND
+
+D6                A        A          pas      N$25
+                  C        C          pas      GND
+
+D7                A        A          pas      N$39
+                  C        C          pas      GND
+
+D8                A        A          pas      N$40
+                  C        C          pas      GND
+
+D9                A        A          pas      N$41
+                  C        C          pas      GND
+
+D10               A        A          pas      N$42
+                  C        C          pas      GND
+
+D11               A        A          pas      N$43
+                  C        C          pas      GND
+
+D12               A        A          pas      N$44
+                  C        C          pas      GND
+
+D13               A        A          pas      N$45
+                  C        C          pas      GND
+
+D14               A        A          pas      N$46
+                  C        C          pas      GND
+
+D15               A        A          pas      N$47
+                  C        C          pas      GND
+
+D16               A        A          pas      N$48
+                  C        C          pas      GND
+
+D17               A        A          pas      N$49
+                  C        C          pas      GND
+
+D18               A        A          pas      N$50
+                  C        C          pas      GND
+
+D19               A        A          pas      N$51
+                  C        C          pas      GND
+
+D20               A        A          pas      N$6
+                  C        C          pas      GND
+
+D21               A        A          pas      N$7
+                  C        C          pas      GND
+
+D22               A        A          pas      N$8
+                  C        C          pas      GND
+
+D23               A        A          pas      N$21
+                  C        C          pas      GND
+
+D24               A        A          pas      N$9
+                  C        C          pas      GND
+
+D25               A        A          pas      N$10
+                  C        C          pas      GND
+
+D26               A        A          pas      N$11
+                  C        C          pas      GND
+
+D27               A        A          pas      N$12
+                  C        C          pas      GND
+
+D28               A        A          pas      N$13
+                  C        C          pas      GND
+
+D29               A        A          pas      N$14
+                  C        C          pas      GND
+
+D30               A        A          pas      N$15
+                  C        C          pas      GND
+
+D31               A        A          pas      N$16
+                  C        C          pas      GND
+
+D32               A        A          pas      N$17
+                  C        C          pas      GND
+
+D33               A        A          pas      N$18
+                  C        C          pas      GND
+
+D34               A        A          pas      N$20
+                  C        C          pas      GND
+
+D35               A        A          pas      N$19
+                  C        C          pas      GND
+
+D36               A        A          pas      N$22
+                  C        C          pas      GND
+
+D37               A        A          pas      N$23
+                  C        C          pas      GND
+
+D38               A        A          pas      N$24
+                  C        C          pas      GND
+
+D39               A        A          pas      N$26
+                  C        C          pas      GND
+
+D40               A        A          pas      N$27
+                  C        C          pas      GND
+
+D41               A        A          pas      N$28
+                  C        C          pas      GND
+
+D42               A        A          pas      N$29
+                  C        C          pas      GND
+
+D43               A        A          pas      N$30
+                  C        C          pas      GND
+
+D44               A        A          pas      N$31
+                  C        C          pas      GND
+
+D45               A        A          pas      N$32
+                  C        C          pas      GND
+
+D46               A        A          pas      N$33
+                  C        C          pas      GND
+
+D47               A        A          pas      N$34
+                  C        C          pas      GND
+
+D48               A        A          pas      N$35
+                  C        C          pas      GND
+
+D49               A        A          pas      N$36
+                  C        C          pas      GND
+
+D50               A        A          pas      N$37
+                  C        C          pas      GND
+
+D51               A        A          pas      N$38
+                  C        C          pas      GND
+
+D52               A        A          pas      N$52
+                  C        C          pas      GND
+
+D53               A        A          pas      N$53
+                  C        C          pas      GND
+
+D54               A        A          pas      N$54
+                  C        C          pas      GND
+
+D55               A        A          pas      N$62
+                  C        C          pas      GND
+
+D56               A        A          pas      N$56
+                  C        C          pas      GND
+
+D57               A        A          pas      N$58
+                  C        C          pas      GND
+
+D58               A        A          pas      N$59
+                  C        C          pas      GND
+
+D59               A        A          pas      N$60
+                  C        C          pas      GND
+
+D60               A        A          pas      N$67
+                  C        C          pas      GND
+
+D61               A        A          pas      N$63
+                  C        C          pas      GND
+
+D62               A        A          pas      N$64
+                  C        C          pas      GND
+
+D63               A        A          pas      N$69
+                  C        C          pas      GND
+
+D64               A        A          pas      N$61
+                  C        C          pas      GND
+
+D65               A        A          pas      N$65
+                  C        C          pas      GND
+
+D66               A        A          pas      N$68
+                  C        C          pas      GND
+
+D67               A        A          pas      N$70
+                  C        C          pas      GND
+
+D68               A        A          pas      N$71
+                  C        C          pas      GND
+
+D69               A        A          pas      N$72
+                  C        C          pas      GND
+
+D70               A        A          pas      N$73
+                  C        C          pas      GND
+
+D71               A        A          pas      N$74
+                  C        C          pas      GND
+
+D72               A        A          pas      N$75
+                  C        C          pas      GND
+
+DEBUG_UART        1        1          pas      +3.3V
+                  2        2          pas      U5-TX
+                  3        3          pas      U5-RX
+                  4        4          pas      GND
+
+IC1               1        ADJ/GND    io       GND
+                  2        OUTPUT     io       +3.3V
+                  3        INPUT      io       OUT_5V
+                  4        VOUT       io       +3.3V
+
+IC2               1        OUTPUT_A   io       RR1
+                  2        INPUTS_A-  io       RR1-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       RR2-IN
+                  7        OUTPUT_B   io       RR2
+                  8        VCC        io       +3.3V
+
+IC3               1        OUTPUT_A   io       LL3
+                  2        INPUTS_A-  io       LR3-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       LR4-IN
+                  7        OUTPUT_B   io                *** unconnected ***
+                  8        VCC        io       +3.3V
+
+IC5               1        OUTPUT_A   io       R5
+                  2        INPUTS_A-  io       R5-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       R6-IN
+                  7        OUTPUT_B   io       R6
+                  8        VCC        io       +3.3V
+
+IC6               1        OUTPUT_A   io       L1
+                  2        INPUTS_A-  io       L1-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       L2-IN
+                  7        OUTPUT_B   io       L2
+                  8        VCC        io       +3.3V
+
+IC8               1        OUTPUT_A   io       L5
+                  2        INPUTS_A-  io       L5-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       L6-IN
+                  7        OUTPUT_B   io       L6
+                  8        VCC        io       +3.3V
+
+IC9               1        OUTPUT_A   io       B1
+                  2        INPUTS_A-  io       B1-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       B2-IN
+                  7        OUTPUT_B   io       B2
+                  8        VCC        io       +3.3V
+
+IC11              1        OUTPUT_A   io       L3
+                  2        INPUTS_A-  io       L3-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       L4-IN
+                  7        OUTPUT_B   io       L4
+                  8        VCC        io       +3.3V
+
+IC12              1        OUTPUT_A   io       1-1
+                  2        INPUTS_A-  io       S1-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S2-IN
+                  7        OUTPUT_B   io       1-2
+                  8        VCC        io       +3.3V
+
+IC13              1        OUTPUT_A   io       2-1
+                  2        INPUTS_A-  io       S3-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S4-IN
+                  7        OUTPUT_B   io       2-2
+                  8        VCC        io       +3.3V
+
+IC14              1        OUTPUT_A   io       3-1
+                  2        INPUTS_A-  io       S5-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S6-IN
+                  7        OUTPUT_B   io       3-2
+                  8        VCC        io       +3.3V
+
+IC15              1        OUTPUT_A   io       4-1
+                  2        INPUTS_A-  io       S7-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S8-IN
+                  7        OUTPUT_B   io       4-2
+                  8        VCC        io       +3.3V
+
+IC16              1        OUTPUT_A   io       5-1
+                  2        INPUTS_A-  io       S9-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S10-IN
+                  7        OUTPUT_B   io       5-2
+                  8        VCC        io       +3.3V
+
+IC17              1        OUTPUT_A   io       6-1
+                  2        INPUTS_A-  io       S11-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S12-IN
+                  7        OUTPUT_B   io       6-2
+                  8        VCC        io       +3.3V
+
+IC18              1        OUTPUT_A   io       7-1
+                  2        INPUTS_A-  io       S13-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S14-IN
+                  7        OUTPUT_B   io       7-2
+                  8        VCC        io       +3.3V
+
+IC19              1        OUTPUT_A   io       8-1
+                  2        INPUTS_A-  io       S15-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S16-IN
+                  7        OUTPUT_B   io       8-2
+                  8        VCC        io       +3.3V
+
+IC20              1        OUTPUT_A   io       9-1
+                  2        INPUTS_A-  io       S17-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S18-IN
+                  7        OUTPUT_B   io       9-2
+                  8        VCC        io       +3.3V
+
+IC21              1        OUTPUT_A   io       10-1
+                  2        INPUTS_A-  io       S19-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S20-IN
+                  7        OUTPUT_B   io       10-2
+                  8        VCC        io       +3.3V
+
+IC22              1        OUTPUT_A   io       11-1
+                  2        INPUTS_A-  io       S21-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S22-IN
+                  7        OUTPUT_B   io       11-2
+                  8        VCC        io       +3.3V
+
+IC23              1        OUTPUT_A   io       12-1
+                  2        INPUTS_A-  io       S23-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S24-IN
+                  7        OUTPUT_B   io       12-2
+                  8        VCC        io       +3.3V
+
+IC24              1        OUTPUT_A   io       13-1
+                  2        INPUTS_A-  io       S25-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S26-IN
+                  7        OUTPUT_B   io       13-2
+                  8        VCC        io       +3.3V
+
+IC25              1        OUTPUT_A   io       14-1
+                  2        INPUTS_A-  io       S27-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S28-IN
+                  7        OUTPUT_B   io       14-2
+                  8        VCC        io       +3.3V
+
+IC26              1        OUTPUT_A   io       15-1
+                  2        INPUTS_A-  io       S29-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S30-IN
+                  7        OUTPUT_B   io       15-2
+                  8        VCC        io       +3.3V
+
+IC27              1        OUTPUT_A   io       R1
+                  2        INPUTS_A-  io       R1-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       R2-IN
+                  7        OUTPUT_B   io       R2
+                  8        VCC        io       +3.3V
+
+IC28              1        OUTPUT_A   io       16-1
+                  2        INPUTS_A-  io       S31-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       S32-IN
+                  7        OUTPUT_B   io       16-2
+                  8        VCC        io       +3.3V
+
+IC29              1        OUTPUT_A   io                *** unconnected ***
+                  2        INPUTS_A-  io                *** unconnected ***
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       BR3-IN
+                  7        OUTPUT_B   io       BB3
+                  8        VCC        io       +3.3V
+
+IC30              1        OUTPUT_A   io       RR3
+                  2        INPUTS_A-  io       RR3-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io                *** unconnected ***
+                  7        OUTPUT_B   io                *** unconnected ***
+                  8        VCC        io       +3.3V
+
+IC31              1        OUTPUT_A   io       BB1
+                  2        INPUTS_A-  io       BR1-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       BR2-IN
+                  7        OUTPUT_B   io       BB2
+                  8        VCC        io       +3.3V
+
+IC32              1        OUTPUT_A   io       LL1
+                  2        INPUTS_A-  io       LR1-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       LR2-IN
+                  7        OUTPUT_B   io       LL2
+                  8        VCC        io       +3.3V
+
+IC33              1        OUTPUT_A   io       R3
+                  2        INPUTS_A-  io       R3-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       R4-IN
+                  7        OUTPUT_B   io       R4
+                  8        VCC        io       +3.3V
+
+IC34              1        OUTPUT_A   io       B3
+                  2        INPUTS_A-  io       B3-IN
+                  3        INPUTS_A+  io       DAC
+                  4        GND        io       GND
+                  5        INPUTS_B+  io       DAC
+                  6        INPUTS_B-  io       B4-IN
+                  7        OUTPUT_B   io       B4
+                  8        VCC        io       +3.3V
+
+J2                1        1          io       +5V
+                  2        2          io       GND
+
+LED1              1        VDD        io       OUT_5V
+                  2        DOUT       io                *** unconnected ***
+                  3        VSS        io       GND
+                  4        DIN        io       DI-OUT
+
+MCLR              1        P$1        io       MCLR
+                  2        P$2        io       +3.3V
+                  3        P$3        io       GND
+                  4        P$4        io       PGD
+                  5        P$5        io       PGC
+
+PIC32MK1024MCM100 1        AN23/CVD23/PWM7L/PMA23/RG15 io       L2
+                  2        VDD_1      io       +3.3V
+                  3        TCK/RPA7/PWM10H/PWM4L/PMD5/RA7 io       L1
+                  4        RPB14/PWM1H/VBUSON1/PMD6/RB14 io       11-1
+                  5        RPB15/PWM7H/PWM1L/PMD7/RB15 io       11-2
+                  6        PWM11H/PWM5L/RD1 io       12-1
+                  7        PWM5H/RD2  io       12-2
+                  8        RPD3/PWM12H/PWM6L/RD3 io       BB2
+                  9        RPD4/PWM6H/RD4 io       BB1
+                  10       AN19/CVD19/RPG6/PWM10L/VBUSON2/PMA5/RG6 io                *** unconnected ***
+                  11       AN18/CVD18/RPG7/PWM10H/SCL1/PMA4/RG7 io       13-1
+                  12       AN17/CVD17/RPG8/SDA1/PMA3/RG8 io       13-2
+                  13       !MCLR      io       MCLR
+                  14       AN16/CVD16/RPG9/PMA2/RG9 io       ANALOG-1
+                  15       VSS_1      io       GND
+                  16       VDD_2      io       +3.3V
+                  17       AN22/CVD22/RG10 io                *** unconnected ***
+                  18       AN21/CVD21/RE8 io       B4
+                  19       AN20/CVD20/RE9 io       B3
+                  20       AN10/CVD10/RPA12/RA12 io       B2
+                  21       AN9/CVD9/RPA11/RA11 io       B1
+                  22       OA2OUT/AN0/C2IN4-/C4IN3-/RPA0/RA0 io       BB3
+                  23       OA2IN+/AN1/C2IN1+/RPA1/RA1 io                *** unconnected ***
+                  24       PGD3/OA2IN-/AN2/C2IN1-/RPB0/CTED2/RB0 io       PGD
+                  25       PGC3/OA1OUT/AN3/C1IN4-/C4IN2-/RPB1/CTED1/RB1 io       PGC
+                  26       PGC1/OA1IN+/AN4/C1IN1+/C1IN3-/C2IN3-/RPB2/RB2 io       14-1
+                  27       PGD1/OA1IN-/AN5/CTCMP/C1IN1-/RTCC/RPB3/RB3 io       15-1
+                  28       VREF-/AN33/CVD33/PMA7/RF9 io       15-2
+                  29       VREF+/AN34/CVD34/PMA6/RF10 io       R3
+                  30       AVDD       io       +3.3V
+                  31       AVSS       io       GND
+                  32       OA3OUT/AN6/CVD6/C3IN4-/C4IN1+/C4IN4-/RPC0/RC0 io       R4
+                  33       OA3IN-/AN7/CVD7/C3IN1-/C4IN1-/RPC1/RC1 io       16-1
+                  34       OA3IN+/AN8/CVD8/C3IN1+/C3IN3-/RPC2/FLT3/PMA13/RC2 io       16-2
+                  35       AN11/CVD11/C1IN2-/FLT4/PMA12/RC11 io       R1
+                  36       VSS_2      io       GND
+                  37       VDD_3      io       +3.3V
+                  38       AN35/CVD35/RG11 io       R2
+                  39       AN36/CVD36/RF13 io       RR4
+                  40       AN37/CVD37/RF12 io       RR2
+                  41       AN12/CVD12/C2IN2-/C5IN2-/SDA4/FLT5/PMA11/RE12 io       N$77
+                  42       AN13/CVD13/C3IN2-/SCL4/FLT6/PMA10/RE13 io                *** unconnected ***
+                  43       AN14/CVD14/RPE14/FLT7/PMA1/RE14 io                *** unconnected ***
+                  44       AN15/CVD15/RPE15/FLT8/PMA0/RE15 io                *** unconnected ***
+                  45       VSS_3      io       GND
+                  46       VDD_4      io       +3.3V
+                  47       AN38/CVD38/RD14 io       2-1
+                  48       AN39/CVD39/RD15 io       1-1
+                  49       TDI/DAC3/AN26/CVD26/RPA8/SDA2/PMA9/RA8 io       1-2
+                  50       FLT15/RPB4/SCL2/PMA8/RB4 io       RR1
+                  51       OA5IN+/DAC1/AN24/CVD24/C5IN1+/C5IN3-/RPA4/RA4 io       RR3
+                  52       AN40/CVD40/RPE0/RE0 io       R5
+                  53       AN41/CVD41/RPE1/RE1 io       R6
+                  54       VBUS       io       GND
+                  55       VUSB3V3    io       +3.3V
+                  56       D1-        io       N$78
+                  57       D1+        io       N$79
+                  58       VBUS2      io       GND
+                  59       D2-        io       N$80
+                  60       D2+        io       N$81
+                  61       AN45/CVD45/RF5 io       2-2
+                  62       VDD_5      io       +3.3V
+                  63       OSCI/CLKI/AN49/CVD49/RPC12/RC12 io       U5-TX
+                  64       OSCO/CLKO/RPC15/RC15 io       U5-RX
+                  65       VSS_4      io       GND
+                  66       AN46/CVD46/RPA14/RA14 io       3-1
+                  67       AN47/CVD47/RPA15/RA15 io       3-2
+                  68       RD8        io       4-1
+                  69       PGD2/RPB5/SDA3/USBID1/RB5 io       SDA3
+                  70       PGC2/RPB6/SCL3/SCK2/PMA15/RB6 io       SCL3
+                  71       DAC2/AN48/CVD48/RPC10/PMA14/PMCS/RC10 io       DAC
+                  72       OA5OUT/AN25/CVD25/C5IN4-/RPB7/SCK1/INT0/RB7 io       4-2
+                  73       SOSCI/RPC13/RC13 io       5-1
+                  74       SOSCO/T1CK/RPB8/RB8 io       5-2
+                  75       VSS_5      io       GND
+                  76       TMS/OA5IN-/AN27/CVD27/LVDIN/C5IN1-/RPB9/RB9 io       6-1
+                  77       RPC6/USBID2/PMA16/RC6 io       6-2
+                  78       RPC7/PMA17/RC7 io       7-2
+                  79       PMD12/RD12 io       7-1
+                  80       PMD13/RD13 io       8-1
+                  81       RPC8/PMWR/RC8 io       8-2
+                  82       RPD5/PWM12H/PMRD/RD5 io       L8
+                  83       RPD6/PWM12L/PMD14/RD6 io       L7
+                  84       RPC9/PMD15/RC9 io       L6
+                  85       VSS_6      io       GND
+                  86       VDD_6      io       +3.3V
+                  87       RPF0/PWM11H/PMD11/RF0 io       U1-RX
+                  88       RPF1/PWM11L/PMD10/RF1 io       U1-TX
+                  89       RPG1/PMD9/RG1 io       L5
+                  90       RPG0/PMD8/RG0 io       L4
+                  91       TRCLK/PWM9H/PMA18/RF6 io       N$76
+                  92       TRD3/PWM9L/PMA19/RF7 io       LL2
+                  93       RPB10/PWM3H/PMD0/RB10 io       9-1
+                  94       RPB11/PWM9H/PWM3L/PMD1/RB11 io       9-2
+                  95       TRD2/PWM8H/PMA20/RG14 io       LL1
+                  96       TRD1/RPG12/PWM8L/PMA21/RG12 io       LL3
+                  97       TRD0/PWM7H/PMA22/RG13 io       L3
+                  98       RPB12/PWM2H/PMD2/RB12 io       10-1
+                  99       RPB13/PWM8H/PWM2L/CTPLS/PMD3/RB13 io       10-2
+                  100      TDO/PWM4H/PMD4/RA10 io       DI
+
+Q2                1        G          io       +3.3V
+                  2        S          io       DI
+                  3        D          io       DI-OUT
+
+R1                1        P$1        pas      N$1
+                  2        P$2        pas      +3.3V
+
+R2                1        P$1        pas      SDA3
+                  2        P$2        pas      +3.3V
+
+R3                1        P$1        pas      MCLR
+                  2        P$2        pas      +3.3V
+
+R4                1        P$1        pas      SCL3
+                  2        P$2        pas      +3.3V
+
+R5                1        P$1        pas      N$57
+                  2        P$2        pas      LED_OUT
+
+R6                1        P$1        pas      1-1
+                  2        P$2        pas      +3.3V
+
+R7                1        P$1        pas      9-1
+                  2        P$2        pas      +3.3V
+
+R8                1        P$1        pas      +3.3V
+                  2        P$2        pas      9-2
+
+R9                1        P$1        pas      10-1
+                  2        P$2        pas      +3.3V
+
+R10               1        P$1        pas      +3.3V
+                  2        P$2        pas      10-2
+
+R11               1        P$1        pas      11-1
+                  2        P$2        pas      +3.3V
+
+R12               1        P$1        pas      +3.3V
+                  2        P$2        pas      1-2
+
+R13               1        P$1        pas      +3.3V
+                  2        P$2        pas      11-2
+
+R14               1        P$1        pas      2-1
+                  2        P$2        pas      +3.3V
+
+R15               1        P$1        pas      +3.3V
+                  2        P$2        pas      2-2
+
+R16               1        P$1        pas      3-1
+                  2        P$2        pas      +3.3V
+
+R17               1        P$1        pas      +3.3V
+                  2        P$2        pas      3-2
+
+R18               1        P$1        pas      N$73
+                  2        P$2        pas      LED_OUT
+
+R19               1        P$1        pas      N$74
+                  2        P$2        pas      LED_OUT
+
+R20               1        P$1        pas      N$64
+                  2        P$2        pas      LED_OUT
+
+R21               1        P$1        pas      4-1
+                  2        P$2        pas      +3.3V
+
+R22               1        P$1        pas      GND
+                  2        P$2        pas      DAC
+
+R23               1        P$1        pas      N$6
+                  2        P$2        pas      LED_OUT
+
+R24               1        P$1        pas      N$7
+                  2        P$2        pas      LED_OUT
+
+R25               1        P$1        pas      N$8
+                  2        P$2        pas      LED_OUT
+
+R26               1        P$1        pas      N$21
+                  2        P$2        pas      LED_OUT
+
+R27               1        P$1        pas      N$9
+                  2        P$2        pas      LED_OUT
+
+R28               1        P$1        pas      N$10
+                  2        P$2        pas      LED_OUT
+
+R29               1        P$1        pas      N$11
+                  2        P$2        pas      LED_OUT
+
+R30               1        P$1        pas      N$12
+                  2        P$2        pas      LED_OUT
+
+R31               1        P$1        pas      N$13
+                  2        P$2        pas      LED_OUT
+
+R32               1        P$1        pas      N$14
+                  2        P$2        pas      LED_OUT
+
+R33               1        P$1        pas      N$15
+                  2        P$2        pas      LED_OUT
+
+R34               1        P$1        pas      N$16
+                  2        P$2        pas      LED_OUT
+
+R35               1        P$1        pas      N$17
+                  2        P$2        pas      LED_OUT
+
+R36               1        P$1        pas      N$18
+                  2        P$2        pas      LED_OUT
+
+R37               1        P$1        pas      N$20
+                  2        P$2        pas      LED_OUT
+
+R38               1        P$1        pas      N$19
+                  2        P$2        pas      LED_OUT
+
+R39               1        P$1        pas      N$22
+                  2        P$2        pas      LED_OUT
+
+R40               1        P$1        pas      N$23
+                  2        P$2        pas      LED_OUT
+
+R41               1        P$1        pas      N$24
+                  2        P$2        pas      LED_OUT
+
+R42               1        P$1        pas      N$26
+                  2        P$2        pas      LED_OUT
+
+R43               1        P$1        pas      N$27
+                  2        P$2        pas      LED_OUT
+
+R44               1        P$1        pas      N$28
+                  2        P$2        pas      LED_OUT
+
+R45               1        P$1        pas      N$29
+                  2        P$2        pas      LED_OUT
+
+R46               1        P$1        pas      N$30
+                  2        P$2        pas      LED_OUT
+
+R47               1        P$1        pas      N$31
+                  2        P$2        pas      LED_OUT
+
+R48               1        P$1        pas      N$32
+                  2        P$2        pas      LED_OUT
+
+R49               1        P$1        pas      N$33
+                  2        P$2        pas      LED_OUT
+
+R50               1        P$1        pas      N$34
+                  2        P$2        pas      LED_OUT
+
+R51               1        P$1        pas      N$35
+                  2        P$2        pas      LED_OUT
+
+R52               1        P$1        pas      N$36
+                  2        P$2        pas      LED_OUT
+
+R53               1        P$1        pas      N$37
+                  2        P$2        pas      LED_OUT
+
+R54               1        P$1        pas      N$38
+                  2        P$2        pas      LED_OUT
+
+R55               1        P$1        pas      N$2
+                  2        P$2        pas      LED_OUT
+
+R56               1        P$1        pas      N$3
+                  2        P$2        pas      LED_OUT
+
+R57               1        P$1        pas      N$4
+                  2        P$2        pas      LED_OUT
+
+R58               1        P$1        pas      N$5
+                  2        P$2        pas      LED_OUT
+
+R59               1        P$1        pas      N$25
+                  2        P$2        pas      LED_OUT
+
+R60               1        P$1        pas      N$39
+                  2        P$2        pas      LED_OUT
+
+R61               1        P$1        pas      N$40
+                  2        P$2        pas      LED_OUT
+
+R62               1        P$1        pas      N$41
+                  2        P$2        pas      LED_OUT
+
+R63               1        P$1        pas      N$42
+                  2        P$2        pas      LED_OUT
+
+R64               1        P$1        pas      N$43
+                  2        P$2        pas      LED_OUT
+
+R65               1        P$1        pas      N$44
+                  2        P$2        pas      LED_OUT
+
+R66               1        P$1        pas      N$45
+                  2        P$2        pas      LED_OUT
+
+R67               1        P$1        pas      N$46
+                  2        P$2        pas      LED_OUT
+
+R68               1        P$1        pas      N$47
+                  2        P$2        pas      LED_OUT
+
+R69               1        P$1        pas      N$48
+                  2        P$2        pas      LED_OUT
+
+R70               1        P$1        pas      N$49
+                  2        P$2        pas      LED_OUT
+
+R71               1        P$1        pas      N$50
+                  2        P$2        pas      LED_OUT
+
+R72               1        P$1        pas      N$51
+                  2        P$2        pas      LED_OUT
+
+R73               1        P$1        pas      N$52
+                  2        P$2        pas      LED_OUT
+
+R74               1        P$1        pas      N$53
+                  2        P$2        pas      LED_OUT
+
+R75               1        P$1        pas      N$54
+                  2        P$2        pas      LED_OUT
+
+R76               1        P$1        pas      N$55
+                  2        P$2        pas      LED_OUT
+
+R77               1        P$1        pas      N$62
+                  2        P$2        pas      LED_OUT
+
+R78               1        P$1        pas      N$56
+                  2        P$2        pas      LED_OUT
+
+R79               1        P$1        pas      N$58
+                  2        P$2        pas      LED_OUT
+
+R80               1        P$1        pas      N$59
+                  2        P$2        pas      LED_OUT
+
+R81               1        P$1        pas      N$60
+                  2        P$2        pas      LED_OUT
+
+R82               1        P$1        pas      GND
+                  2        P$2        pas      LR1-IN
+
+R83               1        P$1        pas      GND
+                  2        P$2        pas      LR2-IN
+
+R84               1        P$1        pas      GND
+                  2        P$2        pas      LR3-IN
+
+R85               1        P$1        pas      N$75
+                  2        P$2        pas      LED_OUT
+
+R86               1        P$1        pas      +3.3V
+                  2        P$2        pas      4-2
+
+R87               1        P$1        pas      5-1
+                  2        P$2        pas      +3.3V
+
+R88               1        P$1        pas      GND
+                  2        P$2        pas      S1-IN
+
+R89               1        P$1        pas      GND
+                  2        P$2        pas      S2-IN
+
+R90               1        P$1        pas      GND
+                  2        P$2        pas      S3-IN
+
+R91               1        P$1        pas      GND
+                  2        P$2        pas      S4-IN
+
+R92               1        P$1        pas      GND
+                  2        P$2        pas      S5-IN
+
+R93               1        P$1        pas      GND
+                  2        P$2        pas      S6-IN
+
+R94               1        P$1        pas      GND
+                  2        P$2        pas      S7-IN
+
+R95               1        P$1        pas      GND
+                  2        P$2        pas      S8-IN
+
+R96               1        P$1        pas      GND
+                  2        P$2        pas      S9-IN
+
+R97               1        P$1        pas      GND
+                  2        P$2        pas      S10-IN
+
+R98               1        P$1        pas      GND
+                  2        P$2        pas      S11-IN
+
+R99               1        P$1        pas      GND
+                  2        P$2        pas      S12-IN
+
+R100              1        P$1        pas      GND
+                  2        P$2        pas      S13-IN
+
+R101              1        P$1        pas      GND
+                  2        P$2        pas      S14-IN
+
+R102              1        P$1        pas      GND
+                  2        P$2        pas      S15-IN
+
+R103              1        P$1        pas      GND
+                  2        P$2        pas      S16-IN
+
+R104              1        P$1        pas      GND
+                  2        P$2        pas      S17-IN
+
+R105              1        P$1        pas      GND
+                  2        P$2        pas      S18-IN
+
+R106              1        P$1        pas      GND
+                  2        P$2        pas      S19-IN
+
+R107              1        P$1        pas      GND
+                  2        P$2        pas      S20-IN
+
+R108              1        P$1        pas      GND
+                  2        P$2        pas      S21-IN
+
+R109              1        P$1        pas      GND
+                  2        P$2        pas      S22-IN
+
+R110              1        P$1        pas      GND
+                  2        P$2        pas      S23-IN
+
+R111              1        P$1        pas      GND
+                  2        P$2        pas      S24-IN
+
+R112              1        P$1        pas      GND
+                  2        P$2        pas      S25-IN
+
+R113              1        P$1        pas      GND
+                  2        P$2        pas      S26-IN
+
+R114              1        P$1        pas      GND
+                  2        P$2        pas      S27-IN
+
+R115              1        P$1        pas      GND
+                  2        P$2        pas      S28-IN
+
+R116              1        P$1        pas      GND
+                  2        P$2        pas      S29-IN
+
+R117              1        P$1        pas      GND
+                  2        P$2        pas      S30-IN
+
+R118              1        P$1        pas      GND
+                  2        P$2        pas      S31-IN
+
+R119              1        P$1        pas      GND
+                  2        P$2        pas      S32-IN
+
+R120              1        P$1        pas      GND
+                  2        P$2        pas      R1-IN
+
+R121              1        P$1        pas      GND
+                  2        P$2        pas      R2-IN
+
+R122              1        P$1        pas      GND
+                  2        P$2        pas      R3-IN
+
+R123              1        P$1        pas      GND
+                  2        P$2        pas      R4-IN
+
+R124              1        P$1        pas      GND
+                  2        P$2        pas      R5-IN
+
+R125              1        P$1        pas      GND
+                  2        P$2        pas      R6-IN
+
+R126              1        P$1        pas      GND
+                  2        P$2        pas      L1-IN
+
+R127              1        P$1        pas      GND
+                  2        P$2        pas      L2-IN
+
+R128              1        P$1        pas      GND
+                  2        P$2        pas      L3-IN
+
+R129              1        P$1        pas      GND
+                  2        P$2        pas      L4-IN
+
+R130              1        P$1        pas      GND
+                  2        P$2        pas      L5-IN
+
+R131              1        P$1        pas      GND
+                  2        P$2        pas      L6-IN
+
+R132              1        P$1        pas      GND
+                  2        P$2        pas      B1-IN
+
+R133              1        P$1        pas      GND
+                  2        P$2        pas      B1-IN
+
+R134              1        P$1        pas      GND
+                  2        P$2        pas      B3-IN
+
+R135              1        P$1        pas      GND
+                  2        P$2        pas      B4-IN
+
+R136              1        P$1        pas      GND
+                  2        P$2        pas      B2-IN
+
+R137              1        P$1        pas      GND
+                  2        P$2        pas      B2-IN
+
+R138              1        P$1        pas      GND
+                  2        P$2        pas      RR1-IN
+
+R139              1        P$1        pas      GND
+                  2        P$2        pas      RR2-IN
+
+R140              1        P$1        pas      GND
+                  2        P$2        pas      BR1-IN
+
+R141              1        P$1        pas      GND
+                  2        P$2        pas      BR2-IN
+
+R142              1        P$1        pas      GND
+                  2        P$2        pas      BR3-IN
+
+R143              1        P$1        pas      N$80
+                  2        P$2        pas      GND
+
+R144              1        P$1        pas      GND
+                  2        P$2        pas      RR3-IN
+
+R145              1        P$1        pas      N$70
+                  2        P$2        pas      LED_OUT
+
+R146              1        P$1        pas      +3.3V
+                  2        P$2        pas      5-2
+
+R147              1        P$1        pas      6-1
+                  2        P$2        pas      +3.3V
+
+R148              1        P$1        pas      +3.3V
+                  2        P$2        pas      6-2
+
+R149              1        P$1        pas      7-1
+                  2        P$2        pas      +3.3V
+
+R150              1        P$1        pas      +3.3V
+                  2        P$2        pas      7-2
+
+R151              1        P$1        pas      8-1
+                  2        P$2        pas      +3.3V
+
+R152              1        P$1        pas      +3.3V
+                  2        P$2        pas      8-2
+
+R153              1        P$1        pas      12-1
+                  2        P$2        pas      +3.3V
+
+R154              1        P$1        pas      +3.3V
+                  2        P$2        pas      12-2
+
+R155              1        P$1        pas      13-1
+                  2        P$2        pas      +3.3V
+
+R156              1        P$1        pas      +3.3V
+                  2        P$2        pas      13-2
+
+R157              1        P$1        pas      14-1
+                  2        P$2        pas      +3.3V
+
+R158              1        P$1        pas      +3.3V
+                  2        P$2        pas      14-2
+
+R159              1        P$1        pas      15-1
+                  2        P$2        pas      +3.3V
+
+R160              1        P$1        pas      +3.3V
+                  2        P$2        pas      15-2
+
+R161              1        P$1        pas      16-1
+                  2        P$2        pas      +3.3V
+
+R162              1        P$1        pas      +3.3V
+                  2        P$2        pas      16-2
+
+R163              1        P$1        pas      L3
+                  2        P$2        pas      +3.3V
+
+R164              1        P$1        pas      R1
+                  2        P$2        pas      +3.3V
+
+R165              1        P$1        pas      +3.3V
+                  2        P$2        pas      R2
+
+R166              1        P$1        pas      N$81
+                  2        P$2        pas      GND
+
+R167              1        P$1        pas      N$79
+                  2        P$2        pas      GND
+
+R168              1        P$1        pas      R5
+                  2        P$2        pas      +3.3V
+
+R169              1        P$1        pas      +3.3V
+                  2        P$2        pas      R6
+
+R170              1        P$1        pas      L1
+                  2        P$2        pas      +3.3V
+
+R171              1        P$1        pas      +3.3V
+                  2        P$2        pas      L2
+
+R172              1        P$1        pas      N$71
+                  2        P$2        pas      LED_OUT
+
+R173              1        P$1        pas      N$72
+                  2        P$2        pas      LED_OUT
+
+R174              1        P$1        pas      L5
+                  2        P$2        pas      +3.3V
+
+R175              1        P$1        pas      +3.3V
+                  2        P$2        pas      L6
+
+R176              1        P$1        pas      B1
+                  2        P$2        pas      +3.3V
+
+R177              1        P$1        pas      +3.3V
+                  2        P$2        pas      B2
+
+R178              1        P$1        pas      N$78
+                  2        P$2        pas      GND
+
+R180              1        P$1        pas      +3.3V
+                  2        P$2        pas      L4
+
+R181              1        P$1        pas      R3
+                  2        P$2        pas      +3.3V
+
+R182              1        P$1        pas      RR1
+                  2        P$2        pas      +3.3V
+
+R183              1        P$1        pas      +3.3V
+                  2        P$2        pas      RR2
+
+R184              1        P$1        pas      RR3
+                  2        P$2        pas      +3.3V
+
+R186              1        P$1        pas      BB1
+                  2        P$2        pas      +3.3V
+
+R187              1        P$1        pas      +3.3V
+                  2        P$2        pas      BB2
+
+R189              1        P$1        pas      +3.3V
+                  2        P$2        pas      BB3
+
+R190              1        P$1        pas      LL1
+                  2        P$2        pas      +3.3V
+
+R191              1        P$1        pas      +3.3V
+                  2        P$2        pas      LL2
+
+R192              1        P$1        pas      LL3
+                  2        P$2        pas      +3.3V
+
+R194              1        P$1        pas      +3.3V
+                  2        P$2        pas      R4
+
+R195              1        P$1        pas      B3
+                  2        P$2        pas      +3.3V
+
+R196              1        P$1        pas      GND
+                  2        P$2        pas      ANALOG-1
+
+R197              1        P$1        pas      +3.3V
+                  2        P$2        pas      B4
+
+R198              1        P$1        pas      N$67
+                  2        P$2        pas      LED_OUT
+
+R199              1        P$1        pas      N$63
+                  2        P$2        pas      LED_OUT
+
+R200              1        P$1        pas      N$69
+                  2        P$2        pas      LED_OUT
+
+R205              1        P$1        pas      N$61
+                  2        P$2        pas      LED_OUT
+
+R206              1        P$1        pas      DI
+                  2        P$2        pas      +3.3V
+
+R207              1        P$1        pas      DI-OUT
+                  2        P$2        pas      OUT_5V
+
+R208              1        P$1        pas      N$65
+                  2        P$2        pas      LED_OUT
+
+R209              1        P$1        pas      N$68
+                  2        P$2        pas      LED_OUT
+
+U$3               1        P$1        io       +5V
+                  2        P$2        io       N$66
+
+U$9               1        VDD        pwr      +3.3V
+                  2        VSS        pwr      GND
+                  3        SCL        io       SCL3
+                  4        SDA        io       SDA3
+                  5        W          io       N$57
+                  6        A          io                *** unconnected ***
+
+U$27              P$1      A          pas      GND
+                  P$2      C          pas      LED_OUT
+
+U$57              P$1      A          pas      N$66
+                  P$2      C          pas      OUT_5V
+
+U1                1        ADJ/GND    io       N$57
+                  2        OUTPUT     out      LED_OUT
+                  3        INPUT      in       OUT_5V
+                  4        EPAD       pas      LED_OUT
+
+UART1             1        1          io       +3.3V
+                  2        2          io       U1-TX
+                  3        3          io       U1-RX
+                  4        4          io       GND
+
