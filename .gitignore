@@ -131,19 +131,25 @@ Temporary Items
 #Taken from zeha on GIST https://gist.github.com/zeha/5999375
 #Updated by Cristian Cristea (https://github.com/cristiancristea00)
 
+*.d
 *.pre
 *.p1
 *.lst
 *.sym
+*.obj
+*.o
 *.sdb
 *.obj.dmp
 *.mk
+*.map
 *.properties
 *.production
 *.debug
+mcc*
 html/
 nbproject/private/
 nbproject/Package-*.bash
+private/
 build/
 nbbuild/
 dist/
