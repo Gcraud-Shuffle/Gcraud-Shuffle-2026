@@ -59,12 +59,40 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define ESC_GND_Pin GPIO_PIN_7
-#define ESC_GND_GPIO_Port GPIOA
-#define led1_Pin GPIO_PIN_2
-#define led1_GPIO_Port GPIOB
+#define GOAL_SWITCH_Pin GPIO_PIN_13
+#define GOAL_SWITCH_GPIO_Port GPIOC
+#define COMMODULE_IN0_Pin GPIO_PIN_14
+#define COMMODULE_IN0_GPIO_Port GPIOC
+#define COMMODULE_IN1_Pin GPIO_PIN_15
+#define COMMODULE_IN1_GPIO_Port GPIOC
+#define BAT_SENS_Pin GPIO_PIN_0
+#define BAT_SENS_GPIO_Port GPIOC
+#define DRB_CS_Pin GPIO_PIN_1
+#define DRB_CS_GPIO_Port GPIOC
+#define BALL1_Pin GPIO_PIN_4
+#define BALL1_GPIO_Port GPIOA
+#define BALL2_Pin GPIO_PIN_5
+#define BALL2_GPIO_Port GPIOA
+#define TIM14_CH1_DRB2_Pin GPIO_PIN_7
+#define TIM14_CH1_DRB2_GPIO_Port GPIOA
+#define LED2_Pin GPIO_PIN_0
+#define LED2_GPIO_Port GPIOB
+#define SW3_LED_Pin GPIO_PIN_2
+#define SW3_LED_GPIO_Port GPIOB
+#define LED1_Pin GPIO_PIN_12
+#define LED1_GPIO_Port GPIOB
+#define TIM3_CH4_DRB1_Pin GPIO_PIN_9
+#define TIM3_CH4_DRB1_GPIO_Port GPIOC
+#define SW2_LED_Pin GPIO_PIN_11
+#define SW2_LED_GPIO_Port GPIOA
 #define KICK2_Pin GPIO_PIN_12
 #define KICK2_GPIO_Port GPIOA
+#define KICK1_Pin GPIO_PIN_15
+#define KICK1_GPIO_Port GPIOA
+#define SW2_Pin GPIO_PIN_8
+#define SW2_GPIO_Port GPIOB
+#define SW3_Pin GPIO_PIN_9
+#define SW3_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

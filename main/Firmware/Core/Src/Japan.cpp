@@ -35,6 +35,67 @@ using namespace std;
 #define yelGoalAngleRange 6
 #define yelGoalRadius 7
 
+namespace
+{
+constexpr uint16_t DRIBBLER_PWM_MAX = 1000;
+constexpr uint16_t DRIBBLER_ACTIVE_MAX = 990;
+
+uint32_t dribbler_compare(TIM_HandleTypeDef *htim, uint16_t duty)
+{
+  if (duty > DRIBBLER_PWM_MAX)
+  {
+    duty = DRIBBLER_PWM_MAX;
+  }
+  if (duty == DRIBBLER_PWM_MAX)
+  {
+    duty = DRIBBLER_ACTIVE_MAX;
+  }
+
+  const uint32_t period = __HAL_TIM_GET_AUTORELOAD(htim) + 1U;
+  return ((period * duty) + (DRIBBLER_PWM_MAX / 2U)) / DRIBBLER_PWM_MAX;
+}
+
+void set_dribbler_pwm(uint16_t drb1_duty, uint16_t drb2_duty)
+{
+  static bool initialized = false;
+  static uint16_t last_drb1_duty = 0;
+  static uint16_t last_drb2_duty = 0;
+
+  if (drb1_duty > DRIBBLER_PWM_MAX)
+  {
+    drb1_duty = DRIBBLER_PWM_MAX;
+  }
+  if (drb2_duty > DRIBBLER_PWM_MAX)
+  {
+    drb2_duty = DRIBBLER_PWM_MAX;
+  }
+
+  const bool reverse_change =
+      initialized &&
+      ((last_drb1_duty > 0 && drb2_duty > 0) ||
+       (last_drb2_duty > 0 && drb1_duty > 0));
+
+  if (reverse_change)
+  {
+    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);
+    __HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1, 0);
+    for (volatile uint32_t i = 0; i < 1000U; ++i)
+    {
+      __NOP();
+    }
+  }
+
+  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4,
+                        dribbler_compare(&htim3, drb1_duty));
+  __HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1,
+                        dribbler_compare(&htim14, drb2_duty));
+
+  last_drb1_duty = drb1_duty;
+  last_drb2_duty = drb2_duty;
+  initialized = true;
+}
+}
+
 // --- Role Management FSM ---
 RobotState comm_state = STATE_STANDALONE;
 RoleState my_role = my_default_role;
@@ -158,12 +219,21 @@ void change_role(RoleState new_role) {
     is_role_changed = true;
   }
 }
-
-void Japan() {
+void Japan()
+{
 
   // ---- [Common Initialization] ----
-  HAL_TIM_PWM_Start(&htim13, TIM_CHANNEL_1); // drib
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);  // speaker
+  HAL_TIM_PWM_Start(&htim13, TIM_CHANNEL_1);
+  __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
+  set_dribbler_pwm(0, 0);
+  if (HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_PWM_Start(&htim14, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
   HAL_Delay(500);
 
@@ -171,22 +241,22 @@ void Japan() {
 
   HAL_TIM_Base_Start_IT(&htim6);
   HAL_TIM_Base_Start(&htim5);  // IR
-  HAL_TIM_Base_Start(&htim14); // LINE
   HAL_TIM_Base_Start(&htim7);
   HAL_TIM_Base_Start_IT(&htim9); // ESP32 Communication interval
 
   HAL_UART_Receive_IT(&huart2, &Goal_RB, 1);
 
-  while (!(Goal_ava == true)) {
-  }
+//  while (!(Goal_ava == true))
+//  {
+//  }
 
   period_1 = __HAL_TIM_GET_AUTORELOAD(&htim1) + 1;
   period_8 = __HAL_TIM_GET_AUTORELOAD(&htim8) + 1;
   period_3 = __HAL_TIM_GET_AUTORELOAD(&htim3) + 1;
 
-  __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 500);
+  __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
 
-  //  HAL_Delay(700);
+//  HAL_Delay(700);
 
   goal[0] = (int)Goal_Blue_angle;
   goal[1] = Goal_Blue_size;
@@ -197,12 +267,12 @@ void Japan() {
   goal[6] = (int)Goal_Yellow_angle_range;
   goal[7] = (int)Goal_Yellow_radius;
 
-  if (!HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)) {
+  if (!HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
+  {
     enemyGoal_Angle_ins = yelGoalAngle;
     enemyGoal_Width_ins = yelGoalWidth; // 黄色攻め 自陣青
     myGoal_Angle_ins = blueGoalAngle;
     myGoal_Width_ins = blueGoalWidth;
-
     enemyGoal_Angle_Range_ins = yelGoalAngleRange;
     enemyGoal_Radius_ins = yelGoalRadius;
     myGoal_Angle_Range_ins = blueGoalAngleRange;
@@ -216,12 +286,13 @@ void Japan() {
 
       i_spkr++;
     }
-  } else {
+  }
+  else
+  {
     enemyGoal_Angle_ins = blueGoalAngle;
     enemyGoal_Width_ins = blueGoalWidth; // 青攻め　自陣黄色
     myGoal_Angle_ins = yelGoalAngle;
     myGoal_Width_ins = yelGoalWidth;
-
     enemyGoal_Angle_Range_ins = blueGoalAngleRange;
     enemyGoal_Radius_ins = blueGoalRadius;
     myGoal_Angle_Range_ins = yelGoalAngleRange;
@@ -239,11 +310,12 @@ void Japan() {
 
   HAL_Delay(500);
 
-  while (1) {
+  while (1)
+  {
 
-    if (starting_dribbler == true) {
-      //      __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNE/////////////p]NNEL_1,
-      //      500);
+    if (starting_dribbler == true)
+    {
+      //      __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNE/////////////p]NNEL_1, 500);
     }
 
     cnt = __HAL_TIM_GET_COUNTER(&htim7);
@@ -262,10 +334,12 @@ void Japan() {
     goal[6] = (int)Goal_Yellow_angle_range;
     goal[7] = (int)Goal_Yellow_radius;
 
-    get_IR(&huart5, &htim5); // Global変数のBall_Theta, Ball_Closenessに格納
-    get_LINE(&huart6, &htim14);
+    get_IR(&huart5); // Global変数のBall_Theta, Ball_Closenessに格納
+    get_LINE(&huart6);
+    get_MAIN_SUB(&huart3);
 
-    if (ESP32_Comm_flag) {
+    if (ESP32_Comm_flag)
+    {
       ESP32_Comm_flag = 0;
 
       // 送信データのセット
@@ -280,7 +354,7 @@ void Japan() {
     GYRO_AngleOffset = 0;
 
     ball_deg = Ball_Theta * -1;
-    ball_dis = 80 - Ball_Closeness;
+    ball_dis = 115 - Ball_Closeness;
     LineX = LINE_X;
     LineY = LINE_Y;
     lineSideRight = LINE_Side_Right;
@@ -310,7 +384,8 @@ void Japan() {
 
     // ADC1(BALL1)read--------------------------------------
     HAL_ADC_Start(&hadc1);
-    if (HAL_ADC_PollForConversion(&hadc1, 1000) == HAL_OK) {
+    if (HAL_ADC_PollForConversion(&hadc1, 1000) == HAL_OK)
+    {
       ADC_ch1 = HAL_ADC_GetValue(&hadc1);
     }
     HAL_ADC_Stop(&hadc1);
@@ -318,7 +393,8 @@ void Japan() {
 
     // ADC2(BALL2)read--------------------------------------
     HAL_ADC_Start(&hadc2);
-    if (HAL_ADC_PollForConversion(&hadc2, 1000) == HAL_OK) {
+    if (HAL_ADC_PollForConversion(&hadc2, 1000) == HAL_OK)
+    {
       ADC_ch2 = HAL_ADC_GetValue(&hadc2);
     }
     HAL_ADC_Stop(&hadc2);
@@ -349,9 +425,12 @@ void Japan() {
     }
 
     // --- Dynamic Algorithm Execution ---
-    if (my_role == ROLE_KEEPER) {
+    if (my_role == ROLE_KEEPER)
+    {
       keeper();
-    } else {
+    }
+    else
+    {
       forward();
     }
 
@@ -362,10 +441,13 @@ void Japan() {
     if (dt <= 0.0)
       dt = 1.0; // ゼロ割防止
 
-    if (!(GYRO_AngleOffset == 0)) {
+    if (!(GYRO_AngleOffset == 0))
+    {
       GYRO_E = static_cast<int>(e.z) + GYRO_AngleOffset;
       GYRO_kp = 0.5;
-    } else {
+    }
+    else
+    {
       GYRO_E = static_cast<int>(e.z);
     }
 
@@ -377,26 +459,34 @@ void Japan() {
                       ((GYRO_E - GYRO_preE) / dt) * GYRO_kd);
     GYRO_duty = GYRO_duty * -18;
 
-    if (GYRO_duty > 800) {
+    if (GYRO_duty > 800)
+    {
       GYRO_duty = 800;
-    } else if (GYRO_duty < -800) {
+    }
+    else if (GYRO_duty < -800)
+    {
       GYRO_duty = -800;
     }
 
-    if (!(GYRO_preE == GYRO_E)) {
+    if (!(GYRO_preE == GYRO_E))
+    {
       GYRO_preE = GYRO_E;
     }
     GYRO_precnt = cnt; // 今回のタイマー値を保存
 
     // compute and apply wheel outputs using chassis helper
 
-    omni.set_limit(period_1 / 2);
+    // Keep compare values inside the 0..ARR range when adding/subtracting
+    // from the half-period center value.
+    omni.set_limit((period_1 / 2) - 10);
 
-    omni.dcalc((mv_deg * -1) + 90, (mv_power * 900 / 100), GYRO_duty);
-    //    omni.dcalc(90, (mv_power * 0 / 100), GYRO_duty); // デバッグ用そのまま
+    mv_power = 100;
 
-    swRed = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_9);
-    swGreen = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8);
+    omni.dcalc((mv_deg * -1) + 90, (mv_power* 900 / 100), GYRO_duty);
+//    omni.dcalc(90, (mv_power * 0 / 100), 0); // デバッグ用そのまま
+
+    swRed = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8);
+    swGreen = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_9);
 
     if (!use_buzzer_in_algo) {
       if (swRed | swGreen) {
@@ -407,13 +497,15 @@ void Japan() {
     }
     use_buzzer_in_algo = false;
 
-    if (swRed == 1 && pre_swRed == 0) {
+    if (swRed == 1 && pre_swRed == 0)
+    {
       rotateMotor = !rotateMotor;
     }
 
     HAL_GPIO_WritePin(KICK2_GPIO_Port, KICK2_Pin, GPIO_PIN_RESET);
 
-    if (rotateMotor) {
+    if (rotateMotor)
+    {
       HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
       HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
       HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
@@ -422,15 +514,20 @@ void Japan() {
       HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3);
       HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3);
       HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_3);
-      if (ball_dis == 80) {
-        __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 500);
-      } else {
-        __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, dribbler_power + 500);
-        dribbler_power = 130;
+      if (Ball_Closeness == 0 || dribbler_power <= 0)
+      {
+        set_dribbler_pwm(0, 0);
       }
+      else
+      {
+        set_dribbler_pwm(0, 1000);
+      }
+      dribbler_power = 130;
 
-      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_RESET);
-    } else {
+      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET);
+    }
+    else
+    {
       HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
       HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
       HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_2);
@@ -439,47 +536,67 @@ void Japan() {
       HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_3);
       HAL_TIM_PWM_Stop(&htim8, TIM_CHANNEL_3);
       HAL_TIMEx_PWMN_Stop(&htim8, TIM_CHANNEL_3);
-      __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 500);
-      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
+      set_dribbler_pwm(0, 0);
+      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET);
     }
 
     pre_swRed = swRed;
     pre_swGreen = swGreen;
+//    set_dribbler_pwm(0, 1000);
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
 
-    //     front left
-    if (*(omni.get_motor(0)) > 0) {
+    // PWM order: front right -> back right -> back left -> front left.
+    // omni index order: front left -> back left -> back right -> front right.
+
+
+//    double a1 = *omni.get_motor(3);
+
+    //     front right
+    if (*(omni.get_motor(3)) > 0)
+    {
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
-                            (period_1 / 2) + abs(*omni.get_motor(0)));
-    } else {
-      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
-                            (period_1 / 2) - abs(*omni.get_motor(0)));
+                            (period_8 / 2) + abs(*omni.get_motor(3)));
     }
-
-    //     back left
-    if (*(omni.get_motor(1)) > 0) {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
-                            (period_1 / 2) + abs(*omni.get_motor(1)));
-    } else {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
-                            (period_1 / 2) - abs(*omni.get_motor(1)));
+    else
+    {
+      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+                            (period_8 / 2) - abs(*omni.get_motor(3)));
     }
 
     //     back right
-    if (*(omni.get_motor(2)) > 0) {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+    if (*(omni.get_motor(2)) > 0)
+    {
+      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
                             (period_1 / 2) + abs(*omni.get_motor(2)));
-    } else {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+    }
+    else
+    {
+      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
                             (period_1 / 2) - abs(*omni.get_motor(2)));
     }
 
-    //     front right
-    if (*(omni.get_motor(3)) > 0) {
+    //     back left
+    if (*(omni.get_motor(1)) > 0)
+    {
+      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+                            (period_1 / 2) + abs(*omni.get_motor(1)));
+    }
+    else
+    {
+      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+                            (period_1 / 2) - abs(*omni.get_motor(1)));
+    }
+
+    //     front left
+    if (*(omni.get_motor(0)) < 0)
+    {
       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
-                            (period_8 / 2) + abs(*omni.get_motor(3)));
-    } else {
+                            (period_1 / 2) + abs(*omni.get_motor(0)));
+    }
+    else
+    {
       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
-                            (period_8 / 2) - abs(*omni.get_motor(3)));
+                            (period_1 / 2) - abs(*omni.get_motor(0)));
     }
   }
 }

@@ -90,7 +90,6 @@ extern int16_t enemyGoal_Angle;
 extern int16_t enemyGoal_Width;
 extern int16_t myGoal_Angle;
 extern int16_t myGoal_Width;
-
 extern uint8_t enemyGoal_Angle_Range_ins;
 extern uint8_t enemyGoal_Radius_ins;
 extern uint8_t myGoal_Angle_Range_ins;
@@ -99,7 +98,6 @@ extern int16_t enemyGoal_Angle_Range;
 extern int16_t enemyGoal_Radius;
 extern int16_t myGoal_Angle_Range;
 extern int16_t myGoal_Radius;
-
 extern double right_goal_angle;
 extern double left_goal_angle;
 
@@ -186,8 +184,8 @@ extern bool swRed;
 extern bool pre_swRed;
 extern bool swGreen;
 extern bool pre_swGreen;
-extern uint8_t i_spkr;
 extern bool rotateMotor;
+extern uint8_t i_spkr;
 
 extern double dribbler_power;
 

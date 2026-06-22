@@ -12,11 +12,21 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-enum { IR_THETAreq, IR_CLOSENESSreq, LINE_Xreq, LINE_Yreq, LINE_SIDEreq };
+#define MAIN_SUB_REQUEST_GET_ALL 0xA5u
+#define MAIN_SUB_REQUEST_GET_COMM 0xA6u
+#define MAIN_SUB_RESPONSE_MAGIC 0x5Au
+#define MAIN_SUB_FIXED_RESPONSE_SIZE 8u
+#define MAIN_SUB_COMM_PAYLOAD_MAX 32u
+#define MAIN_SUB_INVALID_DISTANCE_MM 0xFFFFu
+#define MAIN_SUB_STATUS_US1_VALID (1u << 0)
+#define MAIN_SUB_STATUS_US2_VALID (1u << 1)
+#define MAIN_SUB_STATUS_US3_VALID (1u << 2)
+#define MAIN_SUB_STATUS_CURRENT_VALID (1u << 3)
+#define MAIN_SUB_STATUS_COMM_OVERFLOW (1u << 4)
+#define MAIN_SUB_STATUS_COMM_UART_ERR (1u << 5)
+#define MAIN_SUB_STATUS_COMM_DATA (1u << 6)
 #define TIMEOUT_CNT 1
-// extern int flagReceived[6];
-extern volatile uint8_t IR_flag;
-extern volatile uint8_t LINE_flag;
+
 extern volatile uint8_t CAMERA_flag;
 extern volatile uint8_t UART4_flag;
 extern volatile uint8_t ESP32_Comm_flag;
@@ -36,13 +46,13 @@ enum RobotState {
 typedef union {
   uint8_t byte;
   struct {
-    unsigned char local_ACK : 1; // 0: NACK /1: ACK
+    unsigned char local_ACK : 1; // 0: NACK / 1: ACK
     unsigned char role : 1; // FORWARD or KEEPER
-    unsigned char youWereDead : 1; // お前はすでに死んでいる
-    unsigned char ImDIE : 1; // Oh,I'm die.Thank you forever
-    unsigned char goal_pos : 2; // 0:ゴール前にいない /1:ゴール右 /2:ゴール前 /3:ゴール左
+    unsigned char youWereDead : 1;
+    unsigned char ImDIE : 1;
+    unsigned char goal_pos : 2;
     unsigned char hold_flag : 1;
-    unsigned char no_connection : 1; // connection timeout
+    unsigned char no_connection : 1;
   };
 } ESP_data;
 
@@ -50,12 +60,9 @@ extern ESP_data ESP32_TX_Data;
 extern ESP_data ESP32_RX_Data;
 extern bool ESP32_Failed_Connection;
 
-extern uint8_t IRorLINE; // IR:0, LINE:1
-extern UART_HandleTypeDef *Now_ch;
-extern uint8_t TB;
 extern bool IR_Failed_Connection;
 extern bool LINE_Failed_Connection;
-extern bool Fisrt_Line;
+extern bool MAIN_SUB_Failed_Connection;
 
 extern int16_t Ball_Theta;
 extern uint8_t Ball_Closeness;
@@ -81,9 +88,19 @@ extern uint8_t Goal_RB;
 extern int16_t Goal_Before[8];
 extern uint8_t Goal_Received_counter;
 extern bool Goal_ava;
+extern uint8_t MainSub_Status;
+extern uint8_t MainSub_Ultrasonic_cm[3];
+extern uint16_t MainSub_Ultrasonic_mm[3];
+extern bool MainSub_Ultrasonic_valid[3];
+extern uint8_t MainSub_Current4bit[4];
+extern uint16_t MainSub_Current_ADC12[4];
+extern uint8_t MainSub_Comm_Data[MAIN_SUB_COMM_PAYLOAD_MAX];
+extern uint8_t MainSub_Comm_Length;
+extern bool MainSub_Comm_Available;
 
-void get_IR(UART_HandleTypeDef *IR_uart_ch, TIM_HandleTypeDef *htim_intr);
-void get_LINE(UART_HandleTypeDef *LINE_uart_ch, TIM_HandleTypeDef *htim_intr);
+void get_IR(UART_HandleTypeDef *uart);
+void get_LINE(UART_HandleTypeDef *uart);
 void get_ESP32(UART_HandleTypeDef *ESP32_uart_ch, ESP_data tx_data);
+void get_MAIN_SUB(UART_HandleTypeDef *uart);
 
 #endif /* INC_UART_H_ */

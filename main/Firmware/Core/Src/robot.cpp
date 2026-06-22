@@ -93,8 +93,12 @@ const uint8_t side_of_goal_thr = 65;
 int16_t mv_vector_holding_x = 0;
 int16_t mv_vector_holding_y = 0;
 
-uint8_t enemyGoal_Angle_ins, enemyGoal_Width_ins, myGoal_Angle_ins, myGoal_Width_ins, enemyGoal_Angle_Range_ins, enemyGoal_Radius_ins, myGoal_Angle_Range_ins, myGoal_Radius_ins;
-int16_t enemyGoal_Angle, enemyGoal_Width, myGoal_Angle, myGoal_Width, enemyGoal_Angle_Range, enemyGoal_Radius, myGoal_Angle_Range, myGoal_Radius;
+uint8_t enemyGoal_Angle_ins, enemyGoal_Width_ins, myGoal_Angle_ins,
+    myGoal_Width_ins, enemyGoal_Angle_Range_ins, enemyGoal_Radius_ins,
+    myGoal_Angle_Range_ins, myGoal_Radius_ins;
+int16_t enemyGoal_Angle, enemyGoal_Width, myGoal_Angle, myGoal_Width,
+    enemyGoal_Angle_Range, enemyGoal_Radius, myGoal_Angle_Range,
+    myGoal_Radius;
 
 double right_goal_angle = 0;
 double left_goal_angle = 0;
@@ -109,8 +113,9 @@ int16_t sideLine_x;
 int16_t sideLine_y;
 bool sideLine;
 
+
 // UI state // flags
-uint32_t tim3_halfDuty = __HAL_TIM_GET_AUTORELOAD(&htim3) + 1;
+uint32_t tim3_halfDuty = 0;
 bool swRed = 0;
 bool pre_swRed = 0;
 bool swGreen = 0;
@@ -125,14 +130,15 @@ uint32_t period_1;
 uint32_t period_8;
 uint32_t period_3;
 
-void setup()
-{
+void setup() {
   // PWM setup
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);  // A
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);  // B
   HAL_TIM_PWM_Start(&htim12, TIM_CHANNEL_1); // C
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);  // D
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);  // dribbler input 1
+  HAL_TIM_PWM_Start(&htim14, TIM_CHANNEL_1); // dribbler input 2
   HAL_TIM_PWM_Start(&htim13, TIM_CHANNEL_1); // drib
+  __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
 
   // JYRO setup
   HAL_Delay(500);
@@ -140,7 +146,6 @@ void setup()
 
   HAL_TIM_Base_Start_IT(&htim6);
   HAL_TIM_Base_Start(&htim5);  // IR
-  HAL_TIM_Base_Start(&htim14); // LINE
   HAL_TIM_Base_Start(&htim7);
 
   HAL_UART_Receive_IT(&huart2, &Goal_RB, 1);
