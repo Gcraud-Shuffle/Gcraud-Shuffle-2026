@@ -37,15 +37,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  00028edb  00000000  00000000  0003b008  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0001f094  00000000  00000000  00063ee3  2**0
+ 17 .debug_line   0001f097  00000000  00000000  00063ee3  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000e6bce  00000000  00000000  00082f77  2**0
+ 18 .debug_str    000e6bce  00000000  00000000  00082f7a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  00169b45  2**0
+ 19 .comment      00000043  00000000  00000000  00169b48  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00005be8  00000000  00000000  00169b88  2**2
+ 20 .debug_frame  00005be8  00000000  00000000  00169b8c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 00000063  00000000  00000000  0016f770  2**0
+ 21 .debug_line_str 00000063  00000000  00000000  0016f774  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -6825,16 +6825,16 @@ void forward()
     else
     {
       mv_deg += (abs(mv_deg - ball_deg) * ball_dis / 90);
- 8003b38:	4b82      	ldr	r3, [pc, #520]	@ (8003d44 <_Z7forwardv+0x474>)
+ 8003b38:	4b83      	ldr	r3, [pc, #524]	@ (8003d48 <_Z7forwardv+0x478>)
  8003b3a:	f9b3 3000 	ldrsh.w	r3, [r3]
  8003b3e:	4618      	mov	r0, r3
  8003b40:	f7fc fcb4 	bl	80004ac <__aeabi_i2d>
  8003b44:	4604      	mov	r4, r0
  8003b46:	460d      	mov	r5, r1
- 8003b48:	4b7e      	ldr	r3, [pc, #504]	@ (8003d44 <_Z7forwardv+0x474>)
+ 8003b48:	4b7f      	ldr	r3, [pc, #508]	@ (8003d48 <_Z7forwardv+0x478>)
  8003b4a:	f9b3 3000 	ldrsh.w	r3, [r3]
  8003b4e:	461a      	mov	r2, r3
- 8003b50:	4b7d      	ldr	r3, [pc, #500]	@ (8003d48 <_Z7forwardv+0x478>)
+ 8003b50:	4b7e      	ldr	r3, [pc, #504]	@ (8003d4c <_Z7forwardv+0x47c>)
  8003b52:	681b      	ldr	r3, [r3, #0]
  8003b54:	1ad3      	subs	r3, r2, r3
  8003b56:	2b00      	cmp	r3, #0
@@ -6842,7 +6842,7 @@ void forward()
  8003b5a:	425b      	neglt	r3, r3
  8003b5c:	4618      	mov	r0, r3
  8003b5e:	f7fc fca5 	bl	80004ac <__aeabi_i2d>
- 8003b62:	4b7a      	ldr	r3, [pc, #488]	@ (8003d4c <_Z7forwardv+0x47c>)
+ 8003b62:	4b7b      	ldr	r3, [pc, #492]	@ (8003d50 <_Z7forwardv+0x480>)
  8003b64:	e9d3 2300 	ldrd	r2, r3, [r3]
  8003b68:	f7fc fd0a 	bl	8000580 <__aeabi_dmul>
  8003b6c:	4602      	mov	r2, r0
@@ -6850,7 +6850,7 @@ void forward()
  8003b70:	4610      	mov	r0, r2
  8003b72:	4619      	mov	r1, r3
  8003b74:	f04f 0200 	mov.w	r2, #0
- 8003b78:	4b75      	ldr	r3, [pc, #468]	@ (8003d50 <_Z7forwardv+0x480>)
+ 8003b78:	4b76      	ldr	r3, [pc, #472]	@ (8003d54 <_Z7forwardv+0x484>)
  8003b7a:	f7fc fe2b 	bl	80007d4 <__aeabi_ddiv>
  8003b7e:	4602      	mov	r2, r0
  8003b80:	460b      	mov	r3, r1
@@ -6864,21 +6864,21 @@ void forward()
  8003b92:	f7fc ffa5 	bl	8000ae0 <__aeabi_d2iz>
  8003b96:	4603      	mov	r3, r0
  8003b98:	b21a      	sxth	r2, r3
- 8003b9a:	4b6a      	ldr	r3, [pc, #424]	@ (8003d44 <_Z7forwardv+0x474>)
+ 8003b9a:	4b6b      	ldr	r3, [pc, #428]	@ (8003d48 <_Z7forwardv+0x478>)
  8003b9c:	801a      	strh	r2, [r3, #0]
     }
   }
 
   if (ball_dis < 15 && abs(ball_deg) < 20)
- 8003b9e:	4b6b      	ldr	r3, [pc, #428]	@ (8003d4c <_Z7forwardv+0x47c>)
+ 8003b9e:	4b6c      	ldr	r3, [pc, #432]	@ (8003d50 <_Z7forwardv+0x480>)
  8003ba0:	e9d3 0100 	ldrd	r0, r1, [r3]
  8003ba4:	f04f 0200 	mov.w	r2, #0
- 8003ba8:	4b6a      	ldr	r3, [pc, #424]	@ (8003d54 <_Z7forwardv+0x484>)
+ 8003ba8:	4b6b      	ldr	r3, [pc, #428]	@ (8003d58 <_Z7forwardv+0x488>)
  8003baa:	f7fc ff5b 	bl	8000a64 <__aeabi_dcmplt>
  8003bae:	4603      	mov	r3, r0
  8003bb0:	2b00      	cmp	r3, #0
  8003bb2:	d009      	beq.n	8003bc8 <_Z7forwardv+0x2f8>
- 8003bb4:	4b64      	ldr	r3, [pc, #400]	@ (8003d48 <_Z7forwardv+0x478>)
+ 8003bb4:	4b65      	ldr	r3, [pc, #404]	@ (8003d4c <_Z7forwardv+0x47c>)
  8003bb6:	681b      	ldr	r3, [r3, #0]
  8003bb8:	2b00      	cmp	r3, #0
  8003bba:	bfb8      	it	lt
@@ -6887,555 +6887,556 @@ void forward()
  8003bc0:	dc02      	bgt.n	8003bc8 <_Z7forwardv+0x2f8>
   {
     mv_power = 85;
- 8003bc2:	4b65      	ldr	r3, [pc, #404]	@ (8003d58 <_Z7forwardv+0x488>)
+ 8003bc2:	4b66      	ldr	r3, [pc, #408]	@ (8003d5c <_Z7forwardv+0x48c>)
  8003bc4:	2255      	movs	r2, #85	@ 0x55
  8003bc6:	801a      	strh	r2, [r3, #0]
   }
 
   //	mv_power = 0;
-  //  	holding_ball = true;
+    	holding_ball = true;
+ 8003bc8:	4b65      	ldr	r3, [pc, #404]	@ (8003d60 <_Z7forwardv+0x490>)
+ 8003bca:	2201      	movs	r2, #1
+ 8003bcc:	701a      	strb	r2, [r3, #0]
 
   updateDribbleAccelerationRamp(holding_ball, cnt);
- 8003bc8:	4b64      	ldr	r3, [pc, #400]	@ (8003d5c <_Z7forwardv+0x48c>)
- 8003bca:	781b      	ldrb	r3, [r3, #0]
- 8003bcc:	4a64      	ldr	r2, [pc, #400]	@ (8003d60 <_Z7forwardv+0x490>)
- 8003bce:	8812      	ldrh	r2, [r2, #0]
- 8003bd0:	4611      	mov	r1, r2
- 8003bd2:	4618      	mov	r0, r3
- 8003bd4:	f7ff fd02 	bl	80035dc <_ZN12_GLOBAL__N_129updateDribbleAccelerationRampEbt>
+ 8003bce:	4b64      	ldr	r3, [pc, #400]	@ (8003d60 <_Z7forwardv+0x490>)
+ 8003bd0:	781b      	ldrb	r3, [r3, #0]
+ 8003bd2:	4a64      	ldr	r2, [pc, #400]	@ (8003d64 <_Z7forwardv+0x494>)
+ 8003bd4:	8812      	ldrh	r2, [r2, #0]
+ 8003bd6:	4611      	mov	r1, r2
+ 8003bd8:	4618      	mov	r0, r3
+ 8003bda:	f7ff fcff 	bl	80035dc <_ZN12_GLOBAL__N_129updateDribbleAccelerationRampEbt>
 
 //  holding_ball = true;
 
   if (holding_ball == true)
- 8003bd8:	4b60      	ldr	r3, [pc, #384]	@ (8003d5c <_Z7forwardv+0x48c>)
- 8003bda:	781b      	ldrb	r3, [r3, #0]
- 8003bdc:	2b01      	cmp	r3, #1
- 8003bde:	f040 812a 	bne.w	8003e36 <_Z7forwardv+0x566>
+ 8003bde:	4b60      	ldr	r3, [pc, #384]	@ (8003d60 <_Z7forwardv+0x490>)
+ 8003be0:	781b      	ldrb	r3, [r3, #0]
+ 8003be2:	2b01      	cmp	r3, #1
+ 8003be4:	f040 8129 	bne.w	8003e3a <_Z7forwardv+0x56a>
   {
     starting_dribbler = true;
- 8003be2:	4b60      	ldr	r3, [pc, #384]	@ (8003d64 <_Z7forwardv+0x494>)
- 8003be4:	2201      	movs	r2, #1
- 8003be6:	701a      	strb	r2, [r3, #0]
+ 8003be8:	4b5f      	ldr	r3, [pc, #380]	@ (8003d68 <_Z7forwardv+0x498>)
+ 8003bea:	2201      	movs	r2, #1
+ 8003bec:	701a      	strb	r2, [r3, #0]
 
     // --- ステートの決定（状態の評価） ---
     if (enemyGoal_Width > 40 && abs(enemyGoal_Angle) < 55)
- 8003be8:	4b5f      	ldr	r3, [pc, #380]	@ (8003d68 <_Z7forwardv+0x498>)
- 8003bea:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003bee:	2b28      	cmp	r3, #40	@ 0x28
- 8003bf0:	dd3c      	ble.n	8003c6c <_Z7forwardv+0x39c>
- 8003bf2:	4b5e      	ldr	r3, [pc, #376]	@ (8003d6c <_Z7forwardv+0x49c>)
- 8003bf4:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003bf8:	2b00      	cmp	r3, #0
- 8003bfa:	bfb8      	it	lt
- 8003bfc:	425b      	neglt	r3, r3
- 8003bfe:	b29b      	uxth	r3, r3
- 8003c00:	2b36      	cmp	r3, #54	@ 0x36
- 8003c02:	d833      	bhi.n	8003c6c <_Z7forwardv+0x39c>
+ 8003bee:	4b5f      	ldr	r3, [pc, #380]	@ (8003d6c <_Z7forwardv+0x49c>)
+ 8003bf0:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003bf4:	2b28      	cmp	r3, #40	@ 0x28
+ 8003bf6:	dd3c      	ble.n	8003c72 <_Z7forwardv+0x3a2>
+ 8003bf8:	4b5d      	ldr	r3, [pc, #372]	@ (8003d70 <_Z7forwardv+0x4a0>)
+ 8003bfa:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003bfe:	2b00      	cmp	r3, #0
+ 8003c00:	bfb8      	it	lt
+ 8003c02:	425b      	neglt	r3, r3
+ 8003c04:	b29b      	uxth	r3, r3
+ 8003c06:	2b36      	cmp	r3, #54	@ 0x36
+ 8003c08:	d833      	bhi.n	8003c72 <_Z7forwardv+0x3a2>
     {
       // ゴール前近めでシュート可能
       if ((abs(GYRO_Z + enemyGoal_Angle) < 8) || (enemyGoal_Width > 70 && abs(LineAngle) < 20)&&((enemyGoal_Angle_Range>30)||!(lineAngel||lineSideLeft||lineSideRight)))
- 8003c04:	4b59      	ldr	r3, [pc, #356]	@ (8003d6c <_Z7forwardv+0x49c>)
- 8003c06:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003c0a:	461a      	mov	r2, r3
- 8003c0c:	4b58      	ldr	r3, [pc, #352]	@ (8003d70 <_Z7forwardv+0x4a0>)
- 8003c0e:	681b      	ldr	r3, [r3, #0]
- 8003c10:	4413      	add	r3, r2
- 8003c12:	2b00      	cmp	r3, #0
- 8003c14:	bfb8      	it	lt
- 8003c16:	425b      	neglt	r3, r3
- 8003c18:	2b07      	cmp	r3, #7
- 8003c1a:	dd1f      	ble.n	8003c5c <_Z7forwardv+0x38c>
- 8003c1c:	4b52      	ldr	r3, [pc, #328]	@ (8003d68 <_Z7forwardv+0x498>)
- 8003c1e:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003c22:	2b46      	cmp	r3, #70	@ 0x46
- 8003c24:	dd1e      	ble.n	8003c64 <_Z7forwardv+0x394>
- 8003c26:	4b53      	ldr	r3, [pc, #332]	@ (8003d74 <_Z7forwardv+0x4a4>)
- 8003c28:	681b      	ldr	r3, [r3, #0]
- 8003c2a:	2b00      	cmp	r3, #0
- 8003c2c:	bfb8      	it	lt
- 8003c2e:	425b      	neglt	r3, r3
- 8003c30:	2b13      	cmp	r3, #19
- 8003c32:	dc17      	bgt.n	8003c64 <_Z7forwardv+0x394>
- 8003c34:	4b50      	ldr	r3, [pc, #320]	@ (8003d78 <_Z7forwardv+0x4a8>)
- 8003c36:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003c3a:	2b1e      	cmp	r3, #30
- 8003c3c:	dc0e      	bgt.n	8003c5c <_Z7forwardv+0x38c>
- 8003c3e:	4b4f      	ldr	r3, [pc, #316]	@ (8003d7c <_Z7forwardv+0x4ac>)
- 8003c40:	781b      	ldrb	r3, [r3, #0]
- 8003c42:	f083 0301 	eor.w	r3, r3, #1
- 8003c46:	b2db      	uxtb	r3, r3
- 8003c48:	2b00      	cmp	r3, #0
- 8003c4a:	d00b      	beq.n	8003c64 <_Z7forwardv+0x394>
- 8003c4c:	4b4c      	ldr	r3, [pc, #304]	@ (8003d80 <_Z7forwardv+0x4b0>)
- 8003c4e:	681b      	ldr	r3, [r3, #0]
- 8003c50:	2b00      	cmp	r3, #0
- 8003c52:	d107      	bne.n	8003c64 <_Z7forwardv+0x394>
- 8003c54:	4b4b      	ldr	r3, [pc, #300]	@ (8003d84 <_Z7forwardv+0x4b4>)
- 8003c56:	681b      	ldr	r3, [r3, #0]
- 8003c58:	2b00      	cmp	r3, #0
- 8003c5a:	d103      	bne.n	8003c64 <_Z7forwardv+0x394>
+ 8003c0a:	4b59      	ldr	r3, [pc, #356]	@ (8003d70 <_Z7forwardv+0x4a0>)
+ 8003c0c:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003c10:	461a      	mov	r2, r3
+ 8003c12:	4b58      	ldr	r3, [pc, #352]	@ (8003d74 <_Z7forwardv+0x4a4>)
+ 8003c14:	681b      	ldr	r3, [r3, #0]
+ 8003c16:	4413      	add	r3, r2
+ 8003c18:	2b00      	cmp	r3, #0
+ 8003c1a:	bfb8      	it	lt
+ 8003c1c:	425b      	neglt	r3, r3
+ 8003c1e:	2b07      	cmp	r3, #7
+ 8003c20:	dd1f      	ble.n	8003c62 <_Z7forwardv+0x392>
+ 8003c22:	4b52      	ldr	r3, [pc, #328]	@ (8003d6c <_Z7forwardv+0x49c>)
+ 8003c24:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003c28:	2b46      	cmp	r3, #70	@ 0x46
+ 8003c2a:	dd1e      	ble.n	8003c6a <_Z7forwardv+0x39a>
+ 8003c2c:	4b52      	ldr	r3, [pc, #328]	@ (8003d78 <_Z7forwardv+0x4a8>)
+ 8003c2e:	681b      	ldr	r3, [r3, #0]
+ 8003c30:	2b00      	cmp	r3, #0
+ 8003c32:	bfb8      	it	lt
+ 8003c34:	425b      	neglt	r3, r3
+ 8003c36:	2b13      	cmp	r3, #19
+ 8003c38:	dc17      	bgt.n	8003c6a <_Z7forwardv+0x39a>
+ 8003c3a:	4b50      	ldr	r3, [pc, #320]	@ (8003d7c <_Z7forwardv+0x4ac>)
+ 8003c3c:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003c40:	2b1e      	cmp	r3, #30
+ 8003c42:	dc0e      	bgt.n	8003c62 <_Z7forwardv+0x392>
+ 8003c44:	4b4e      	ldr	r3, [pc, #312]	@ (8003d80 <_Z7forwardv+0x4b0>)
+ 8003c46:	781b      	ldrb	r3, [r3, #0]
+ 8003c48:	f083 0301 	eor.w	r3, r3, #1
+ 8003c4c:	b2db      	uxtb	r3, r3
+ 8003c4e:	2b00      	cmp	r3, #0
+ 8003c50:	d00b      	beq.n	8003c6a <_Z7forwardv+0x39a>
+ 8003c52:	4b4c      	ldr	r3, [pc, #304]	@ (8003d84 <_Z7forwardv+0x4b4>)
+ 8003c54:	681b      	ldr	r3, [r3, #0]
+ 8003c56:	2b00      	cmp	r3, #0
+ 8003c58:	d107      	bne.n	8003c6a <_Z7forwardv+0x39a>
+ 8003c5a:	4b4b      	ldr	r3, [pc, #300]	@ (8003d88 <_Z7forwardv+0x4b8>)
+ 8003c5c:	681b      	ldr	r3, [r3, #0]
+ 8003c5e:	2b00      	cmp	r3, #0
+ 8003c60:	d103      	bne.n	8003c6a <_Z7forwardv+0x39a>
       {
         current_state = HoldState::KICKING;
- 8003c5c:	4b4a      	ldr	r3, [pc, #296]	@ (8003d88 <_Z7forwardv+0x4b8>)
- 8003c5e:	2203      	movs	r2, #3
- 8003c60:	601a      	str	r2, [r3, #0]
+ 8003c62:	4b4a      	ldr	r3, [pc, #296]	@ (8003d8c <_Z7forwardv+0x4bc>)
+ 8003c64:	2203      	movs	r2, #3
+ 8003c66:	601a      	str	r2, [r3, #0]
       if ((abs(GYRO_Z + enemyGoal_Angle) < 8) || (enemyGoal_Width > 70 && abs(LineAngle) < 20)&&((enemyGoal_Angle_Range>30)||!(lineAngel||lineSideLeft||lineSideRight)))
- 8003c62:	e026      	b.n	8003cb2 <_Z7forwardv+0x3e2>
+ 8003c68:	e026      	b.n	8003cb8 <_Z7forwardv+0x3e8>
       }
       else
       {
         current_state = HoldState::SHOOT_AIM;
- 8003c64:	4b48      	ldr	r3, [pc, #288]	@ (8003d88 <_Z7forwardv+0x4b8>)
- 8003c66:	2202      	movs	r2, #2
- 8003c68:	601a      	str	r2, [r3, #0]
+ 8003c6a:	4b48      	ldr	r3, [pc, #288]	@ (8003d8c <_Z7forwardv+0x4bc>)
+ 8003c6c:	2202      	movs	r2, #2
+ 8003c6e:	601a      	str	r2, [r3, #0]
       if ((abs(GYRO_Z + enemyGoal_Angle) < 8) || (enemyGoal_Width > 70 && abs(LineAngle) < 20)&&((enemyGoal_Angle_Range>30)||!(lineAngel||lineSideLeft||lineSideRight)))
- 8003c6a:	e022      	b.n	8003cb2 <_Z7forwardv+0x3e2>
+ 8003c70:	e022      	b.n	8003cb8 <_Z7forwardv+0x3e8>
       }
     }
     else if (myGoal_Width > 40 || enemyGoal_Angle == 0)
- 8003c6c:	4b47      	ldr	r3, [pc, #284]	@ (8003d8c <_Z7forwardv+0x4bc>)
- 8003c6e:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003c72:	2b28      	cmp	r3, #40	@ 0x28
- 8003c74:	dc04      	bgt.n	8003c80 <_Z7forwardv+0x3b0>
- 8003c76:	4b3d      	ldr	r3, [pc, #244]	@ (8003d6c <_Z7forwardv+0x49c>)
- 8003c78:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003c7c:	2b00      	cmp	r3, #0
- 8003c7e:	d103      	bne.n	8003c88 <_Z7forwardv+0x3b8>
+ 8003c72:	4b47      	ldr	r3, [pc, #284]	@ (8003d90 <_Z7forwardv+0x4c0>)
+ 8003c74:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003c78:	2b28      	cmp	r3, #40	@ 0x28
+ 8003c7a:	dc04      	bgt.n	8003c86 <_Z7forwardv+0x3b6>
+ 8003c7c:	4b3c      	ldr	r3, [pc, #240]	@ (8003d70 <_Z7forwardv+0x4a0>)
+ 8003c7e:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003c82:	2b00      	cmp	r3, #0
+ 8003c84:	d103      	bne.n	8003c8e <_Z7forwardv+0x3be>
     {
       // 自陣ゴールが近い（または相手ロボットと押し合っている）場合
       current_state = HoldState::PUSH_OR_ESCAPE;
- 8003c80:	4b41      	ldr	r3, [pc, #260]	@ (8003d88 <_Z7forwardv+0x4b8>)
- 8003c82:	2205      	movs	r2, #5
- 8003c84:	601a      	str	r2, [r3, #0]
- 8003c86:	e014      	b.n	8003cb2 <_Z7forwardv+0x3e2>
+ 8003c86:	4b41      	ldr	r3, [pc, #260]	@ (8003d8c <_Z7forwardv+0x4bc>)
+ 8003c88:	2205      	movs	r2, #5
+ 8003c8a:	601a      	str	r2, [r3, #0]
+ 8003c8c:	e014      	b.n	8003cb8 <_Z7forwardv+0x3e8>
     }
     else if (abs(enemyGoal_Angle) > side_of_goal_thr)
- 8003c88:	4b38      	ldr	r3, [pc, #224]	@ (8003d6c <_Z7forwardv+0x49c>)
- 8003c8a:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003c8e:	2b00      	cmp	r3, #0
- 8003c90:	bfb8      	it	lt
- 8003c92:	425b      	neglt	r3, r3
- 8003c94:	b29b      	uxth	r3, r3
- 8003c96:	4a3e      	ldr	r2, [pc, #248]	@ (8003d90 <_Z7forwardv+0x4c0>)
- 8003c98:	7812      	ldrb	r2, [r2, #0]
- 8003c9a:	4293      	cmp	r3, r2
- 8003c9c:	d906      	bls.n	8003cac <_Z7forwardv+0x3dc>
+ 8003c8e:	4b38      	ldr	r3, [pc, #224]	@ (8003d70 <_Z7forwardv+0x4a0>)
+ 8003c90:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003c94:	2b00      	cmp	r3, #0
+ 8003c96:	bfb8      	it	lt
+ 8003c98:	425b      	neglt	r3, r3
+ 8003c9a:	b29b      	uxth	r3, r3
+ 8003c9c:	4a3d      	ldr	r2, [pc, #244]	@ (8003d94 <_Z7forwardv+0x4c4>)
+ 8003c9e:	7812      	ldrb	r2, [r2, #0]
+ 8003ca0:	4293      	cmp	r3, r2
+ 8003ca2:	d906      	bls.n	8003cb2 <_Z7forwardv+0x3e2>
     {
       // ゴール横の場合
       side_of_Goal = true;
- 8003c9e:	4b3d      	ldr	r3, [pc, #244]	@ (8003d94 <_Z7forwardv+0x4c4>)
- 8003ca0:	2201      	movs	r2, #1
- 8003ca2:	701a      	strb	r2, [r3, #0]
-      current_state = HoldState::PULL_OUT;
- 8003ca4:	4b38      	ldr	r3, [pc, #224]	@ (8003d88 <_Z7forwardv+0x4b8>)
+ 8003ca4:	4b3c      	ldr	r3, [pc, #240]	@ (8003d98 <_Z7forwardv+0x4c8>)
  8003ca6:	2201      	movs	r2, #1
- 8003ca8:	601a      	str	r2, [r3, #0]
- 8003caa:	e002      	b.n	8003cb2 <_Z7forwardv+0x3e2>
+ 8003ca8:	701a      	strb	r2, [r3, #0]
+      current_state = HoldState::PULL_OUT;
+ 8003caa:	4b38      	ldr	r3, [pc, #224]	@ (8003d8c <_Z7forwardv+0x4bc>)
+ 8003cac:	2201      	movs	r2, #1
+ 8003cae:	601a      	str	r2, [r3, #0]
+ 8003cb0:	e002      	b.n	8003cb8 <_Z7forwardv+0x3e8>
     }
     else
     {
       // デフォルトは敵回避の回り込み
       current_state = HoldState::ORBIT_AVOID;
- 8003cac:	4b36      	ldr	r3, [pc, #216]	@ (8003d88 <_Z7forwardv+0x4b8>)
- 8003cae:	2204      	movs	r2, #4
- 8003cb0:	601a      	str	r2, [r3, #0]
+ 8003cb2:	4b36      	ldr	r3, [pc, #216]	@ (8003d8c <_Z7forwardv+0x4bc>)
+ 8003cb4:	2204      	movs	r2, #4
+ 8003cb6:	601a      	str	r2, [r3, #0]
     }
 
     //    current_state = HoldState::ORBIT_AVOID;
 
     // --- ステートごとの出力計算（モーター/ドリブラー制御） ---
     switch (current_state)
- 8003cb2:	4b35      	ldr	r3, [pc, #212]	@ (8003d88 <_Z7forwardv+0x4b8>)
- 8003cb4:	681b      	ldr	r3, [r3, #0]
- 8003cb6:	3b01      	subs	r3, #1
- 8003cb8:	2b04      	cmp	r3, #4
- 8003cba:	d871      	bhi.n	8003da0 <_Z7forwardv+0x4d0>
- 8003cbc:	a201      	add	r2, pc, #4	@ (adr r2, 8003cc4 <_Z7forwardv+0x3f4>)
- 8003cbe:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
- 8003cc2:	bf00      	nop
- 8003cc4:	08003d31 	.word	0x08003d31
- 8003cc8:	08003d05 	.word	0x08003d05
- 8003ccc:	08003cd9 	.word	0x08003cd9
- 8003cd0:	08003da1 	.word	0x08003da1
- 8003cd4:	08003d23 	.word	0x08003d23
+ 8003cb8:	4b34      	ldr	r3, [pc, #208]	@ (8003d8c <_Z7forwardv+0x4bc>)
+ 8003cba:	681b      	ldr	r3, [r3, #0]
+ 8003cbc:	3b01      	subs	r3, #1
+ 8003cbe:	2b04      	cmp	r3, #4
+ 8003cc0:	d870      	bhi.n	8003da4 <_Z7forwardv+0x4d4>
+ 8003cc2:	a201      	add	r2, pc, #4	@ (adr r2, 8003cc8 <_Z7forwardv+0x3f8>)
+ 8003cc4:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+ 8003cc8:	08003d35 	.word	0x08003d35
+ 8003ccc:	08003d09 	.word	0x08003d09
+ 8003cd0:	08003cdd 	.word	0x08003cdd
+ 8003cd4:	08003da5 	.word	0x08003da5
+ 8003cd8:	08003d27 	.word	0x08003d27
     {
     case HoldState::KICKING:
       // キック時は進行停止・ドリブラー停止
       GYRO_AngleOffset = enemyGoal_Angle;
- 8003cd8:	4b24      	ldr	r3, [pc, #144]	@ (8003d6c <_Z7forwardv+0x49c>)
- 8003cda:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003cde:	461a      	mov	r2, r3
- 8003ce0:	4b2d      	ldr	r3, [pc, #180]	@ (8003d98 <_Z7forwardv+0x4c8>)
- 8003ce2:	601a      	str	r2, [r3, #0]
+ 8003cdc:	4b24      	ldr	r3, [pc, #144]	@ (8003d70 <_Z7forwardv+0x4a0>)
+ 8003cde:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003ce2:	461a      	mov	r2, r3
+ 8003ce4:	4b2d      	ldr	r3, [pc, #180]	@ (8003d9c <_Z7forwardv+0x4cc>)
+ 8003ce6:	601a      	str	r2, [r3, #0]
       mv_deg = 0;
- 8003ce4:	4b17      	ldr	r3, [pc, #92]	@ (8003d44 <_Z7forwardv+0x474>)
- 8003ce6:	2200      	movs	r2, #0
- 8003ce8:	801a      	strh	r2, [r3, #0]
+ 8003ce8:	4b17      	ldr	r3, [pc, #92]	@ (8003d48 <_Z7forwardv+0x478>)
+ 8003cea:	2200      	movs	r2, #0
+ 8003cec:	801a      	strh	r2, [r3, #0]
       mv_power = 100;
- 8003cea:	4b1b      	ldr	r3, [pc, #108]	@ (8003d58 <_Z7forwardv+0x488>)
- 8003cec:	2264      	movs	r2, #100	@ 0x64
- 8003cee:	801a      	strh	r2, [r3, #0]
+ 8003cee:	4b1b      	ldr	r3, [pc, #108]	@ (8003d5c <_Z7forwardv+0x48c>)
+ 8003cf0:	2264      	movs	r2, #100	@ 0x64
+ 8003cf2:	801a      	strh	r2, [r3, #0]
       // GYRO_kp = 0.8;
       dribbler_power = 0; // 0でドリブラー停止
- 8003cf0:	492a      	ldr	r1, [pc, #168]	@ (8003d9c <_Z7forwardv+0x4cc>)
- 8003cf2:	f04f 0200 	mov.w	r2, #0
- 8003cf6:	f04f 0300 	mov.w	r3, #0
- 8003cfa:	e9c1 2300 	strd	r2, r3, [r1]
+ 8003cf4:	492a      	ldr	r1, [pc, #168]	@ (8003da0 <_Z7forwardv+0x4d0>)
+ 8003cf6:	f04f 0200 	mov.w	r2, #0
+ 8003cfa:	f04f 0300 	mov.w	r3, #0
+ 8003cfe:	e9c1 2300 	strd	r2, r3, [r1]
       request_kick();
- 8003cfe:	f7fd fd3d 	bl	800177c <_Z12request_kickv>
+ 8003d02:	f7fd fd3b 	bl	800177c <_Z12request_kickv>
       break;
- 8003d02:	e098      	b.n	8003e36 <_Z7forwardv+0x566>
+ 8003d06:	e098      	b.n	8003e3a <_Z7forwardv+0x56a>
 
     case HoldState::SHOOT_AIM:
       // ゴール方向へ姿勢制御しつつ前進
       GYRO_AngleOffset = enemyGoal_Angle;
- 8003d04:	4b19      	ldr	r3, [pc, #100]	@ (8003d6c <_Z7forwardv+0x49c>)
- 8003d06:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003d0a:	461a      	mov	r2, r3
- 8003d0c:	4b22      	ldr	r3, [pc, #136]	@ (8003d98 <_Z7forwardv+0x4c8>)
- 8003d0e:	601a      	str	r2, [r3, #0]
+ 8003d08:	4b19      	ldr	r3, [pc, #100]	@ (8003d70 <_Z7forwardv+0x4a0>)
+ 8003d0a:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003d0e:	461a      	mov	r2, r3
+ 8003d10:	4b22      	ldr	r3, [pc, #136]	@ (8003d9c <_Z7forwardv+0x4cc>)
+ 8003d12:	601a      	str	r2, [r3, #0]
       mv_deg = enemyGoal_Angle;
- 8003d10:	4b16      	ldr	r3, [pc, #88]	@ (8003d6c <_Z7forwardv+0x49c>)
- 8003d12:	f9b3 2000 	ldrsh.w	r2, [r3]
- 8003d16:	4b0b      	ldr	r3, [pc, #44]	@ (8003d44 <_Z7forwardv+0x474>)
- 8003d18:	801a      	strh	r2, [r3, #0]
+ 8003d14:	4b16      	ldr	r3, [pc, #88]	@ (8003d70 <_Z7forwardv+0x4a0>)
+ 8003d16:	f9b3 2000 	ldrsh.w	r2, [r3]
+ 8003d1a:	4b0b      	ldr	r3, [pc, #44]	@ (8003d48 <_Z7forwardv+0x478>)
+ 8003d1c:	801a      	strh	r2, [r3, #0]
       mv_power = 100;
- 8003d1a:	4b0f      	ldr	r3, [pc, #60]	@ (8003d58 <_Z7forwardv+0x488>)
- 8003d1c:	2264      	movs	r2, #100	@ 0x64
- 8003d1e:	801a      	strh	r2, [r3, #0]
+ 8003d1e:	4b0f      	ldr	r3, [pc, #60]	@ (8003d5c <_Z7forwardv+0x48c>)
+ 8003d20:	2264      	movs	r2, #100	@ 0x64
+ 8003d22:	801a      	strh	r2, [r3, #0]
       //      __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1,500); //
       //      500でドリブラー停止
       // GYRO_kp = 0.8;
       break;
- 8003d20:	e089      	b.n	8003e36 <_Z7forwardv+0x566>
+ 8003d24:	e089      	b.n	8003e3a <_Z7forwardv+0x56a>
 
     case HoldState::PUSH_OR_ESCAPE:
       // 自陣から逃げるため前進 または 押し合い負け回避
       mv_power = 100;
- 8003d22:	4b0d      	ldr	r3, [pc, #52]	@ (8003d58 <_Z7forwardv+0x488>)
- 8003d24:	2264      	movs	r2, #100	@ 0x64
- 8003d26:	801a      	strh	r2, [r3, #0]
+ 8003d26:	4b0d      	ldr	r3, [pc, #52]	@ (8003d5c <_Z7forwardv+0x48c>)
+ 8003d28:	2264      	movs	r2, #100	@ 0x64
+ 8003d2a:	801a      	strh	r2, [r3, #0]
       mv_deg = 0;
- 8003d28:	4b06      	ldr	r3, [pc, #24]	@ (8003d44 <_Z7forwardv+0x474>)
- 8003d2a:	2200      	movs	r2, #0
- 8003d2c:	801a      	strh	r2, [r3, #0]
+ 8003d2c:	4b06      	ldr	r3, [pc, #24]	@ (8003d48 <_Z7forwardv+0x478>)
+ 8003d2e:	2200      	movs	r2, #0
+ 8003d30:	801a      	strh	r2, [r3, #0]
       break;
- 8003d2e:	e082      	b.n	8003e36 <_Z7forwardv+0x566>
+ 8003d32:	e082      	b.n	8003e3a <_Z7forwardv+0x56a>
 
     case HoldState::PULL_OUT:
       // ゴール横から引き出すため後退
       mv_deg = 180;
- 8003d30:	4b04      	ldr	r3, [pc, #16]	@ (8003d44 <_Z7forwardv+0x474>)
- 8003d32:	22b4      	movs	r2, #180	@ 0xb4
- 8003d34:	801a      	strh	r2, [r3, #0]
+ 8003d34:	4b04      	ldr	r3, [pc, #16]	@ (8003d48 <_Z7forwardv+0x478>)
+ 8003d36:	22b4      	movs	r2, #180	@ 0xb4
+ 8003d38:	801a      	strh	r2, [r3, #0]
       mv_power = holdingDribbleRampPower();
- 8003d36:	f7ff fcb8 	bl	80036aa <_ZN12_GLOBAL__N_123holdingDribbleRampPowerEv>
- 8003d3a:	4603      	mov	r3, r0
- 8003d3c:	461a      	mov	r2, r3
- 8003d3e:	4b06      	ldr	r3, [pc, #24]	@ (8003d58 <_Z7forwardv+0x488>)
- 8003d40:	801a      	strh	r2, [r3, #0]
+ 8003d3a:	f7ff fcb6 	bl	80036aa <_ZN12_GLOBAL__N_123holdingDribbleRampPowerEv>
+ 8003d3e:	4603      	mov	r3, r0
+ 8003d40:	461a      	mov	r2, r3
+ 8003d42:	4b06      	ldr	r3, [pc, #24]	@ (8003d5c <_Z7forwardv+0x48c>)
+ 8003d44:	801a      	strh	r2, [r3, #0]
       break;
- 8003d42:	e078      	b.n	8003e36 <_Z7forwardv+0x566>
- 8003d44:	20000908 	.word	0x20000908
- 8003d48:	2000083c 	.word	0x2000083c
- 8003d4c:	20000840 	.word	0x20000840
- 8003d50:	40568000 	.word	0x40568000
- 8003d54:	402e0000 	.word	0x402e0000
- 8003d58:	2000090c 	.word	0x2000090c
- 8003d5c:	200008a8 	.word	0x200008a8
- 8003d60:	2000088c 	.word	0x2000088c
- 8003d64:	200008bd 	.word	0x200008bd
- 8003d68:	200008e4 	.word	0x200008e4
- 8003d6c:	200008e2 	.word	0x200008e2
- 8003d70:	20000910 	.word	0x20000910
- 8003d74:	2000084c 	.word	0x2000084c
- 8003d78:	200008ea 	.word	0x200008ea
- 8003d7c:	20000868 	.word	0x20000868
- 8003d80:	20000864 	.word	0x20000864
- 8003d84:	2000085c 	.word	0x2000085c
- 8003d88:	2000001c 	.word	0x2000001c
- 8003d8c:	200008e8 	.word	0x200008e8
- 8003d90:	0800fd00 	.word	0x0800fd00
- 8003d94:	200008d8 	.word	0x200008d8
- 8003d98:	200000d0 	.word	0x200000d0
- 8003d9c:	20000928 	.word	0x20000928
+ 8003d46:	e078      	b.n	8003e3a <_Z7forwardv+0x56a>
+ 8003d48:	20000908 	.word	0x20000908
+ 8003d4c:	2000083c 	.word	0x2000083c
+ 8003d50:	20000840 	.word	0x20000840
+ 8003d54:	40568000 	.word	0x40568000
+ 8003d58:	402e0000 	.word	0x402e0000
+ 8003d5c:	2000090c 	.word	0x2000090c
+ 8003d60:	200008a8 	.word	0x200008a8
+ 8003d64:	2000088c 	.word	0x2000088c
+ 8003d68:	200008bd 	.word	0x200008bd
+ 8003d6c:	200008e4 	.word	0x200008e4
+ 8003d70:	200008e2 	.word	0x200008e2
+ 8003d74:	20000910 	.word	0x20000910
+ 8003d78:	2000084c 	.word	0x2000084c
+ 8003d7c:	200008ea 	.word	0x200008ea
+ 8003d80:	20000868 	.word	0x20000868
+ 8003d84:	20000864 	.word	0x20000864
+ 8003d88:	2000085c 	.word	0x2000085c
+ 8003d8c:	2000001c 	.word	0x2000001c
+ 8003d90:	200008e8 	.word	0x200008e8
+ 8003d94:	0800fd00 	.word	0x0800fd00
+ 8003d98:	200008d8 	.word	0x200008d8
+ 8003d9c:	200000d0 	.word	0x200000d0
+ 8003da0:	20000928 	.word	0x20000928
 
     case HoldState::ORBIT_AVOID:
     default:
     {
       double mv_holding_x, mv_holding_y;
       calculateOrbitVector(enemyGoal_Angle, enemyGoal_Width, side_of_goal_thr,
- 8003da0:	4b85      	ldr	r3, [pc, #532]	@ (8003fb8 <_Z7forwardv+0x6e8>)
- 8003da2:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003da6:	4618      	mov	r0, r3
- 8003da8:	f7fc fb80 	bl	80004ac <__aeabi_i2d>
- 8003dac:	4604      	mov	r4, r0
- 8003dae:	460d      	mov	r5, r1
- 8003db0:	4b82      	ldr	r3, [pc, #520]	@ (8003fbc <_Z7forwardv+0x6ec>)
- 8003db2:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003db6:	4618      	mov	r0, r3
- 8003db8:	f7fc fb78 	bl	80004ac <__aeabi_i2d>
- 8003dbc:	4680      	mov	r8, r0
- 8003dbe:	4689      	mov	r9, r1
- 8003dc0:	4b7f      	ldr	r3, [pc, #508]	@ (8003fc0 <_Z7forwardv+0x6f0>)
- 8003dc2:	781b      	ldrb	r3, [r3, #0]
- 8003dc4:	4618      	mov	r0, r3
- 8003dc6:	f7fc fb61 	bl	800048c <__aeabi_ui2d>
- 8003dca:	4682      	mov	sl, r0
- 8003dcc:	468b      	mov	fp, r1
- 8003dce:	f107 0248 	add.w	r2, r7, #72	@ 0x48
- 8003dd2:	f107 0340 	add.w	r3, r7, #64	@ 0x40
- 8003dd6:	4611      	mov	r1, r2
- 8003dd8:	4618      	mov	r0, r3
- 8003dda:	ec4b ab12 	vmov	d2, sl, fp
- 8003dde:	ec49 8b11 	vmov	d1, r8, r9
- 8003de2:	ec45 4b10 	vmov	d0, r4, r5
- 8003de6:	f7ff fc7f 	bl	80036e8 <_Z20calculateOrbitVectordddRdS_>
+ 8003da4:	4b84      	ldr	r3, [pc, #528]	@ (8003fb8 <_Z7forwardv+0x6e8>)
+ 8003da6:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003daa:	4618      	mov	r0, r3
+ 8003dac:	f7fc fb7e 	bl	80004ac <__aeabi_i2d>
+ 8003db0:	4604      	mov	r4, r0
+ 8003db2:	460d      	mov	r5, r1
+ 8003db4:	4b81      	ldr	r3, [pc, #516]	@ (8003fbc <_Z7forwardv+0x6ec>)
+ 8003db6:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003dba:	4618      	mov	r0, r3
+ 8003dbc:	f7fc fb76 	bl	80004ac <__aeabi_i2d>
+ 8003dc0:	4680      	mov	r8, r0
+ 8003dc2:	4689      	mov	r9, r1
+ 8003dc4:	4b7e      	ldr	r3, [pc, #504]	@ (8003fc0 <_Z7forwardv+0x6f0>)
+ 8003dc6:	781b      	ldrb	r3, [r3, #0]
+ 8003dc8:	4618      	mov	r0, r3
+ 8003dca:	f7fc fb5f 	bl	800048c <__aeabi_ui2d>
+ 8003dce:	4682      	mov	sl, r0
+ 8003dd0:	468b      	mov	fp, r1
+ 8003dd2:	f107 0248 	add.w	r2, r7, #72	@ 0x48
+ 8003dd6:	f107 0340 	add.w	r3, r7, #64	@ 0x40
+ 8003dda:	4611      	mov	r1, r2
+ 8003ddc:	4618      	mov	r0, r3
+ 8003dde:	ec4b ab12 	vmov	d2, sl, fp
+ 8003de2:	ec49 8b11 	vmov	d1, r8, r9
+ 8003de6:	ec45 4b10 	vmov	d0, r4, r5
+ 8003dea:	f7ff fc7d 	bl	80036e8 <_Z20calculateOrbitVectordddRdS_>
                            mv_holding_y, mv_holding_x);
       mv_deg = atan2(mv_holding_x, mv_holding_y) * (180.0 / M_PI);
- 8003dea:	ed97 7b12 	vldr	d7, [r7, #72]	@ 0x48
- 8003dee:	ed97 6b10 	vldr	d6, [r7, #64]	@ 0x40
- 8003df2:	eeb0 1a46 	vmov.f32	s2, s12
- 8003df6:	eef0 1a66 	vmov.f32	s3, s13
- 8003dfa:	eeb0 0a47 	vmov.f32	s0, s14
- 8003dfe:	eef0 0a67 	vmov.f32	s1, s15
- 8003e02:	f00a f8df 	bl	800dfc4 <atan2>
- 8003e06:	ec51 0b10 	vmov	r0, r1, d0
- 8003e0a:	a367      	add	r3, pc, #412	@ (adr r3, 8003fa8 <_Z7forwardv+0x6d8>)
- 8003e0c:	e9d3 2300 	ldrd	r2, r3, [r3]
- 8003e10:	f7fc fbb6 	bl	8000580 <__aeabi_dmul>
- 8003e14:	4602      	mov	r2, r0
- 8003e16:	460b      	mov	r3, r1
- 8003e18:	4610      	mov	r0, r2
- 8003e1a:	4619      	mov	r1, r3
- 8003e1c:	f7fc fe60 	bl	8000ae0 <__aeabi_d2iz>
- 8003e20:	4603      	mov	r3, r0
- 8003e22:	b21a      	sxth	r2, r3
- 8003e24:	4b67      	ldr	r3, [pc, #412]	@ (8003fc4 <_Z7forwardv+0x6f4>)
- 8003e26:	801a      	strh	r2, [r3, #0]
+ 8003dee:	ed97 7b12 	vldr	d7, [r7, #72]	@ 0x48
+ 8003df2:	ed97 6b10 	vldr	d6, [r7, #64]	@ 0x40
+ 8003df6:	eeb0 1a46 	vmov.f32	s2, s12
+ 8003dfa:	eef0 1a66 	vmov.f32	s3, s13
+ 8003dfe:	eeb0 0a47 	vmov.f32	s0, s14
+ 8003e02:	eef0 0a67 	vmov.f32	s1, s15
+ 8003e06:	f00a f8dd 	bl	800dfc4 <atan2>
+ 8003e0a:	ec51 0b10 	vmov	r0, r1, d0
+ 8003e0e:	a366      	add	r3, pc, #408	@ (adr r3, 8003fa8 <_Z7forwardv+0x6d8>)
+ 8003e10:	e9d3 2300 	ldrd	r2, r3, [r3]
+ 8003e14:	f7fc fbb4 	bl	8000580 <__aeabi_dmul>
+ 8003e18:	4602      	mov	r2, r0
+ 8003e1a:	460b      	mov	r3, r1
+ 8003e1c:	4610      	mov	r0, r2
+ 8003e1e:	4619      	mov	r1, r3
+ 8003e20:	f7fc fe5e 	bl	8000ae0 <__aeabi_d2iz>
+ 8003e24:	4603      	mov	r3, r0
+ 8003e26:	b21a      	sxth	r2, r3
+ 8003e28:	4b66      	ldr	r3, [pc, #408]	@ (8003fc4 <_Z7forwardv+0x6f4>)
+ 8003e2a:	801a      	strh	r2, [r3, #0]
 
       mv_power = holdingDribbleRampPower();
- 8003e28:	f7ff fc3f 	bl	80036aa <_ZN12_GLOBAL__N_123holdingDribbleRampPowerEv>
- 8003e2c:	4603      	mov	r3, r0
- 8003e2e:	461a      	mov	r2, r3
- 8003e30:	4b65      	ldr	r3, [pc, #404]	@ (8003fc8 <_Z7forwardv+0x6f8>)
- 8003e32:	801a      	strh	r2, [r3, #0]
+ 8003e2c:	f7ff fc3d 	bl	80036aa <_ZN12_GLOBAL__N_123holdingDribbleRampPowerEv>
+ 8003e30:	4603      	mov	r3, r0
+ 8003e32:	461a      	mov	r2, r3
+ 8003e34:	4b64      	ldr	r3, [pc, #400]	@ (8003fc8 <_Z7forwardv+0x6f8>)
+ 8003e36:	801a      	strh	r2, [r3, #0]
       break;
- 8003e34:	bf00      	nop
+ 8003e38:	bf00      	nop
   }
 
 //  return;
 
   // キック判定（shooting変数を介したロジック）をステートマシン内に統合したため削除
   if (Ball_Closeness == 0)
- 8003e36:	4b65      	ldr	r3, [pc, #404]	@ (8003fcc <_Z7forwardv+0x6fc>)
- 8003e38:	781b      	ldrb	r3, [r3, #0]
- 8003e3a:	2b00      	cmp	r3, #0
- 8003e3c:	d12f      	bne.n	8003e9e <_Z7forwardv+0x5ce>
+ 8003e3a:	4b64      	ldr	r3, [pc, #400]	@ (8003fcc <_Z7forwardv+0x6fc>)
+ 8003e3c:	781b      	ldrb	r3, [r3, #0]
+ 8003e3e:	2b00      	cmp	r3, #0
+ 8003e40:	d12f      	bne.n	8003ea2 <_Z7forwardv+0x5d2>
   {
     if (ball_notfound == false)
- 8003e3e:	4b64      	ldr	r3, [pc, #400]	@ (8003fd0 <_Z7forwardv+0x700>)
- 8003e40:	781b      	ldrb	r3, [r3, #0]
- 8003e42:	2b00      	cmp	r3, #0
- 8003e44:	d107      	bne.n	8003e56 <_Z7forwardv+0x586>
+ 8003e42:	4b63      	ldr	r3, [pc, #396]	@ (8003fd0 <_Z7forwardv+0x700>)
+ 8003e44:	781b      	ldrb	r3, [r3, #0]
+ 8003e46:	2b00      	cmp	r3, #0
+ 8003e48:	d107      	bne.n	8003e5a <_Z7forwardv+0x58a>
     {
       ball_notfound = true;
- 8003e46:	4b62      	ldr	r3, [pc, #392]	@ (8003fd0 <_Z7forwardv+0x700>)
- 8003e48:	2201      	movs	r2, #1
- 8003e4a:	701a      	strb	r2, [r3, #0]
+ 8003e4a:	4b61      	ldr	r3, [pc, #388]	@ (8003fd0 <_Z7forwardv+0x700>)
+ 8003e4c:	2201      	movs	r2, #1
+ 8003e4e:	701a      	strb	r2, [r3, #0]
       ball_notfoundtime = cnt;
- 8003e4c:	4b61      	ldr	r3, [pc, #388]	@ (8003fd4 <_Z7forwardv+0x704>)
- 8003e4e:	881a      	ldrh	r2, [r3, #0]
- 8003e50:	4b61      	ldr	r3, [pc, #388]	@ (8003fd8 <_Z7forwardv+0x708>)
- 8003e52:	801a      	strh	r2, [r3, #0]
- 8003e54:	e01b      	b.n	8003e8e <_Z7forwardv+0x5be>
+ 8003e50:	4b60      	ldr	r3, [pc, #384]	@ (8003fd4 <_Z7forwardv+0x704>)
+ 8003e52:	881a      	ldrh	r2, [r3, #0]
+ 8003e54:	4b60      	ldr	r3, [pc, #384]	@ (8003fd8 <_Z7forwardv+0x708>)
+ 8003e56:	801a      	strh	r2, [r3, #0]
+ 8003e58:	e01b      	b.n	8003e92 <_Z7forwardv+0x5c2>
     }
     else
     {
       if ((uint16_t)(cnt - ball_notfoundtime) > 6000)
- 8003e56:	4b5f      	ldr	r3, [pc, #380]	@ (8003fd4 <_Z7forwardv+0x704>)
- 8003e58:	881a      	ldrh	r2, [r3, #0]
- 8003e5a:	4b5f      	ldr	r3, [pc, #380]	@ (8003fd8 <_Z7forwardv+0x708>)
- 8003e5c:	881b      	ldrh	r3, [r3, #0]
- 8003e5e:	1ad3      	subs	r3, r2, r3
- 8003e60:	b29b      	uxth	r3, r3
- 8003e62:	f241 7270 	movw	r2, #6000	@ 0x1770
- 8003e66:	4293      	cmp	r3, r2
- 8003e68:	d906      	bls.n	8003e78 <_Z7forwardv+0x5a8>
+ 8003e5a:	4b5e      	ldr	r3, [pc, #376]	@ (8003fd4 <_Z7forwardv+0x704>)
+ 8003e5c:	881a      	ldrh	r2, [r3, #0]
+ 8003e5e:	4b5e      	ldr	r3, [pc, #376]	@ (8003fd8 <_Z7forwardv+0x708>)
+ 8003e60:	881b      	ldrh	r3, [r3, #0]
+ 8003e62:	1ad3      	subs	r3, r2, r3
+ 8003e64:	b29b      	uxth	r3, r3
+ 8003e66:	f241 7270 	movw	r2, #6000	@ 0x1770
+ 8003e6a:	4293      	cmp	r3, r2
+ 8003e6c:	d906      	bls.n	8003e7c <_Z7forwardv+0x5ac>
       {
         mv_deg = 180;
- 8003e6a:	4b56      	ldr	r3, [pc, #344]	@ (8003fc4 <_Z7forwardv+0x6f4>)
- 8003e6c:	22b4      	movs	r2, #180	@ 0xb4
- 8003e6e:	801a      	strh	r2, [r3, #0]
+ 8003e6e:	4b55      	ldr	r3, [pc, #340]	@ (8003fc4 <_Z7forwardv+0x6f4>)
+ 8003e70:	22b4      	movs	r2, #180	@ 0xb4
+ 8003e72:	801a      	strh	r2, [r3, #0]
         mv_power = 70;
- 8003e70:	4b55      	ldr	r3, [pc, #340]	@ (8003fc8 <_Z7forwardv+0x6f8>)
- 8003e72:	2246      	movs	r2, #70	@ 0x46
- 8003e74:	801a      	strh	r2, [r3, #0]
- 8003e76:	e00a      	b.n	8003e8e <_Z7forwardv+0x5be>
+ 8003e74:	4b54      	ldr	r3, [pc, #336]	@ (8003fc8 <_Z7forwardv+0x6f8>)
+ 8003e76:	2246      	movs	r2, #70	@ 0x46
+ 8003e78:	801a      	strh	r2, [r3, #0]
+ 8003e7a:	e00a      	b.n	8003e92 <_Z7forwardv+0x5c2>
       }
       else
       {
         mv_deg = ball_deg_before + GYRO_E;
- 8003e78:	4b58      	ldr	r3, [pc, #352]	@ (8003fdc <_Z7forwardv+0x70c>)
- 8003e7a:	681b      	ldr	r3, [r3, #0]
- 8003e7c:	b29a      	uxth	r2, r3
- 8003e7e:	4b58      	ldr	r3, [pc, #352]	@ (8003fe0 <_Z7forwardv+0x710>)
- 8003e80:	681b      	ldr	r3, [r3, #0]
- 8003e82:	b29b      	uxth	r3, r3
- 8003e84:	4413      	add	r3, r2
+ 8003e7c:	4b57      	ldr	r3, [pc, #348]	@ (8003fdc <_Z7forwardv+0x70c>)
+ 8003e7e:	681b      	ldr	r3, [r3, #0]
+ 8003e80:	b29a      	uxth	r2, r3
+ 8003e82:	4b57      	ldr	r3, [pc, #348]	@ (8003fe0 <_Z7forwardv+0x710>)
+ 8003e84:	681b      	ldr	r3, [r3, #0]
  8003e86:	b29b      	uxth	r3, r3
- 8003e88:	b21a      	sxth	r2, r3
- 8003e8a:	4b4e      	ldr	r3, [pc, #312]	@ (8003fc4 <_Z7forwardv+0x6f4>)
- 8003e8c:	801a      	strh	r2, [r3, #0]
+ 8003e88:	4413      	add	r3, r2
+ 8003e8a:	b29b      	uxth	r3, r3
+ 8003e8c:	b21a      	sxth	r2, r3
+ 8003e8e:	4b4d      	ldr	r3, [pc, #308]	@ (8003fc4 <_Z7forwardv+0x6f4>)
+ 8003e90:	801a      	strh	r2, [r3, #0]
       }
     }
     dribbler_power = 0;
- 8003e8e:	4955      	ldr	r1, [pc, #340]	@ (8003fe4 <_Z7forwardv+0x714>)
- 8003e90:	f04f 0200 	mov.w	r2, #0
- 8003e94:	f04f 0300 	mov.w	r3, #0
- 8003e98:	e9c1 2300 	strd	r2, r3, [r1]
- 8003e9c:	e00c      	b.n	8003eb8 <_Z7forwardv+0x5e8>
+ 8003e92:	4954      	ldr	r1, [pc, #336]	@ (8003fe4 <_Z7forwardv+0x714>)
+ 8003e94:	f04f 0200 	mov.w	r2, #0
+ 8003e98:	f04f 0300 	mov.w	r3, #0
+ 8003e9c:	e9c1 2300 	strd	r2, r3, [r1]
+ 8003ea0:	e00c      	b.n	8003ebc <_Z7forwardv+0x5ec>
   }
   else
   {
     ball_notfound = false;
- 8003e9e:	4b4c      	ldr	r3, [pc, #304]	@ (8003fd0 <_Z7forwardv+0x700>)
- 8003ea0:	2200      	movs	r2, #0
- 8003ea2:	701a      	strb	r2, [r3, #0]
+ 8003ea2:	4b4b      	ldr	r3, [pc, #300]	@ (8003fd0 <_Z7forwardv+0x700>)
+ 8003ea4:	2200      	movs	r2, #0
+ 8003ea6:	701a      	strb	r2, [r3, #0]
     ball_deg_before = ball_deg;
- 8003ea4:	4b50      	ldr	r3, [pc, #320]	@ (8003fe8 <_Z7forwardv+0x718>)
- 8003ea6:	681b      	ldr	r3, [r3, #0]
- 8003ea8:	4a4c      	ldr	r2, [pc, #304]	@ (8003fdc <_Z7forwardv+0x70c>)
- 8003eaa:	6013      	str	r3, [r2, #0]
+ 8003ea8:	4b4f      	ldr	r3, [pc, #316]	@ (8003fe8 <_Z7forwardv+0x718>)
+ 8003eaa:	681b      	ldr	r3, [r3, #0]
+ 8003eac:	4a4b      	ldr	r2, [pc, #300]	@ (8003fdc <_Z7forwardv+0x70c>)
+ 8003eae:	6013      	str	r3, [r2, #0]
     ball_dis_before = ball_dis;
- 8003eac:	4b4f      	ldr	r3, [pc, #316]	@ (8003fec <_Z7forwardv+0x71c>)
- 8003eae:	e9d3 2300 	ldrd	r2, r3, [r3]
- 8003eb2:	494f      	ldr	r1, [pc, #316]	@ (8003ff0 <_Z7forwardv+0x720>)
- 8003eb4:	e9c1 2300 	strd	r2, r3, [r1]
+ 8003eb0:	4b4e      	ldr	r3, [pc, #312]	@ (8003fec <_Z7forwardv+0x71c>)
+ 8003eb2:	e9d3 2300 	ldrd	r2, r3, [r3]
+ 8003eb6:	494e      	ldr	r1, [pc, #312]	@ (8003ff0 <_Z7forwardv+0x720>)
+ 8003eb8:	e9c1 2300 	strd	r2, r3, [r1]
 
   //	    mv_power = 0;
 
   //		mv_power = 0;
 
   sideLine_x = 0;
- 8003eb8:	4b4e      	ldr	r3, [pc, #312]	@ (8003ff4 <_Z7forwardv+0x724>)
- 8003eba:	2200      	movs	r2, #0
- 8003ebc:	801a      	strh	r2, [r3, #0]
+ 8003ebc:	4b4d      	ldr	r3, [pc, #308]	@ (8003ff4 <_Z7forwardv+0x724>)
+ 8003ebe:	2200      	movs	r2, #0
+ 8003ec0:	801a      	strh	r2, [r3, #0]
   sideLine_y = 0;
- 8003ebe:	4b4e      	ldr	r3, [pc, #312]	@ (8003ff8 <_Z7forwardv+0x728>)
- 8003ec0:	2200      	movs	r2, #0
- 8003ec2:	801a      	strh	r2, [r3, #0]
+ 8003ec2:	4b4d      	ldr	r3, [pc, #308]	@ (8003ff8 <_Z7forwardv+0x728>)
+ 8003ec4:	2200      	movs	r2, #0
+ 8003ec6:	801a      	strh	r2, [r3, #0]
   sideLine = false;
- 8003ec4:	4b4d      	ldr	r3, [pc, #308]	@ (8003ffc <_Z7forwardv+0x72c>)
- 8003ec6:	2200      	movs	r2, #0
- 8003ec8:	701a      	strb	r2, [r3, #0]
+ 8003ec8:	4b4c      	ldr	r3, [pc, #304]	@ (8003ffc <_Z7forwardv+0x72c>)
+ 8003eca:	2200      	movs	r2, #0
+ 8003ecc:	701a      	strb	r2, [r3, #0]
   //    } else {
   //      mv_deg = -90;
   //    }
   //  } else {
   //  }
   if (lineSideRight > 0 && !holding_ball)
- 8003eca:	4b4d      	ldr	r3, [pc, #308]	@ (8004000 <_Z7forwardv+0x730>)
- 8003ecc:	681b      	ldr	r3, [r3, #0]
- 8003ece:	2b00      	cmp	r3, #0
- 8003ed0:	f340 80a8 	ble.w	8004024 <_Z7forwardv+0x754>
- 8003ed4:	4b4b      	ldr	r3, [pc, #300]	@ (8004004 <_Z7forwardv+0x734>)
- 8003ed6:	781b      	ldrb	r3, [r3, #0]
- 8003ed8:	f083 0301 	eor.w	r3, r3, #1
- 8003edc:	b2db      	uxtb	r3, r3
- 8003ede:	2b00      	cmp	r3, #0
- 8003ee0:	f000 80a0 	beq.w	8004024 <_Z7forwardv+0x754>
+ 8003ece:	4b4c      	ldr	r3, [pc, #304]	@ (8004000 <_Z7forwardv+0x730>)
+ 8003ed0:	681b      	ldr	r3, [r3, #0]
+ 8003ed2:	2b00      	cmp	r3, #0
+ 8003ed4:	f340 80a6 	ble.w	8004024 <_Z7forwardv+0x754>
+ 8003ed8:	4b4a      	ldr	r3, [pc, #296]	@ (8004004 <_Z7forwardv+0x734>)
+ 8003eda:	781b      	ldrb	r3, [r3, #0]
+ 8003edc:	f083 0301 	eor.w	r3, r3, #1
+ 8003ee0:	b2db      	uxtb	r3, r3
+ 8003ee2:	2b00      	cmp	r3, #0
+ 8003ee4:	f000 809e 	beq.w	8004024 <_Z7forwardv+0x754>
   {
     if (lineSideRight < 3 && (ball_deg > 0 && ball_deg < 100))
- 8003ee4:	4b46      	ldr	r3, [pc, #280]	@ (8004000 <_Z7forwardv+0x730>)
- 8003ee6:	681b      	ldr	r3, [r3, #0]
- 8003ee8:	2b02      	cmp	r3, #2
- 8003eea:	f300 8097 	bgt.w	800401c <_Z7forwardv+0x74c>
- 8003eee:	4b3e      	ldr	r3, [pc, #248]	@ (8003fe8 <_Z7forwardv+0x718>)
- 8003ef0:	681b      	ldr	r3, [r3, #0]
- 8003ef2:	2b00      	cmp	r3, #0
- 8003ef4:	f340 8092 	ble.w	800401c <_Z7forwardv+0x74c>
- 8003ef8:	4b3b      	ldr	r3, [pc, #236]	@ (8003fe8 <_Z7forwardv+0x718>)
- 8003efa:	681b      	ldr	r3, [r3, #0]
- 8003efc:	2b63      	cmp	r3, #99	@ 0x63
- 8003efe:	f300 808d 	bgt.w	800401c <_Z7forwardv+0x74c>
+ 8003ee8:	4b45      	ldr	r3, [pc, #276]	@ (8004000 <_Z7forwardv+0x730>)
+ 8003eea:	681b      	ldr	r3, [r3, #0]
+ 8003eec:	2b02      	cmp	r3, #2
+ 8003eee:	f300 8095 	bgt.w	800401c <_Z7forwardv+0x74c>
+ 8003ef2:	4b3d      	ldr	r3, [pc, #244]	@ (8003fe8 <_Z7forwardv+0x718>)
+ 8003ef4:	681b      	ldr	r3, [r3, #0]
+ 8003ef6:	2b00      	cmp	r3, #0
+ 8003ef8:	f340 8090 	ble.w	800401c <_Z7forwardv+0x74c>
+ 8003efc:	4b3a      	ldr	r3, [pc, #232]	@ (8003fe8 <_Z7forwardv+0x718>)
+ 8003efe:	681b      	ldr	r3, [r3, #0]
+ 8003f00:	2b63      	cmp	r3, #99	@ 0x63
+ 8003f02:	f300 808b 	bgt.w	800401c <_Z7forwardv+0x74c>
     {
       mv_power =
           cos((ball_deg - GYRO_AngleOffset + 50) * M_PI / 180) * mv_power * 1.5;
- 8003f02:	4b39      	ldr	r3, [pc, #228]	@ (8003fe8 <_Z7forwardv+0x718>)
- 8003f04:	681a      	ldr	r2, [r3, #0]
- 8003f06:	4b40      	ldr	r3, [pc, #256]	@ (8004008 <_Z7forwardv+0x738>)
- 8003f08:	681b      	ldr	r3, [r3, #0]
- 8003f0a:	1ad3      	subs	r3, r2, r3
- 8003f0c:	3332      	adds	r3, #50	@ 0x32
- 8003f0e:	4618      	mov	r0, r3
- 8003f10:	f7fc facc 	bl	80004ac <__aeabi_i2d>
- 8003f14:	a326      	add	r3, pc, #152	@ (adr r3, 8003fb0 <_Z7forwardv+0x6e0>)
- 8003f16:	e9d3 2300 	ldrd	r2, r3, [r3]
- 8003f1a:	f7fc fb31 	bl	8000580 <__aeabi_dmul>
- 8003f1e:	4602      	mov	r2, r0
- 8003f20:	460b      	mov	r3, r1
- 8003f22:	4610      	mov	r0, r2
- 8003f24:	4619      	mov	r1, r3
- 8003f26:	f04f 0200 	mov.w	r2, #0
- 8003f2a:	4b38      	ldr	r3, [pc, #224]	@ (800400c <_Z7forwardv+0x73c>)
- 8003f2c:	f7fc fc52 	bl	80007d4 <__aeabi_ddiv>
- 8003f30:	4602      	mov	r2, r0
- 8003f32:	460b      	mov	r3, r1
- 8003f34:	ec43 2b17 	vmov	d7, r2, r3
- 8003f38:	eeb0 0a47 	vmov.f32	s0, s14
- 8003f3c:	eef0 0a67 	vmov.f32	s1, s15
- 8003f40:	f00a f86e 	bl	800e020 <cos>
- 8003f44:	ec55 4b10 	vmov	r4, r5, d0
- 8003f48:	4b1f      	ldr	r3, [pc, #124]	@ (8003fc8 <_Z7forwardv+0x6f8>)
- 8003f4a:	f9b3 3000 	ldrsh.w	r3, [r3]
- 8003f4e:	4618      	mov	r0, r3
- 8003f50:	f7fc faac 	bl	80004ac <__aeabi_i2d>
- 8003f54:	4602      	mov	r2, r0
- 8003f56:	460b      	mov	r3, r1
- 8003f58:	4620      	mov	r0, r4
- 8003f5a:	4629      	mov	r1, r5
- 8003f5c:	f7fc fb10 	bl	8000580 <__aeabi_dmul>
- 8003f60:	4602      	mov	r2, r0
- 8003f62:	460b      	mov	r3, r1
- 8003f64:	4610      	mov	r0, r2
- 8003f66:	4619      	mov	r1, r3
- 8003f68:	f04f 0200 	mov.w	r2, #0
- 8003f6c:	4b28      	ldr	r3, [pc, #160]	@ (8004010 <_Z7forwardv+0x740>)
- 8003f6e:	f7fc fb07 	bl	8000580 <__aeabi_dmul>
- 8003f72:	4602      	mov	r2, r0
- 8003f74:	460b      	mov	r3, r1
+ 8003f06:	4b38      	ldr	r3, [pc, #224]	@ (8003fe8 <_Z7forwardv+0x718>)
+ 8003f08:	681a      	ldr	r2, [r3, #0]
+ 8003f0a:	4b3f      	ldr	r3, [pc, #252]	@ (8004008 <_Z7forwardv+0x738>)
+ 8003f0c:	681b      	ldr	r3, [r3, #0]
+ 8003f0e:	1ad3      	subs	r3, r2, r3
+ 8003f10:	3332      	adds	r3, #50	@ 0x32
+ 8003f12:	4618      	mov	r0, r3
+ 8003f14:	f7fc faca 	bl	80004ac <__aeabi_i2d>
+ 8003f18:	a325      	add	r3, pc, #148	@ (adr r3, 8003fb0 <_Z7forwardv+0x6e0>)
+ 8003f1a:	e9d3 2300 	ldrd	r2, r3, [r3]
+ 8003f1e:	f7fc fb2f 	bl	8000580 <__aeabi_dmul>
+ 8003f22:	4602      	mov	r2, r0
+ 8003f24:	460b      	mov	r3, r1
+ 8003f26:	4610      	mov	r0, r2
+ 8003f28:	4619      	mov	r1, r3
+ 8003f2a:	f04f 0200 	mov.w	r2, #0
+ 8003f2e:	4b37      	ldr	r3, [pc, #220]	@ (800400c <_Z7forwardv+0x73c>)
+ 8003f30:	f7fc fc50 	bl	80007d4 <__aeabi_ddiv>
+ 8003f34:	4602      	mov	r2, r0
+ 8003f36:	460b      	mov	r3, r1
+ 8003f38:	ec43 2b17 	vmov	d7, r2, r3
+ 8003f3c:	eeb0 0a47 	vmov.f32	s0, s14
+ 8003f40:	eef0 0a67 	vmov.f32	s1, s15
+ 8003f44:	f00a f86c 	bl	800e020 <cos>
+ 8003f48:	ec55 4b10 	vmov	r4, r5, d0
+ 8003f4c:	4b1e      	ldr	r3, [pc, #120]	@ (8003fc8 <_Z7forwardv+0x6f8>)
+ 8003f4e:	f9b3 3000 	ldrsh.w	r3, [r3]
+ 8003f52:	4618      	mov	r0, r3
+ 8003f54:	f7fc faaa 	bl	80004ac <__aeabi_i2d>
+ 8003f58:	4602      	mov	r2, r0
+ 8003f5a:	460b      	mov	r3, r1
+ 8003f5c:	4620      	mov	r0, r4
+ 8003f5e:	4629      	mov	r1, r5
+ 8003f60:	f7fc fb0e 	bl	8000580 <__aeabi_dmul>
+ 8003f64:	4602      	mov	r2, r0
+ 8003f66:	460b      	mov	r3, r1
+ 8003f68:	4610      	mov	r0, r2
+ 8003f6a:	4619      	mov	r1, r3
+ 8003f6c:	f04f 0200 	mov.w	r2, #0
+ 8003f70:	4b27      	ldr	r3, [pc, #156]	@ (8004010 <_Z7forwardv+0x740>)
+ 8003f72:	f7fc fb05 	bl	8000580 <__aeabi_dmul>
+ 8003f76:	4602      	mov	r2, r0
+ 8003f78:	460b      	mov	r3, r1
       mv_power =
- 8003f76:	4610      	mov	r0, r2
- 8003f78:	4619      	mov	r1, r3
- 8003f7a:	f7fc fdb1 	bl	8000ae0 <__aeabi_d2iz>
- 8003f7e:	4603      	mov	r3, r0
- 8003f80:	b21a      	sxth	r2, r3
- 8003f82:	4b11      	ldr	r3, [pc, #68]	@ (8003fc8 <_Z7forwardv+0x6f8>)
- 8003f84:	801a      	strh	r2, [r3, #0]
+ 8003f7a:	4610      	mov	r0, r2
+ 8003f7c:	4619      	mov	r1, r3
+ 8003f7e:	f7fc fdaf 	bl	8000ae0 <__aeabi_d2iz>
+ 8003f82:	4603      	mov	r3, r0
+ 8003f84:	b21a      	sxth	r2, r3
+ 8003f86:	4b10      	ldr	r3, [pc, #64]	@ (8003fc8 <_Z7forwardv+0x6f8>)
+ 8003f88:	801a      	strh	r2, [r3, #0]
       mv_deg = 0;
- 8003f86:	4b0f      	ldr	r3, [pc, #60]	@ (8003fc4 <_Z7forwardv+0x6f4>)
- 8003f88:	2200      	movs	r2, #0
- 8003f8a:	801a      	strh	r2, [r3, #0]
+ 8003f8a:	4b0e      	ldr	r3, [pc, #56]	@ (8003fc4 <_Z7forwardv+0x6f4>)
+ 8003f8c:	2200      	movs	r2, #0
+ 8003f8e:	801a      	strh	r2, [r3, #0]
       //			    mv_power = 60;
       if (ball_outofreach == false)
- 8003f8c:	4b21      	ldr	r3, [pc, #132]	@ (8004014 <_Z7forwardv+0x744>)
- 8003f8e:	781b      	ldrb	r3, [r3, #0]
- 8003f90:	2b00      	cmp	r3, #0
- 8003f92:	d147      	bne.n	8004024 <_Z7forwardv+0x754>
+ 8003f90:	4b20      	ldr	r3, [pc, #128]	@ (8004014 <_Z7forwardv+0x744>)
+ 8003f92:	781b      	ldrb	r3, [r3, #0]
+ 8003f94:	2b00      	cmp	r3, #0
+ 8003f96:	d145      	bne.n	8004024 <_Z7forwardv+0x754>
       {
         ball_outofreach = true;
- 8003f94:	4b1f      	ldr	r3, [pc, #124]	@ (8004014 <_Z7forwardv+0x744>)
- 8003f96:	2201      	movs	r2, #1
- 8003f98:	701a      	strb	r2, [r3, #0]
+ 8003f98:	4b1e      	ldr	r3, [pc, #120]	@ (8004014 <_Z7forwardv+0x744>)
+ 8003f9a:	2201      	movs	r2, #1
+ 8003f9c:	701a      	strb	r2, [r3, #0]
         ball_outofreach_time = cnt;
- 8003f9a:	4b0e      	ldr	r3, [pc, #56]	@ (8003fd4 <_Z7forwardv+0x704>)
- 8003f9c:	881a      	ldrh	r2, [r3, #0]
- 8003f9e:	4b1e      	ldr	r3, [pc, #120]	@ (8004018 <_Z7forwardv+0x748>)
- 8003fa0:	801a      	strh	r2, [r3, #0]
+ 8003f9e:	4b0d      	ldr	r3, [pc, #52]	@ (8003fd4 <_Z7forwardv+0x704>)
+ 8003fa0:	881a      	ldrh	r2, [r3, #0]
+ 8003fa2:	4b1d      	ldr	r3, [pc, #116]	@ (8004018 <_Z7forwardv+0x748>)
+ 8003fa4:	801a      	strh	r2, [r3, #0]
       if (ball_outofreach == false)
- 8003fa2:	e03f      	b.n	8004024 <_Z7forwardv+0x754>
- 8003fa4:	f3af 8000 	nop.w
+ 8003fa6:	e03d      	b.n	8004024 <_Z7forwardv+0x754>
  8003fa8:	1a63c1f8 	.word	0x1a63c1f8
  8003fac:	404ca5dc 	.word	0x404ca5dc
  8003fb0:	54442d18 	.word	0x54442d18

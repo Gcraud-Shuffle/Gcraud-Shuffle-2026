@@ -259,7 +259,7 @@ void forward()
   }
 
   //	mv_power = 0;
-  //  	holding_ball = true;
+    	holding_ball = true;
 
   updateDribbleAccelerationRamp(holding_ball, cnt);
 
