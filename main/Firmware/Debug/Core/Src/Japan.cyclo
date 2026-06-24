@@ -1,9 +1,18 @@
-/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.macos64_1.0.100.202602081740/tools/arm-none-eabi/include/c++/14.3.1/bits/std_abs.h:71:3:constexpr double std::abs(double)	1
-../Core/Src/Japan.cpp:50:6:void update_role_management()	27
-../Core/Src/Japan.cpp:153:6:void change_role(RoleState)	3
-../Core/Src/Japan.cpp:162:6:void Japan()	36
-/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.macos64_1.0.100.202602081740/tools/arm-none-eabi/include/c++/14.3.1/cmath:1056:5:constexpr typename __gnu_cxx::__promote_2<_Tp, _Up>::__type std::atan2(_Tp, _Up) [with _Tp = int; _Up = int]	1
-/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.macos64_1.0.100.202602081740/tools/arm-none-eabi/include/c++/14.3.1/cmath:454:5:constexpr typename __gnu_cxx::__enable_if<std::__is_integer<_Tp>::__value, double>::__type std::sqrt(_Tp) [with _Tp = int]	1
+C:\ST\STM32CubeIDE_1.18.1\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/bits/std_abs.h:71:3:constexpr double std::abs(double)	1
+../Core/Src/Japan.cpp:55:10:uint16_t {anonymous}::low_pass_adc(uint16_t, int32_t&, bool&)	2
+../Core/Src/Japan.cpp:68:10:uint32_t {anonymous}::dribbler_compare(TIM_HandleTypeDef*, uint16_t)	3
+../Core/Src/Japan.cpp:83:6:void {anonymous}::set_dribbler_pwm(uint16_t, uint16_t)	10
+../Core/Src/Japan.cpp:123:8:double {anonymous}::clamp_dribbler_power(double)	3
+../Core/Src/Japan.cpp:136:10:uint16_t {anonymous}::dribbler_duty_from_power(double)	2
+../Core/Src/Japan.cpp:143:6:void {anonymous}::apply_dribbler_power(bool)	4
+../Core/Src/Japan.cpp:168:6:bool {anonymous}::kick_interval_is_active()	3
+../Core/Src/Japan.cpp:184:6:bool {anonymous}::update_kicking_hysteresis()	3
+../Core/Src/Japan.cpp:212:6:void request_kick()	4
+../Core/Src/Japan.cpp:235:6:void update_role_management()	27
+../Core/Src/Japan.cpp:338:6:void change_role(RoleState)	3
+../Core/Src/Japan.cpp:346:6:void Japan()	40
+C:\ST\STM32CubeIDE_1.18.1\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/cmath:1052:5:constexpr typename __gnu_cxx::__promote_2<_Tp, _Up>::__type std::atan2(_Tp, _Up) [with _Tp = int; _Up = int]	1
+C:\ST\STM32CubeIDE_1.18.1\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/c++/13.3.1/cmath:450:5:constexpr typename __gnu_cxx::__enable_if<std::__is_integer<_Tp>::__value, double>::__type std::sqrt(_Tp) [with _Tp = int]	1
 ../Core/Inc/chassis.hpp:156:14:Chassis<T>& Chassis<T>::set_limit(double) [with Chassis_type T = Omni_4]	1
 ../Core/Inc/chassis.hpp:184:14:Chassis<T>& Chassis<T>::dcalc(double, double, double) [with Chassis_type T = Omni_4]	1
 ../Core/Inc/chassis.hpp:149:13:double* Chassis<T>::get_motor(int) [with Chassis_type T = Omni_4]	3

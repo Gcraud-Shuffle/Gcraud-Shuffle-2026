@@ -39,6 +39,31 @@ namespace
 {
 constexpr uint16_t DRIBBLER_PWM_MAX = 1000;
 constexpr uint16_t DRIBBLER_ACTIVE_MAX = 990;
+constexpr int16_t DRIBBLER_POWER_LIMIT = 999;
+constexpr double DRIBBLER_DEFAULT_POWER = 990.0;
+constexpr uint16_t KICK_HOLD_COUNT = 300;
+constexpr uint16_t KICK_INTERVAL_COUNT = 2000;
+constexpr uint8_t ADC_FILTER_SHIFT = 5;
+
+bool kick_interval_active = false;
+uint16_t kick_interval_start_time = 0;
+int32_t adc_ch1_filter_accum = 0;
+int32_t adc_ch2_filter_accum = 0;
+bool adc_ch1_filter_initialized = false;
+bool adc_ch2_filter_initialized = false;
+
+uint16_t low_pass_adc(uint16_t raw, int32_t &accum, bool &initialized)
+{
+  if (!initialized)
+  {
+    accum = static_cast<int32_t>(raw) << ADC_FILTER_SHIFT;
+    initialized = true;
+    return raw;
+  }
+
+  accum += static_cast<int32_t>(raw) - (accum >> ADC_FILTER_SHIFT);
+  return static_cast<uint16_t>(accum >> ADC_FILTER_SHIFT);
+}
 
 uint32_t dribbler_compare(TIM_HandleTypeDef *htim, uint16_t duty)
 {
@@ -94,6 +119,105 @@ void set_dribbler_pwm(uint16_t drb1_duty, uint16_t drb2_duty)
   last_drb2_duty = drb2_duty;
   initialized = true;
 }
+
+double clamp_dribbler_power(double power)
+{
+  if (power > DRIBBLER_POWER_LIMIT)
+  {
+    return DRIBBLER_POWER_LIMIT;
+  }
+  if (power < -DRIBBLER_POWER_LIMIT)
+  {
+    return -DRIBBLER_POWER_LIMIT;
+  }
+  return power;
+}
+
+uint16_t dribbler_duty_from_power(double power)
+{
+  const double magnitude = power < 0.0 ? -power : power;
+  return static_cast<uint16_t>(
+      (magnitude * DRIBBLER_ACTIVE_MAX / DRIBBLER_POWER_LIMIT) + 0.5);
+}
+
+void apply_dribbler_power(bool force_stop)
+{
+  if (force_stop)
+  {
+    set_dribbler_pwm(0, 0);
+    return;
+  }
+
+  dribbler_power = clamp_dribbler_power(dribbler_power);
+  const uint16_t duty = dribbler_duty_from_power(dribbler_power);
+
+  if (duty == 0)
+  {
+    set_dribbler_pwm(0, 0);
+  }
+  else if (dribbler_power > 0.0)
+  {
+    set_dribbler_pwm(0, duty);
+  }
+  else
+  {
+    set_dribbler_pwm(duty, 0);
+  }
+}
+
+bool kick_interval_is_active()
+{
+  if (!kick_interval_active)
+  {
+    return false;
+  }
+
+  if ((uint16_t)(cnt - kick_interval_start_time) > KICK_INTERVAL_COUNT)
+  {
+    kick_interval_active = false;
+    return false;
+  }
+
+  return true;
+}
+
+bool update_kicking_hysteresis()
+{
+  if (kicking_active)
+  {
+    HAL_GPIO_WritePin(KICK2_GPIO_Port, KICK2_Pin, GPIO_PIN_SET);
+    dribbler_power = 0;
+    mv_deg = 0;
+
+    if ((uint16_t)(cnt - kicking_start_time) > KICK_HOLD_COUNT)
+    {
+      kicking_active = false;
+      kick_interval_active = true;
+      kick_interval_start_time = cnt;
+      HAL_GPIO_WritePin(KICK2_GPIO_Port, KICK2_Pin, GPIO_PIN_RESET);
+    }
+
+    return true;
+  }
+  else
+  {
+    kick_interval_is_active();
+    HAL_GPIO_WritePin(KICK2_GPIO_Port, KICK2_Pin, GPIO_PIN_RESET);
+  }
+
+  return false;
+}
+}
+
+void request_kick()
+{
+  if (kicking_active || kick_interval_is_active())
+  {
+    return;
+  }
+
+  kicking_start_time = cnt;
+  kicking_active = true;
 }
 
 // --- Role Management FSM ---
@@ -246,9 +370,9 @@ void Japan()
 
   HAL_UART_Receive_IT(&huart2, &Goal_RB, 1);
 
-//  while (!(Goal_ava == true))
-//  {
-//  }
+  while (!(Goal_ava == true))
+  {
+  }
 
   period_1 = __HAL_TIM_GET_AUTORELOAD(&htim1) + 1;
   period_8 = __HAL_TIM_GET_AUTORELOAD(&htim8) + 1;
@@ -386,7 +510,9 @@ void Japan()
     HAL_ADC_Start(&hadc1);
     if (HAL_ADC_PollForConversion(&hadc1, 1000) == HAL_OK)
     {
-      ADC_ch1 = HAL_ADC_GetValue(&hadc1);
+      ADC_ch1 = low_pass_adc(static_cast<uint16_t>(HAL_ADC_GetValue(&hadc1)),
+                             adc_ch1_filter_accum,
+                             adc_ch1_filter_initialized);
     }
     HAL_ADC_Stop(&hadc1);
     //------------------------------------------------------
@@ -395,12 +521,14 @@ void Japan()
     HAL_ADC_Start(&hadc2);
     if (HAL_ADC_PollForConversion(&hadc2, 1000) == HAL_OK)
     {
-      ADC_ch2 = HAL_ADC_GetValue(&hadc2);
+      ADC_ch2 = low_pass_adc(static_cast<uint16_t>(HAL_ADC_GetValue(&hadc2)),
+                             adc_ch2_filter_accum,
+                             adc_ch2_filter_initialized);
     }
     HAL_ADC_Stop(&hadc2);
     //------------------------------------------------------
 
-    if (ADC_ch2 > 400) {
+     if (ADC_ch2 > 700) {
       ball_counting_ballHoldtime =
           false; // Release判定に入ったらHoldタイマーをリセット
       if (!ball_counting_ballReleasetime) {
@@ -411,7 +539,7 @@ void Japan()
           holding_ball = false;
         }
       }
-    } else if (ADC_ch2 < 200) {
+    } else if (ADC_ch2 < 400) {
       ball_counting_ballReleasetime =
           false; // Hold判定に入ったらReleaseタイマーをリセット
       if (!ball_counting_ballHoldtime) {
@@ -424,6 +552,10 @@ void Japan()
       }
     }
 
+//     if(kicking){
+//    	 holding_bal = false;
+//     }
+
     // --- Dynamic Algorithm Execution ---
     if (my_role == ROLE_KEEPER)
     {
@@ -433,6 +565,8 @@ void Japan()
     {
       forward();
     }
+
+    const bool kick_hold_this_cycle = update_kicking_hysteresis();
 
     // --- Common Gyro & Output application ---
 
@@ -480,7 +614,7 @@ void Japan()
     // from the half-period center value.
     omni.set_limit((period_1 / 2) - 10);
 
-    mv_power = 100;
+//    mv_power = 100;
 
     omni.dcalc((mv_deg * -1) + 90, (mv_power* 900 / 100), GYRO_duty);
 //    omni.dcalc(90, (mv_power * 0 / 100), 0); // デバッグ用そのまま
@@ -502,8 +636,6 @@ void Japan()
       rotateMotor = !rotateMotor;
     }
 
-    HAL_GPIO_WritePin(KICK2_GPIO_Port, KICK2_Pin, GPIO_PIN_RESET);
-
     if (rotateMotor)
     {
       HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
@@ -514,15 +646,11 @@ void Japan()
       HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3);
       HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3);
       HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_3);
-      if (Ball_Closeness == 0 || dribbler_power <= 0)
+      apply_dribbler_power(kick_hold_this_cycle || Ball_Closeness == 0);
+      if (!kick_hold_this_cycle)
       {
-        set_dribbler_pwm(0, 0);
+        dribbler_power = DRIBBLER_DEFAULT_POWER;
       }
-      else
-      {
-        set_dribbler_pwm(0, 1000);
-      }
-      dribbler_power = 130;
 
       HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET);
     }
@@ -542,8 +670,10 @@ void Japan()
 
     pre_swRed = swRed;
     pre_swGreen = swGreen;
-//    set_dribbler_pwm(0, 1000);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
+
+    dribbler_power = 990;
+    apply_dribbler_power(0);
 
     // PWM order: front right -> back right -> back left -> front left.
     // omni index order: front left -> back left -> back right -> front right.

@@ -33,6 +33,82 @@ uint32_t push_line_escaped_time_when_waiting = 0;
 uint32_t last_front_line_trace_time = 0;
 double LineAngle_before_Approaching;
 
+namespace
+{
+constexpr uint16_t kTimer7CountsPerMs = 2;
+constexpr uint16_t kDefaultDribbleRampTimeMs = 800;
+constexpr int16_t kHoldingDribbleTargetPower = 70;
+constexpr int16_t kLineDribbleTargetPower = 50;
+
+bool &dribbleAccelerationActive()
+{
+  return ball_dribbleAcceration;
+}
+
+uint16_t &dribbleAccelerationBaseCnt()
+{
+  return ball_dribbleAccerationBasetime;
+}
+
+uint16_t &dribbleAccelerationElapsedMs()
+{
+  return ball_dribbleAccerationtime;
+}
+
+uint16_t timer7CountsToMs(uint16_t counts)
+{
+  return counts / kTimer7CountsPerMs;
+}
+
+void updateDribbleAccelerationRamp(bool holding, uint16_t nowCnt)
+{
+  if (!holding)
+  {
+    dribbleAccelerationActive() = false;
+    dribbleAccelerationElapsedMs() = 0;
+    return;
+  }
+
+  if (!dribbleAccelerationActive())
+  {
+    dribbleAccelerationActive() = true;
+    dribbleAccelerationBaseCnt() = nowCnt;
+    dribbleAccelerationElapsedMs() = 0;
+    return;
+  }
+
+  const uint16_t elapsedCounts =
+      static_cast<uint16_t>(nowCnt - dribbleAccelerationBaseCnt());
+  dribbleAccelerationElapsedMs() = timer7CountsToMs(elapsedCounts);
+}
+
+int16_t linearRampPower(uint16_t elapsedMs, int16_t targetPower,
+                        uint16_t rampTimeMs)
+{
+  if (rampTimeMs == 0 || elapsedMs >= rampTimeMs)
+  {
+    return targetPower;
+  }
+
+  return static_cast<int16_t>(
+      (static_cast<int32_t>(targetPower) * elapsedMs) / rampTimeMs);
+}
+
+int16_t holdingDribbleRampPower()
+{
+  return linearRampPower(dribbleAccelerationElapsedMs(),
+                         kHoldingDribbleTargetPower,
+                         kDefaultDribbleRampTimeMs);
+}
+
+int16_t lineDribbleRampPower()
+{
+  return linearRampPower(dribbleAccelerationElapsedMs(),
+                         kLineDribbleTargetPower,
+                         kDefaultDribbleRampTimeMs);
+}
+}
+
 // 敵回避用のベクトル計算関数
 inline void calculateOrbitVector(double goalAngle, double goalWidth,
                                  double sideAngleThr, double &outY,
@@ -55,10 +131,12 @@ inline void calculateOrbitVector(double goalAngle, double goalWidth,
   }
 }
 
+HoldState current_state = HoldState::ORBIT_AVOID;
+
 void forward()
 {
   // `forward()` 全体で参照できるようにここで宣言しておく
-  HoldState current_state = HoldState::ORBIT_AVOID;
+
 
   if (holding_ball)
   {
@@ -167,11 +245,11 @@ void forward()
   { // 距離による回り込み角度ゲイン減衰
     if (ball_deg > 0)
     {
-      mv_deg -= (abs(mv_deg - ball_deg) * ball_dis / 60);
+      mv_deg -= (abs(mv_deg - ball_deg) * ball_dis / 90);
     }
     else
     {
-      mv_deg += (abs(mv_deg - ball_deg) * ball_dis / 60);
+      mv_deg += (abs(mv_deg - ball_deg) * ball_dis / 90);
     }
   }
 
@@ -183,28 +261,13 @@ void forward()
   //	mv_power = 0;
   //  	holding_ball = true;
 
+  updateDribbleAccelerationRamp(holding_ball, cnt);
+
+//  holding_ball = true;
+
   if (holding_ball == true)
   {
     starting_dribbler = true;
-
-    // 線形加速の生成
-    if (ball_dribbleAcceration == false)
-    {
-      ball_dribbleAcceration = true;
-      ball_dribbleAccerationBasetime = cnt;
-    }
-    else
-    {
-      if (ball_dribbleAccerationtime < 500)
-      {
-        ball_dribbleAccerationtime =
-            (uint16_t)(cnt - ball_dribbleAccerationBasetime);
-      }
-      else
-      {
-        ball_dribbleAccerationtime = 500;
-      }
-    }
 
     // --- ステートの決定（状態の評価） ---
     if (enemyGoal_Width > 40 && abs(enemyGoal_Angle) < 55)
@@ -248,11 +311,7 @@ void forward()
       mv_power = 100;
       // GYRO_kp = 0.8;
       dribbler_power = 0; // 0でドリブラー停止
-      if (!kicking_active)
-      {
-        kicking_start_time = cnt;
-        kicking_active = true;
-      }
+      request_kick();
       break;
 
     case HoldState::SHOOT_AIM:
@@ -274,14 +333,7 @@ void forward()
     case HoldState::PULL_OUT:
       // ゴール横から引き出すため後退
       mv_deg = 180;
-      if (ball_dribbleAccerationtime < 500)
-      {
-        mv_power = (ball_dribbleAccerationtime / 7); // 最大約70
-      }
-      else
-      {
-        mv_power = 80;
-      }
+      mv_power = holdingDribbleRampPower();
       break;
 
     case HoldState::ORBIT_AVOID:
@@ -292,23 +344,13 @@ void forward()
                            mv_holding_y, mv_holding_x);
       mv_deg = atan2(mv_holding_x, mv_holding_y) * (180.0 / M_PI);
 
-      if (ball_dribbleAccerationtime < 500)
-      {
-        mv_power = (ball_dribbleAccerationtime / 7);
-      }
-      else
-      {
-        mv_power = 80; // 基本の保持中パワー
-      }
+      mv_power = holdingDribbleRampPower();
       break;
     }
     }
   }
-  else
-  {
-    ball_dribbleAcceration = false;
-    ball_dribbleAccerationtime = 0;
-  }
+
+//  return;
 
   // キック判定（shooting変数を介したロジック）をステートマシン内に統合したため削除
   if (Ball_Closeness == 0)
@@ -340,23 +382,6 @@ void forward()
   }
 
   //	    mv_power = 0;
-
-  if (kicking_active)
-  {
-    HAL_GPIO_WritePin(KICK2_GPIO_Port, KICK2_Pin, GPIO_PIN_SET);
-    dribbler_power = 0;
-    mv_deg = 0;
-    // タイマーのオーバーフローを考慮して200カウントを維持
-    if ((uint16_t)(cnt - kicking_start_time) > 300)
-    {
-      kicking_active = false;
-      HAL_GPIO_WritePin(KICK2_GPIO_Port, KICK2_Pin, GPIO_PIN_RESET);
-    }
-  }
-  else
-  {
-    HAL_GPIO_WritePin(KICK2_GPIO_Port, KICK2_Pin, GPIO_PIN_RESET);
-  }
 
   //		mv_power = 0;
 
@@ -542,9 +567,9 @@ void forward()
       }
       else
       {
-        if (ball_dribbleAcceration)
+        if (dribbleAccelerationActive())
         {
-          mv_power = (ball_dribbleAccerationtime / 10);
+          mv_power = lineDribbleRampPower();
         }
         else
         {

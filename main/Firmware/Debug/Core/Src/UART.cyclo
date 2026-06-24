@@ -1,3 +1,6 @@
-../Core/Src/UART.c:50:6:get_IR	8
-../Core/Src/UART.c:100:6:get_LINE	7
-../Core/Src/UART.c:154:6:get_ESP32	7
+../Core/Src/UART.c:61:13:request_sensor_frame	7
+../Core/Src/UART.c:94:13:main_sub_transaction	7
+../Core/Src/UART.c:121:6:get_IR	3
+../Core/Src/UART.c:135:6:get_LINE	2
+../Core/Src/UART.c:156:6:get_MAIN_SUB	11
+../Core/Src/UART.c:223:6:get_ESP32	7
