@@ -39,8 +39,11 @@ stop_bit = 255
 # Yellow_thresholds = [(51, 100, -80, 56, 10, 70)]    #kantou
 # Yellow_thresholds = [(87, 100, -18, 61, 70, 13)]    #house
 
-Blue_thresholds = [(16, 88, -68, 95, -72, -15)] #274
-Yellow_thresholds = [(51, 100, -80, 52, 86, 25)] #274
+# Blue_thresholds = [(16, 88, -68, 95, -72, -15)] #274
+# Yellow_thresholds = [(51, 100, -80, 52, 86, 25)] #274
+
+Blue_thresholds = [(16, 88, -68, 95, -72, -15)] #110
+Yellow_thresholds = [(83, 98, -64, 52, 14, 92)] #110
 
 # Yellow_thresholds = [(34, 100, -77, 48, 94, 39)] #honban
 # Blue_thresholds = [(72, 92, -60, 24, -75, -12)] #honban
@@ -115,7 +118,7 @@ sensor.skip_frames(time=2000)
 
 sensor.set_auto_gain(False)         # 色追跡では基本OFF
 sensor.set_auto_whitebal(False)     # 色追跡では基本OFF
-sensor.set_auto_exposure(False, exposure_us=15000)  # ←ここ
+sensor.set_auto_exposure(False, exposure_us=10000)  # ←ここ
 sensor.set_brightness(1)            # 必要なら追加
 sensor.skip_frames(time=1000)       # 設定反映待ち
 clock = time.clock()
@@ -155,7 +158,7 @@ while True:
             for cx, cy in selected:
                 angle = math.atan2(IMG_CX - cx, IMG_CY - cy) * 180 / math.pi + 180
                 corner_angles.append(angle)
-                # img.draw_rectangle(cx - 2, cy - 2, 5, 5, color=(0, 255, 0))
+                img.draw_rectangle(cx - 2, cy - 2, 5, 5, color=(0, 255, 0))
             if len(corner_angles) == 2:
                 Blue_angle_range = abs(corner_angles[1] - corner_angles[0])
                 if Blue_angle_range > 180:
