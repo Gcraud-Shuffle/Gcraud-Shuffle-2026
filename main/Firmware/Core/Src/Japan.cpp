@@ -35,6 +35,12 @@ using namespace std;
 #define yelGoalAngleRange 6
 #define yelGoalRadius 7
 
+volatile uint32_t japan_control_period_cycles = 0;
+volatile uint32_t japan_control_period_us = 0;
+volatile uint32_t japan_control_period_min_us = 0xFFFFFFFFU;
+volatile uint32_t japan_control_period_max_us = 0;
+volatile uint32_t japan_control_loop_count = 0;
+
 namespace
 {
 constexpr uint16_t DRIBBLER_PWM_MAX = 1000;
@@ -51,6 +57,49 @@ int32_t adc_ch1_filter_accum = 0;
 int32_t adc_ch2_filter_accum = 0;
 bool adc_ch1_filter_initialized = false;
 bool adc_ch2_filter_initialized = false;
+uint32_t control_period_prev_cycle = 0;
+
+void init_control_period_measurement()
+{
+  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+  DWT->CYCCNT = 0U;
+  DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+
+  control_period_prev_cycle = DWT->CYCCNT;
+  japan_control_period_cycles = 0U;
+  japan_control_period_us = 0U;
+  japan_control_period_min_us = 0xFFFFFFFFU;
+  japan_control_period_max_us = 0U;
+  japan_control_loop_count = 0U;
+}
+
+void update_control_period_measurement()
+{
+  const uint32_t now_cycle = DWT->CYCCNT;
+  const uint32_t elapsed_cycles = now_cycle - control_period_prev_cycle;
+  control_period_prev_cycle = now_cycle;
+
+  if (japan_control_loop_count != 0U)
+  {
+    const uint32_t cycles_per_us = SystemCoreClock / 1000000U;
+    const uint32_t elapsed_us =
+        cycles_per_us == 0U ? 0U : elapsed_cycles / cycles_per_us;
+
+    japan_control_period_cycles = elapsed_cycles;
+    japan_control_period_us = elapsed_us;
+
+    if (elapsed_us < japan_control_period_min_us)
+    {
+      japan_control_period_min_us = elapsed_us;
+    }
+    if (elapsed_us > japan_control_period_max_us)
+    {
+      japan_control_period_max_us = elapsed_us;
+    }
+  }
+
+  ++japan_control_loop_count;
+}
 
 uint16_t low_pass_adc(uint16_t raw, int32_t &accum, bool &initialized)
 {
@@ -434,8 +483,11 @@ void Japan()
 
   HAL_Delay(500);
 
+  init_control_period_measurement();
+
   while (1)
   {
+    update_control_period_measurement();
 
     if (starting_dribbler == true)
     {
@@ -528,7 +580,13 @@ void Japan()
     HAL_ADC_Stop(&hadc2);
     //------------------------------------------------------
 
-     if (ADC_ch2 > 700) {
+    const bool holding_ball_allowed = !kicking_active && !kick_interval_is_active();
+
+    if (!holding_ball_allowed) {
+      holding_ball = false;
+      ball_counting_ballHoldtime = false;
+      ball_counting_ballReleasetime = false;
+    } else if (ADC_ch2 > 600) {
       ball_counting_ballHoldtime =
           false; // Release判定に入ったらHoldタイマーをリセット
       if (!ball_counting_ballReleasetime) {
@@ -539,7 +597,7 @@ void Japan()
           holding_ball = false;
         }
       }
-    } else if (ADC_ch2 < 400) {
+    } else if (ADC_ch2 < 350) {
       ball_counting_ballReleasetime =
           false; // Hold判定に入ったらReleaseタイマーをリセット
       if (!ball_counting_ballHoldtime) {

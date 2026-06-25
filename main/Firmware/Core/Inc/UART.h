@@ -25,6 +25,10 @@
 #define MAIN_SUB_STATUS_COMM_OVERFLOW (1u << 4)
 #define MAIN_SUB_STATUS_COMM_UART_ERR (1u << 5)
 #define MAIN_SUB_STATUS_COMM_DATA (1u << 6)
+#define MAIN_SUB_US_SAFE_STATE_NO_DATA 0u
+#define MAIN_SUB_US_SAFE_STATE_FRESH 1u
+#define MAIN_SUB_US_SAFE_STATE_HOLD 2u
+#define MAIN_SUB_US_SAFE_STATE_COMM_ERROR 3u
 #define TIMEOUT_CNT 1
 
 extern volatile uint8_t CAMERA_flag;
@@ -92,6 +96,10 @@ extern uint8_t MainSub_Status;
 extern uint8_t MainSub_Ultrasonic_cm[3];
 extern uint16_t MainSub_Ultrasonic_mm[3];
 extern bool MainSub_Ultrasonic_valid[3];
+extern uint16_t MainSub_SafeUltrasonic_mm[3];
+extern bool MainSub_SafeUltrasonic_valid[3];
+extern uint8_t MainSub_SafeUltrasonic_state[3];
+extern uint16_t MainSub_SafeUltrasonic_hold_count[3];
 extern uint8_t MainSub_Current4bit[4];
 extern uint16_t MainSub_Current_ADC12[4];
 extern uint8_t MainSub_Comm_Data[MAIN_SUB_COMM_PAYLOAD_MAX];

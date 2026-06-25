@@ -1,6 +1,8 @@
-../Core/Src/UART.c:61:13:request_sensor_frame	7
-../Core/Src/UART.c:94:13:main_sub_transaction	7
-../Core/Src/UART.c:121:6:get_IR	3
-../Core/Src/UART.c:135:6:get_LINE	2
-../Core/Src/UART.c:156:6:get_MAIN_SUB	11
-../Core/Src/UART.c:223:6:get_ESP32	7
+../Core/Src/UART.c:71:13:request_sensor_frame	7
+../Core/Src/UART.c:104:13:main_sub_transaction	7
+../Core/Src/UART.c:131:13:update_main_sub_safe_ultrasonic	5
+../Core/Src/UART.c:157:13:mark_main_sub_safe_ultrasonic_comm_error	4
+../Core/Src/UART.c:174:6:get_IR	3
+../Core/Src/UART.c:188:6:get_LINE	2
+../Core/Src/UART.c:209:6:get_MAIN_SUB	11
+../Core/Src/UART.c:281:6:get_ESP32	7

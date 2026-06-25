@@ -46,6 +46,16 @@ uint16_t MainSub_Ultrasonic_mm[3] = {
     MAIN_SUB_INVALID_DISTANCE_MM,
     MAIN_SUB_INVALID_DISTANCE_MM};
 bool MainSub_Ultrasonic_valid[3] = {};
+uint16_t MainSub_SafeUltrasonic_mm[3] = {
+    MAIN_SUB_INVALID_DISTANCE_MM,
+    MAIN_SUB_INVALID_DISTANCE_MM,
+    MAIN_SUB_INVALID_DISTANCE_MM};
+bool MainSub_SafeUltrasonic_valid[3] = {};
+uint8_t MainSub_SafeUltrasonic_state[3] = {
+    MAIN_SUB_US_SAFE_STATE_NO_DATA,
+    MAIN_SUB_US_SAFE_STATE_NO_DATA,
+    MAIN_SUB_US_SAFE_STATE_NO_DATA};
+uint16_t MainSub_SafeUltrasonic_hold_count[3] = {};
 uint8_t MainSub_Current4bit[4] = {};
 uint16_t MainSub_Current_ADC12[4] = {};
 uint8_t MainSub_Comm_Data[MAIN_SUB_COMM_PAYLOAD_MAX] = {};
@@ -118,6 +128,49 @@ static bool main_sub_transaction(UART_HandleTypeDef *uart,
   return true;
 }
 
+static void update_main_sub_safe_ultrasonic(uint8_t index,
+                                            bool fresh_valid,
+                                            uint16_t fresh_distance_mm) {
+  if (index >= 3U) {
+    return;
+  }
+
+  if (fresh_valid) {
+    MainSub_SafeUltrasonic_mm[index] = fresh_distance_mm;
+    MainSub_SafeUltrasonic_valid[index] = true;
+    MainSub_SafeUltrasonic_state[index] = MAIN_SUB_US_SAFE_STATE_FRESH;
+    MainSub_SafeUltrasonic_hold_count[index] = 0U;
+    return;
+  }
+
+  if (MainSub_SafeUltrasonic_valid[index]) {
+    MainSub_SafeUltrasonic_state[index] = MAIN_SUB_US_SAFE_STATE_HOLD;
+    if (MainSub_SafeUltrasonic_hold_count[index] < 0xFFFFU) {
+      MainSub_SafeUltrasonic_hold_count[index]++;
+    }
+  } else {
+    MainSub_SafeUltrasonic_mm[index] = MAIN_SUB_INVALID_DISTANCE_MM;
+    MainSub_SafeUltrasonic_state[index] = MAIN_SUB_US_SAFE_STATE_NO_DATA;
+  }
+}
+
+static void mark_main_sub_safe_ultrasonic_comm_error(void) {
+  uint8_t index;
+
+  for (index = 0U; index < 3U; index++) {
+    if (MainSub_SafeUltrasonic_valid[index]) {
+      MainSub_SafeUltrasonic_state[index] =
+          MAIN_SUB_US_SAFE_STATE_COMM_ERROR;
+      if (MainSub_SafeUltrasonic_hold_count[index] < 0xFFFFU) {
+        MainSub_SafeUltrasonic_hold_count[index]++;
+      }
+    } else {
+      MainSub_SafeUltrasonic_mm[index] = MAIN_SUB_INVALID_DISTANCE_MM;
+      MainSub_SafeUltrasonic_state[index] = MAIN_SUB_US_SAFE_STATE_NO_DATA;
+    }
+  }
+}
+
 void get_IR(UART_HandleTypeDef *uart) {
   /* Response: [angle encoded as 0..255, closeness as 0..255]. */
   uint8_t response[IR_RESPONSE_SIZE] = {0U};
@@ -166,11 +219,13 @@ void get_MAIN_SUB(UART_HandleTypeDef *uart) {
   if (!main_sub_transaction(uart, MAIN_SUB_REQUEST_GET_ALL, response,
                             (uint16_t)sizeof(response))) {
     MAIN_SUB_Failed_Connection = true;
+    mark_main_sub_safe_ultrasonic_comm_error();
     return;
   }
 
   if (response[0] != MAIN_SUB_RESPONSE_MAGIC) {
     MAIN_SUB_Failed_Connection = true;
+    mark_main_sub_safe_ultrasonic_comm_error();
     return;
   }
 
@@ -189,6 +244,9 @@ void get_MAIN_SUB(UART_HandleTypeDef *uart) {
       MainSub_Ultrasonic_valid[index] = false;
       status &= (uint8_t)~valid_bit;
     }
+    update_main_sub_safe_ultrasonic(index,
+                                    MainSub_Ultrasonic_valid[index],
+                                    MainSub_Ultrasonic_mm[index]);
   }
   MainSub_Status = status;
 
