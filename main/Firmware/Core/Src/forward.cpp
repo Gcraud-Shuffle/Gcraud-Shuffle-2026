@@ -137,7 +137,7 @@ void forward()
 {
   // `forward()` 全体で参照できるようにここで宣言しておく
 
-
+	mv_power = 90;
   if (holding_ball)
   {
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
@@ -258,7 +258,7 @@ void forward()
     mv_power = 85;
   }
 
-  if(abs(enemyGoal_Angle) < 45){
+  if(abs(enemyGoal_Angle) < 45 && abs(ball_deg) < 45 && (MainSub_SafeUltrasonic_mm[0] > 400 && MainSub_SafeUltrasonic_mm[1] > 400)){
 	  GYRO_AngleOffset = enemyGoal_Angle;
   }
 
@@ -266,10 +266,13 @@ void forward()
 //    	holding_ball = true;
 
   updateDribbleAccelerationRamp(holding_ball, cnt);
+  const bool any_side_line_active =
+      (lineSideRight > 0) || (lineSideBack > 0) || (lineSideLeft > 0);
+  const bool any_line_sensor_active = lineAngel || any_side_line_active;
 
 //  holding_ball = true;
 
-  if (holding_ball == true && (abs(ball_deg) < 30))
+  if (holding_ball == true && abs(ball_deg) < 30)
   {
     starting_dribbler = true;
 
@@ -277,7 +280,11 @@ void forward()
     if (enemyGoal_Width > 60 && abs(enemyGoal_Angle) < 65)
     {
       // ゴール前近めでシュート可能
-      if ((abs(GYRO_Z + enemyGoal_Angle) < 8) && !lineAngel || (enemyGoal_Width > 70 && abs(LineAngle) < 20)&&((enemyGoal_Angle_Range>30)||!(lineAngel||lineSideLeft||lineSideRight)))
+      const bool gyro_aligned_to_goal = (abs(GYRO_Z + enemyGoal_Angle) < 8);
+      const bool wide_goal_without_line =
+          (enemyGoal_Width > 70) && (abs(LineAngle) < 20) &&
+          (enemyGoal_Angle_Range > 30) && !any_line_sensor_active;
+      if ((!lineAngel && gyro_aligned_to_goal) || wide_goal_without_line)
       {
         current_state = HoldState::KICKING;
       }
@@ -314,7 +321,7 @@ void forward()
       mv_deg = 0;
       mv_power = 100;
       // GYRO_kp = 0.8;
-      dribbler_power = -999; // 0でドリブラー停止
+      dribbler_power = -999; // Reverse dribbler while kicking.
       request_kick();
       break;
 
@@ -417,7 +424,7 @@ void forward()
   //    }
   //  } else {
   //  }
-  if (lineSideRight > 0 && !holding_ball)
+  if (!lineAngel && lineSideRight > 0 && !holding_ball)
   {
     if (lineSideRight < 3 && (ball_deg > 0 && ball_deg < 100))
     {
@@ -440,7 +447,7 @@ void forward()
   {
   }
 
-  if (lineSideLeft > 0 && !holding_ball)
+  if (!lineAngel && lineSideLeft > 0 && !holding_ball)
   {
     if (lineSideLeft < 3 && (ball_deg < 0 && ball_deg > -100))
     {
@@ -555,7 +562,6 @@ void forward()
     else if (lineAngel == true)
     {
       mv_deg = LineAngle + 180;
-      mv_power = 200;
     }
 
     if (lineAngel == true)
@@ -570,15 +576,14 @@ void forward()
       }
       else
       {
-
-//        if (dribbleAccelerationActive())
-//        {
-//          mv_power = lineDribbleRampPower();
-//        }
-//        else
-//        {
-//          mv_power = 90;
-//        }
+        if (dribbleAccelerationActive())
+        {
+          mv_power = lineDribbleRampPower();
+        }
+        else
+        {
+          mv_power = 90;
+        }
       }
     }
     else
@@ -587,25 +592,25 @@ void forward()
     }
   }
 
-//  if (lineAngel == true)
-//  {
-//    LineAngle_before = LineAngle;
-//  }
-//
-//  if (holding_ball && lineAngel && LineDepth > 70 &&
-//      (current_state == HoldState::PULL_OUT || current_state == HoldState::ORBIT_AVOID) &&
-//      (LineAngle * enemyGoal_Angle > 0) && (abs(LineAngle) > 25))
-//  {
-//    // mv_power = cos((mv_deg) * M_PI / 180) * mv_power;
-//    if (enemyGoal_Angle > 0)
-//    {
-//      mv_deg = LineAngle - 90;
-//    }
-//    else
-//    {
-//      mv_deg = LineAngle + 90;
-//    }
-//  }
+  if (lineAngel == true)
+  {
+    LineAngle_before = LineAngle;
+  }
+
+  if (holding_ball && lineAngel && LineDepth > 70 &&
+      (current_state == HoldState::PULL_OUT || current_state == HoldState::ORBIT_AVOID) &&
+      (LineAngle * enemyGoal_Angle > 0) && (abs(LineAngle) > 25))
+  {
+     mv_power = cos((mv_deg) * M_PI / 180) * mv_power;
+    if (enemyGoal_Angle > 0)
+    {
+      mv_deg = LineAngle - 90;
+    }
+    else
+    {
+      mv_deg = LineAngle + 90;
+    }
+  }
 
 	// --------------------------------------- //
 	// Section: 自陣側のライン処理
@@ -694,18 +699,18 @@ void forward()
     //   mv_power = -80;
     // }
   }
-
-
-
-  // -------------------------------------- //
-  // Section: 押し込み処理
-  // -------------------------------------- //
-  //
-  // ボールを敵ゴールに押し込むための状態遷移管理
-  // 待機 → 接近 → 脱出 のサイクル
-  //
-
-  // --- 押し込み処理：ボールを敵ゴールに押し込むための状態管理 ---
+//
+//
+//
+//  // -------------------------------------- //
+//  // Section: 押し込み処理
+//  // -------------------------------------- //
+//  //
+//  // ボールを敵ゴールに押し込むための状態遷移管理
+//  // 待機 → 接近 → 脱出 のサイクル
+//  //
+//
+//  // --- 押し込み処理：ボールを敵ゴールに押し込むための状態管理 ---
   switch (push_state)
   {
   case PushBallToGoalState::PREPARE_WAITING:

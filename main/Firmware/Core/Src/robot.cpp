@@ -135,9 +135,9 @@ void setup() {
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);  // A
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);  // B
   HAL_TIM_PWM_Start(&htim12, TIM_CHANNEL_1); // C
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);  // dribbler input 1
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);  // speaker
   HAL_TIM_PWM_Start(&htim14, TIM_CHANNEL_1); // dribbler input 2
-  HAL_TIM_PWM_Start(&htim13, TIM_CHANNEL_1); // drib
+  HAL_TIM_PWM_Start(&htim13, TIM_CHANNEL_1); // dribbler input 1
   __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
 
   // JYRO setup

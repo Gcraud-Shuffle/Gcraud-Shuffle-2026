@@ -47,6 +47,8 @@ constexpr uint16_t DRIBBLER_PWM_MAX = 1000;
 constexpr uint16_t DRIBBLER_ACTIVE_MAX = 990;
 constexpr int16_t DRIBBLER_POWER_LIMIT = 999;
 constexpr double DRIBBLER_DEFAULT_POWER = 990.0;
+constexpr bool DEBUG_FORCE_DRIBBLER_REVERSE = false;
+constexpr double DEBUG_DRIBBLER_REVERSE_POWER = -400.0;
 constexpr uint16_t KICK_HOLD_COUNT = 300;
 constexpr uint16_t KICK_INTERVAL_COUNT = 2000;
 constexpr uint8_t ADC_FILTER_SHIFT = 5;
@@ -151,7 +153,7 @@ void set_dribbler_pwm(uint16_t drb1_duty, uint16_t drb2_duty)
 
   if (reverse_change)
   {
-    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);
+    __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1, 0);
     __HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1, 0);
     for (volatile uint32_t i = 0; i < 1000U; ++i)
     {
@@ -159,8 +161,8 @@ void set_dribbler_pwm(uint16_t drb1_duty, uint16_t drb2_duty)
     }
   }
 
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4,
-                        dribbler_compare(&htim3, drb1_duty));
+  __HAL_TIM_SET_COMPARE(&htim13, TIM_CHANNEL_1,
+                        dribbler_compare(&htim13, drb1_duty));
   __HAL_TIM_SET_COMPARE(&htim14, TIM_CHANNEL_1,
                         dribbler_compare(&htim14, drb2_duty));
 
@@ -235,8 +237,6 @@ bool update_kicking_hysteresis()
   if (kicking_active)
   {
     HAL_GPIO_WritePin(KICK2_GPIO_Port, KICK2_Pin, GPIO_PIN_SET);
-    dribbler_power = 0;
-    mv_deg = 0;
 
     if ((uint16_t)(cnt - kicking_start_time) > KICK_HOLD_COUNT)
     {
@@ -681,11 +681,7 @@ void Japan()
     swGreen = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_9);
 
     if (!use_buzzer_in_algo) {
-      if (swRed | swGreen) {
-        __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
-      } else {
-        __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);
-      }
+      __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);
     }
     use_buzzer_in_algo = false;
 
@@ -704,10 +700,18 @@ void Japan()
       HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3);
       HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3);
       HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_3);
-      apply_dribbler_power(kick_hold_this_cycle || Ball_Closeness == 0);
-      if (!kick_hold_this_cycle)
+      if (DEBUG_FORCE_DRIBBLER_REVERSE)
       {
-        dribbler_power = DRIBBLER_DEFAULT_POWER;
+        dribbler_power = DEBUG_DRIBBLER_REVERSE_POWER;
+        apply_dribbler_power(false);
+      }
+      else
+      {
+        if (!kick_hold_this_cycle)
+        {
+          dribbler_power = DRIBBLER_DEFAULT_POWER;
+        }
+        apply_dribbler_power(false);
       }
 
       HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET);
@@ -729,9 +733,6 @@ void Japan()
     pre_swRed = swRed;
     pre_swGreen = swGreen;
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
-
-    dribbler_power = 990;
-    apply_dribbler_power(0);
 
     // PWM order: front right -> back right -> back left -> front left.
     // omni index order: front left -> back left -> back right -> front right.
