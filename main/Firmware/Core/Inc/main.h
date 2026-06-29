@@ -73,6 +73,8 @@ void Error_Handler(void);
 #define BALL1_GPIO_Port GPIOA
 #define BALL2_Pin GPIO_PIN_5
 #define BALL2_GPIO_Port GPIOA
+#define TIM13_CH1_DRB1_Pin GPIO_PIN_6
+#define TIM13_CH1_DRB1_GPIO_Port GPIOA
 #define TIM14_CH1_DRB2_Pin GPIO_PIN_7
 #define TIM14_CH1_DRB2_GPIO_Port GPIOA
 #define LED2_Pin GPIO_PIN_0
@@ -81,8 +83,8 @@ void Error_Handler(void);
 #define SW3_LED_GPIO_Port GPIOB
 #define LED1_Pin GPIO_PIN_12
 #define LED1_GPIO_Port GPIOB
-#define TIM3_CH4_DRB1_Pin GPIO_PIN_9
-#define TIM3_CH4_DRB1_GPIO_Port GPIOC
+#define SPKR_Pin GPIO_PIN_9
+#define SPKR_GPIO_Port GPIOC
 #define SW2_LED_Pin GPIO_PIN_11
 #define SW2_LED_GPIO_Port GPIOA
 #define KICK2_Pin GPIO_PIN_12
