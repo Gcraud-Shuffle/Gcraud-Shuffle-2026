@@ -1,0 +1,7 @@
+/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.macos64_1.0.0.202411102158/tools/arm-none-eabi/include/c++/13.3.1/cmath:146:3:constexpr float std::atan2(float, float)	1
+/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.macos64_1.0.0.202411102158/tools/arm-none-eabi/include/c++/13.3.1/cmath:438:3:constexpr float std::sqrt(float)	1
+../Core/Src/mmain.cpp:26:5:int mmain(UART_HandleTypeDef*, UART_HandleTypeDef*, uint8_t*, uint8_t*)	3
+../Core/Src/mmain.cpp:126:6:bool read_IR(int)	16
+../Core/Src/mmain.cpp:164:6:void get_all_IR()	2
+../Core/Src/mmain.cpp:168:1:void __static_initialization_and_destruction_0()	1
+../Core/Src/mmain.cpp:168:1:cpp)	1

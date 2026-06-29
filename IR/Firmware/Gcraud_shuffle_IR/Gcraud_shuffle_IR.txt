@@ -1,0 +1,130 @@
+Configuration	Gcraud_shuffle_IR
+STM32CubeMX 	6.15.0
+Date	06/09/2026
+MCU	STM32G473RCTx
+
+
+
+PERIPHERALS	MODES	FUNCTIONS	PINS
+LPUART1	Asynchronous	LPUART1_RX	PC0
+LPUART1	Asynchronous	LPUART1_TX	PC1
+RCC	Crystal/Ceramic Resonator	RCC_OSC_IN	PF0-OSC_IN
+RCC	Crystal/Ceramic Resonator	RCC_OSC_OUT	PF1-OSC_OUT
+SYS	Serial Wire	SYS_JTCK-SWCLK	PA14
+SYS	Serial Wire	SYS_JTMS-SWDIO	PA13
+SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
+SYS	Dead Battery Signals disabled	SYS_VS_DBSignals	VP_SYS_VS_DBSignals
+USART1	Asynchronous	USART1_RX	PA10
+USART1	Asynchronous	USART1_TX	PA9
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+5	PF0-OSC_IN	RCC_OSC_IN	
+6	PF1-OSC_OUT	RCC_OSC_OUT	
+8	PC0	LPUART1_RX	
+9	PC1	LPUART1_TX	
+12	PA0	GPIO_Input	IR7
+13	PA1	GPIO_Input	IR8
+17	PA3	GPIO_Input	IR9
+18	PA4	GPIO_Input	IR10
+19	PA5	GPIO_Input	IR11
+20	PA6	GPIO_Input	IR12
+21	PA7	GPIO_Input	IR13
+22	PC4	GPIO_Input	IR14
+23	PC5	GPIO_Input	IR15
+24	PB0	GPIO_Input	IR16
+25	PB1	GPIO_Input	IR17
+26	PB2	GPIO_Input	IR18
+33	PB11	GPIO_Input	IR19
+34	PB12	GPIO_Input	IR20
+35	PB13	GPIO_Input	IR21
+36	PB14	GPIO_Input	IR22
+37	PB15	GPIO_Input	IR23
+38	PC6	GPIO_Input	IR24
+43	PA9	USART1_TX	
+44	PA10	USART1_RX	
+49	PA13	SYS_JTMS-SWDIO	
+50	PA14	SYS_JTCK-SWCLK	
+54	PC12	GPIO_Input	IR1
+55	PD2	GPIO_Input	IR2
+56	PB3*	SYS_JTDO-SWO	
+57	PB4	GPIO_Input	IR3
+58	PB5	GPIO_Input	IR4
+59	PB6	GPIO_Input	IR5
+60	PB7	GPIO_Input	IR6
+PERIPHERALS	MODES	FUNCTIONS	PINS
+LPUART1	Asynchronous	LPUART1_RX	PC0
+LPUART1	Asynchronous	LPUART1_TX	PC1
+RCC	Crystal/Ceramic Resonator	RCC_OSC_IN	PF0-OSC_IN
+RCC	Crystal/Ceramic Resonator	RCC_OSC_OUT	PF1-OSC_OUT
+SYS	Serial Wire	SYS_JTCK-SWCLK	PA14
+SYS	Serial Wire	SYS_JTMS-SWDIO	PA13
+SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
+SYS	Dead Battery Signals disabled	SYS_VS_DBSignals	VP_SYS_VS_DBSignals
+USART1	Asynchronous	USART1_RX	PA10
+USART1	Asynchronous	USART1_TX	PA9
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+5	PF0-OSC_IN	RCC_OSC_IN	
+6	PF1-OSC_OUT	RCC_OSC_OUT	
+8	PC0	LPUART1_RX	
+9	PC1	LPUART1_TX	
+12	PA0	GPIO_Input	IR7
+13	PA1	GPIO_Input	IR8
+17	PA3	GPIO_Input	IR9
+18	PA4	GPIO_Input	IR10
+19	PA5	GPIO_Input	IR11
+20	PA6	GPIO_Input	IR12
+21	PA7	GPIO_Input	IR13
+22	PC4	GPIO_Input	IR14
+23	PC5	GPIO_Input	IR15
+24	PB0	GPIO_Input	IR16
+25	PB1	GPIO_Input	IR17
+26	PB2	GPIO_Input	IR18
+33	PB11	GPIO_Input	IR19
+34	PB12	GPIO_Input	IR20
+35	PB13	GPIO_Input	IR21
+36	PB14	GPIO_Input	IR22
+37	PB15	GPIO_Input	IR23
+38	PC6	GPIO_Input	IR24
+43	PA9	USART1_TX	
+44	PA10	USART1_RX	
+49	PA13	SYS_JTMS-SWDIO	
+50	PA14	SYS_JTCK-SWCLK	
+54	PC12	GPIO_Input	IR1
+55	PD2	GPIO_Input	IR2
+56	PB3*	SYS_JTDO-SWO	
+57	PB4	GPIO_Input	IR3
+58	PB5	GPIO_Input	IR4
+59	PB6	GPIO_Input	IR5
+60	PB7	GPIO_Input	IR6
+
+
+
+SOFTWARE PROJECT
+
+Project Settings : 
+Project Name : Gcraud_shuffle_IR
+Project Folder : /Users/takum/RCJJ/Gcraud-Shuffle/japanopen/git/2026_IR/Gcraud_shuffle_IR
+Toolchain / IDE : STM32CubeIDE
+Firmware Package Name and Version : STM32Cube FW_G4 V1.5.2
+
+
+Code Generation Settings : 
+STM32Cube MCU packages and embedded software packs : Copy only the necessary library files
+Generate peripheral initialization as a pair of '.c/.h' files per peripheral : No
+Backup previously generated files when re-generating : No
+Delete previously generated files when not re-generated : Yes
+Set all free pins as analog (to optimize the power consumption) : No
+
+
+Toolchains Settings : 
+Compiler Optimizations : 
+
+
+
+
+

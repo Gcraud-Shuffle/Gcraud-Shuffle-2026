@@ -84,8 +84,8 @@ all: main-build
 main-build: main_2026.elf secondary-outputs
 
 # Tool invocations
-main_2026.elf main_2026.map: $(OBJS) $(USER_OBJS) /Users/takum/RCJJ/Gcraud-Shuffle/japanopen/git/2026_main/main_for_node2024/STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "main_2026.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/takum/RCJJ/Gcraud-Shuffle/japanopen/git/2026_main/main_for_node2024/STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="main_2026.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+main_2026.elf main_2026.map: $(OBJS) $(USER_OBJS) /Users/takum/RCJJ/Gcraud-Shuffle/world/main/Firmware/STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "main_2026.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/takum/RCJJ/Gcraud-Shuffle/world/main/Firmware/STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="main_2026.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

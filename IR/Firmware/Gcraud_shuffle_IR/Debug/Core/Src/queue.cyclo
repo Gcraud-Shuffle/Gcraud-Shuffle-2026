@@ -1,0 +1,7 @@
+../Core/Src/queue.cpp:10:1:Queue::Queue()	1
+../Core/Src/queue.cpp:12:6:void Queue::push(uint8_t, bool)	2
+../Core/Src/queue.cpp:24:6:bool Queue::pop(uint8_t)	2
+../Core/Src/queue.cpp:38:6:bool Queue::rear(uint8_t)	1
+../Core/Src/queue.cpp:40:6:bool Queue::head(uint8_t)	1
+../Core/Src/queue.cpp:42:6:bool Queue::pop_push(uint8_t, bool)	1
+../Core/Src/queue.cpp:49:7:short int Queue::get_sum(uint8_t)	1

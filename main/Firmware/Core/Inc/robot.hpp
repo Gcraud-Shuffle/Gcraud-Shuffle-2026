@@ -30,6 +30,8 @@ extern RoleState my_role;
 // STANDALONE時のみロール変更を許可する関数
 void change_role(RoleState new_role);
 
+void request_kick();
+
 // chassis helper for omni drive
 extern Chassis<Omni_4> omni;
 

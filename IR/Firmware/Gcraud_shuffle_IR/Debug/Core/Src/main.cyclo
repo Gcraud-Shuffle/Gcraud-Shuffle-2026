@@ -1,0 +1,7 @@
+../Core/Src/main.cpp:71:6:void HAL_UART_RxCpltCallback(UART_HandleTypeDef*)	1
+../Core/Src/main.cpp:86:5:int main()	1
+../Core/Src/main.cpp:133:6:void SystemClock_Config()	3
+../Core/Src/main.cpp:179:13:void MX_LPUART1_UART_Init()	5
+../Core/Src/main.cpp:226:13:void MX_USART1_UART_Init()	5
+../Core/Src/main.cpp:274:13:void MX_GPIO_Init()	1
+../Core/Src/main.cpp:329:6:void Error_Handler()	1
