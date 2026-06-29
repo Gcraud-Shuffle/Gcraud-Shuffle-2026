@@ -81,7 +81,7 @@ void keeper()
 
 	if (abs(ball_deg) > 90 || ((0 > ball_deg * myGoal_Angle) && ((!lineSideLeft && (ball_deg < -22.5)) || (!lineSideRight && (ball_deg > 22.5)))))
 	{
-		dribbler_power = 0;
+//		dribbler_power = 0;
 	}
 
 	if (40 < enemyGoal_Width)
@@ -94,7 +94,7 @@ void keeper()
 	if (restart)
 	{
 		now_keeper_state = NOT_NEED2APPROACH;
-		if (lineAngel && (myGoal_Width != 0) && (90 < abs(myGoal_Angle)) && rotateMotor)
+		if (lineAngel && (myGoal_Angle_Range > 50) && (90 < abs(myGoal_Angle)) && rotateMotor)
 		{
 			restart = false;
 		}
@@ -103,12 +103,12 @@ void keeper()
 			if (jyro_ok_flag && abs(GYRO_E) < 5.0 && (myGoal_Width != 0) && (90 < abs(myGoal_Angle)))
 			{
 				mv_deg = myGoal_Angle;
-				mv_power = 60;
+				mv_power = 80;
 			}
 			else if (jyro_ok_flag && abs(GYRO_E) < 10.0)
 			{
 				mv_deg = 180;
-				mv_power = 60;
+				mv_power = 80;
 			}
 			else if (jyro_ok_flag && (lineAngel || lineSideBack || lineSideRight || lineSideLeft))
 			{
@@ -276,7 +276,7 @@ void keeper()
 			// Section: STANDALONE時のボールへのアプローチ(フリーズ検知)
 			// --------------------------------------- //
 			if(Ball_Closeness > 40 && abs(ball_deg) < 90 && abs(freeze_ball_deg - low_passed_ball_deg) < 10 && !holding_ball && !got_push){
-				if(int(now_cnt - last_ball_moved_time) > (comm_state == STATE_STANDALONE) ? 3800 : 5800){
+				if((int(now_cnt - last_ball_moved_time) > ((comm_state == STATE_STANDALONE) ? 3800 : 5800))){
 					now_keeper_state = APPROACHING;
 					start_approach_time = now_cnt;
 				}
@@ -311,4 +311,5 @@ void keeper()
 		mv_deg = 0;
 		mv_power = 100;
 	}
+	use_buzzer_in_algo = false;
 }

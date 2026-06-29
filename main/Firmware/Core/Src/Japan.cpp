@@ -17,7 +17,7 @@ using namespace std;
 
  */
 
-#define my_default_role ROLE_FORWARD
+#define my_default_role ROLE_KEEPER
 
 /*----------------------------*/
 /*--- 書き込み時に必ず確認！！ ---*/
@@ -730,8 +730,8 @@ void Japan()
     pre_swGreen = swGreen;
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
 
-    dribbler_power = 990;
-    apply_dribbler_power(0);
+//    dribbler_power = 990;
+//    apply_dribbler_power(0);
 
     // PWM order: front right -> back right -> back left -> front left.
     // omni index order: front left -> back left -> back right -> front right.

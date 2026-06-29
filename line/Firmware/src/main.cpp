@@ -50,7 +50,7 @@ int main(void) {
     /* Initialize all modules */
     SYS_Initialize(NULL);
 //    CDAC2_DataWrite(DACOUT(3));
-    CDAC2_DataWrite(2000);
+    CDAC2_DataWrite(1400);
     TMR2_CallbackRegister(T2_Callback, (uintptr_t)nullptr);
     TMR2_Start();
     U1.init();
@@ -64,7 +64,13 @@ int main(void) {
         ADCHS_ChannelConversionStart(ADCHS_CH16);
         while (!ADCHS_ChannelResultIsReady(ADCHS_CH16));
         ANALOG_VALUE = ADCHS_ChannelResultGet(ADCHS_CH16);
-        U5.head().send_uint32(Angel_or).tail();
+        U5.head().send_int32(UART_Data.data[0]-128).send_int32(UART_Data.data[1] - 128).tail();
+//        for(int i = 0;i < 32;i++){
+//            if(get_Angel(i)){
+//                U5.Write(i+1);
+//                __delay_ms(1);
+//            }
+//        }
     }
 
     /* Execution should not come here during normal operation */
