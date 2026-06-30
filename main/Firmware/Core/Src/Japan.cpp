@@ -555,6 +555,14 @@ void Japan()
     if (left_goal_angle > 180) left_goal_angle -= 360;
     if (right_goal_angle < -180) right_goal_angle += 360;
 
+    enemy_left_goal_angle = enemyGoal_Angle - enemyGoal_Angle_Range / 2.0;
+    enemy_right_goal_angle = enemyGoal_Angle + enemyGoal_Angle_Range / 2.0;
+    if (enemy_right_goal_angle > 180) enemy_right_goal_angle -= 360;
+    if (enemy_left_goal_angle < -180) enemy_left_goal_angle += 360;
+
+    enemy_rightmiddle_goal_angle = (enemyGoal_Angle + enemy_right_goal_angle)/2;
+    enemy_leftmiddle_goal_angle = (enemyGoal_Angle + enemy_left_goal_angle)/2;
+
     shooting = false;
     softHold = false;
 
@@ -582,11 +590,13 @@ void Japan()
 
     const bool holding_ball_allowed = !kicking_active && !kick_interval_is_active();
 
+//    ADC_ch1 = 700;
+
     if (!holding_ball_allowed) {
       holding_ball = false;
       ball_counting_ballHoldtime = false;
       ball_counting_ballReleasetime = false;
-    } else if (ADC_ch2 > 600) {
+    } else if (ADC_ch2 > 550) {
       ball_counting_ballHoldtime =
           false; // Release判定に入ったらHoldタイマーをリセット
       if (!ball_counting_ballReleasetime) {
@@ -672,7 +682,8 @@ void Japan()
     // from the half-period center value.
     omni.set_limit((period_1 / 2) - 10);
 
-//    mv_power = 100;
+//    mv_power = 0;
+//    mv_deg = 0;
 
     omni.dcalc((mv_deg * -1) + 90, (mv_power* 900 / 100), GYRO_duty);
 //    omni.dcalc(90, (mv_power * 0 / 100), 0); // デバッグ用そのまま
@@ -733,6 +744,8 @@ void Japan()
     pre_swRed = swRed;
     pre_swGreen = swGreen;
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
+//    dribbler_power = 990;
+//	apply_dribbler_power(false);
 
     // PWM order: front right -> back right -> back left -> front left.
     // omni index order: front left -> back left -> back right -> front right.
@@ -740,7 +753,7 @@ void Japan()
 
 //    double a1 = *omni.get_motor(3);
 
-    //     front right
+////         front right
     if (*(omni.get_motor(3)) > 0)
     {
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
@@ -787,5 +800,54 @@ void Japan()
       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
                             (period_1 / 2) - abs(*omni.get_motor(0)));
     }
+
+
+//     front right
+//	if (*(omni.get_motor(3)) > 0)
+//	{
+//	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+//							(period_8 / 2) + abs(*omni.get_motor(3)));
+//	}
+//	else
+//	{
+//	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+//							(period_8 / 2) - abs(*omni.get_motor(3)));
+//	}
+//
+//	//     back right
+//	if (*(omni.get_motor(2)) > 0)
+//	{
+//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+//							(period_1 / 2) + abs(*omni.get_motor(2)));
+//	}
+//	else
+//	{
+//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+//							(period_1 / 2) - abs(*omni.get_motor(2)));
+//	}
+//
+//	//     back left
+//	if (*(omni.get_motor(1)) < 0)
+//	{
+//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+//							(period_1 / 2) + abs(*omni.get_motor(1)));
+//	}
+//	else
+//	{
+//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+//							(period_1 / 2) - abs(*omni.get_motor(1)));
+//	}
+//
+//	//     front left
+//	if (*(omni.get_motor(0)) < 0)
+//	{
+//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+//							(period_1 / 2) + abs(*omni.get_motor(0)));
+//	}
+//	else
+//	{
+//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+//							(period_1 / 2) - abs(*omni.get_motor(0)));
+//	}
   }
 }

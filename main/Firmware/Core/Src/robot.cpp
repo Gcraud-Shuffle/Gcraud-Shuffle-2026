@@ -16,7 +16,6 @@ int ball_deg;
 double ball_dis;
 int LineDepth;
 int LineAngle;
-int LineAngle_before = 0;
 int LineX;
 int LineY;
 int lineSideRight;
@@ -25,15 +24,6 @@ int lineSideLeft;
 bool lineAngel;
 int goal[8];
 uint16_t cnt;
-
-// globals moved from keeper()/forward()
-bool outside_of_Line = false;
-bool out_of_Line = false;
-bool Line_approached = false;
-int LineAngle_returning = 0;
-int LineAngle_approached = 0;
-double LineAngle_diff = 0;
-double LineAngle_diff_before = 0;
 
 // Ball freeze flags (moved from keeper)
 bool Ball_Freeze = false;
@@ -58,6 +48,9 @@ uint16_t ball_dribbleAccerationBasetime = 0;
 uint16_t ball_dribbleAccerationtime = 0;
 bool ball_dribbleAcceration = false;
 bool starting_dribbler = false;
+uint16_t motor_current_abs_adc[4] = {};
+uint16_t motor_current_average_abs_adc = 0;
+bool motor_current_valid = false;
 bool ball_notfound = false;
 uint16_t ball_notfoundtime = 0;
 bool ball_outofreach = false;
@@ -102,6 +95,10 @@ int16_t enemyGoal_Angle, enemyGoal_Width, myGoal_Angle, myGoal_Width,
 
 double right_goal_angle = 0;
 double left_goal_angle = 0;
+double enemy_right_goal_angle = 0;
+double enemy_left_goal_angle = 0;
+double enemy_rightmiddle_goal_angle = 0;
+double enemy_leftmiddle_goal_angle = 0;
 
 int16_t mv_deg = 0;
 int16_t mv_theta = 0;

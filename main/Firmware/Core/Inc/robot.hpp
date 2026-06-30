@@ -70,7 +70,6 @@ extern double keeper_vec[2];
 
 extern int LineDepth;
 extern int LineAngle;
-extern int LineAngle_before;
 extern int LineX;
 extern int LineY;
 extern int lineSideRight;
@@ -102,15 +101,10 @@ extern int16_t myGoal_Angle_Range;
 extern int16_t myGoal_Radius;
 extern double right_goal_angle;
 extern double left_goal_angle;
-
-// Line / state flags
-extern bool outside_of_Line;
-extern bool out_of_Line;
-extern bool Line_approached;
-extern int LineAngle_returning;
-extern int LineAngle_approached;
-extern double LineAngle_diff;
-extern double LineAngle_diff_before;
+extern double enemy_right_goal_angle;
+extern double enemy_left_goal_angle;
+extern double enemy_rightmiddle_goal_angle;
+extern double enemy_leftmiddle_goal_angle;
 
 // Ball freeze flags
 extern bool Ball_Freeze;
@@ -135,6 +129,9 @@ extern uint16_t ball_dribbleAccerationBasetime;
 extern uint16_t ball_dribbleAccerationtime;
 extern bool ball_dribbleAcceration;
 extern bool starting_dribbler;
+extern uint16_t motor_current_abs_adc[4];
+extern uint16_t motor_current_average_abs_adc;
+extern bool motor_current_valid;
 extern bool ball_notfound;
 extern uint16_t ball_notfoundtime;
 extern bool ball_outofreach;

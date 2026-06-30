@@ -36,9 +36,11 @@ double LineAngle_before_Approaching;
 namespace
 {
 constexpr uint16_t kTimer7CountsPerMs = 2;
-constexpr uint16_t kDefaultDribbleRampTimeMs = 800;
-constexpr int16_t kHoldingDribbleTargetPower = 60;
+constexpr uint16_t kDefaultDribbleRampTimeMs = 1000;
+constexpr int16_t kHoldingDribbleTargetPower = 50;
 constexpr int16_t kLineDribbleTargetPower = 50;
+constexpr uint8_t kMotorCurrentCount = 4;
+constexpr uint16_t kCurrentAdcCenter = 2048;
 
 bool &dribbleAccelerationActive()
 {
@@ -107,6 +109,34 @@ int16_t lineDribbleRampPower()
                          kLineDribbleTargetPower,
                          kDefaultDribbleRampTimeMs);
 }
+
+uint16_t currentAbsFromAdc(uint16_t rawAdc)
+{
+  if (rawAdc >= kCurrentAdcCenter)
+  {
+    return static_cast<uint16_t>(rawAdc - kCurrentAdcCenter);
+  }
+
+  return static_cast<uint16_t>(kCurrentAdcCenter - rawAdc);
+}
+
+void updateMotorCurrentSense()
+{
+  uint32_t totalCurrent = 0;
+
+  motor_current_valid =
+      (MainSub_Status & MAIN_SUB_STATUS_CURRENT_VALID) != 0U;
+
+  for (uint8_t index = 0; index < kMotorCurrentCount; index++)
+  {
+    motor_current_abs_adc[index] =
+        currentAbsFromAdc(MainSub_Current_ADC12[index]);
+    totalCurrent += motor_current_abs_adc[index];
+  }
+
+  motor_current_average_abs_adc =
+      static_cast<uint16_t>(totalCurrent / kMotorCurrentCount);
+}
 }
 
 // 敵回避用のベクトル計算関数
@@ -137,6 +167,8 @@ void forward()
 {
   // `forward()` 全体で参照できるようにここで宣言しておく
 
+  updateMotorCurrentSense();
+
 	mv_power = 90;
   if (holding_ball)
   {
@@ -162,11 +194,11 @@ void forward()
     else if (ball_deg <= 30)
     {
       //	           mv_deg = ball_deg*ball_deg / 10;
-      mv_deg = ball_deg * 3.3;
+      mv_deg = ball_deg * 2.2;
     }
     else if (ball_deg <= 90)
     {
-      mv_deg = ball_deg * 2.7;
+      mv_deg = ball_deg * 2.2;
       //			  mv_deg = ball_deg * 1.5;
       // mv_deg = ball_deg*ball_deg / 45;
     }
@@ -189,11 +221,11 @@ void forward()
     else if (ball_deg >= -30)
     {
       //	           mv_deg = (ball_deg*ball_deg / 10)*-1;
-      mv_deg = ball_deg * 3.3;
+      mv_deg = ball_deg * 2.2;
     }
     else if (ball_deg >= -90)
     {
-      mv_deg = ball_deg * 2.7;
+      mv_deg = ball_deg * 2.2;
       //			  mv_deg = ball_deg * 1.5;
       // mv_deg = (ball_deg*ball_deg / 45)*-1;
     }
@@ -252,15 +284,19 @@ void forward()
       mv_deg += (abs(mv_deg - ball_deg) * ball_dis / 90);
     }
   }
+//
+//  if (ball_dis < 15 && abs(ball_deg) < 20)
+//  {
+//    mv_power = 85;
+//  }
 
-  if (ball_dis < 15 && abs(ball_deg) < 20)
-  {
-    mv_power = 85;
-  }
-
-  if(abs(enemyGoal_Angle) < 45 && abs(ball_deg) < 45 && (MainSub_SafeUltrasonic_mm[0] > 400 && MainSub_SafeUltrasonic_mm[1] > 400)){
-	  GYRO_AngleOffset = enemyGoal_Angle;
-  }
+//  if(abs(enemyGoal_Angle) < 55 && abs(ball_deg) < 60 && (MainSub_SafeUltrasonic_mm[0] > 400 && MainSub_SafeUltrasonic_mm[1] > 400) && !lineAngel){
+//	  if(enemyGoal_Angle > 0){
+//		GYRO_AngleOffset = enemy_rightmiddle_goal_angle;
+//	}else{
+//		GYRO_AngleOffset = enemy_leftmiddle_goal_angle;
+//	}
+//  }
 
   //	mv_power = 0;
 //    	holding_ball = true;
@@ -277,14 +313,12 @@ void forward()
     starting_dribbler = true;
 
     // --- ステートの決定（状態の評価） ---
-    if (enemyGoal_Width > 60 && abs(enemyGoal_Angle) < 65)
+    if ((enemyGoal_Width > 60 && abs(enemyGoal_Angle) < 65) || ((MainSub_SafeUltrasonic_mm[0] < 400 || MainSub_SafeUltrasonic_mm[1] < 400) && abs(enemyGoal_Angle) < 45))
     {
       // ゴール前近めでシュート可能
       const bool gyro_aligned_to_goal = (abs(GYRO_Z + enemyGoal_Angle) < 8);
-      const bool wide_goal_without_line =
-          (enemyGoal_Width > 70) && (abs(LineAngle) < 20) &&
-          (enemyGoal_Angle_Range > 30) && !any_line_sensor_active;
-      if ((!lineAngel && gyro_aligned_to_goal) || wide_goal_without_line)
+      const bool wide_goal = (enemyGoal_Width > 70);
+      if ((gyro_aligned_to_goal) || (any_line_sensor_active && abs(LineAngle) < 45 && wide_goal))
       {
         current_state = HoldState::KICKING;
       }
@@ -293,12 +327,12 @@ void forward()
         current_state = HoldState::SHOOT_AIM;
       }
     }
-    else if ((myGoal_Width > 40 || enemyGoal_Angle == 0) && MainSub_SafeUltrasonic_mm[2] > 200)
+    else if ((myGoal_Width > 40 || enemyGoal_Width == 0))
     {
       // 自陣ゴールが近い（または相手ロボットと押し合っている）場合
       current_state = HoldState::PUSH_OR_ESCAPE;
     }
-    else if (abs(enemyGoal_Angle) > side_of_goal_thr)
+    else if (abs(enemyGoal_Angle) > side_of_goal_thr || (enemyGoal_Width == 0 && MainSub_SafeUltrasonic_mm[2] < 400))
     {
       // ゴール横の場合
       side_of_Goal = true;
@@ -317,8 +351,13 @@ void forward()
     {
     case HoldState::KICKING:
       // キック時は進行停止・ドリブラー停止
-      GYRO_AngleOffset = enemyGoal_Angle;
-      mv_deg = 0;
+    	if(enemyGoal_Angle > 0){
+			GYRO_AngleOffset = enemy_rightmiddle_goal_angle;
+			mv_deg = enemy_rightmiddle_goal_angle;
+		}else{
+			GYRO_AngleOffset = enemy_leftmiddle_goal_angle;
+			mv_deg = enemy_leftmiddle_goal_angle;
+		}
       mv_power = 100;
       // GYRO_kp = 0.8;
       dribbler_power = -999; // Reverse dribbler while kicking.
@@ -327,8 +366,14 @@ void forward()
 
     case HoldState::SHOOT_AIM:
       // ゴール方向へ姿勢制御しつつ前進
-      GYRO_AngleOffset = enemyGoal_Angle;
-      mv_deg = enemyGoal_Angle;
+    	if(enemyGoal_Angle > 0){
+			GYRO_AngleOffset = enemy_rightmiddle_goal_angle;
+			mv_deg = enemy_rightmiddle_goal_angle;
+		}else{
+			GYRO_AngleOffset = enemy_leftmiddle_goal_angle;
+			mv_deg = enemy_leftmiddle_goal_angle;
+		}
+
       mv_power = 100;
       // GYRO_kp = 0.8;
       break;
@@ -501,100 +546,42 @@ void forward()
     }
   }
 
-  if (lineAngel == true && Line_approached == false)
+  // lineAngel is handled only while the sensor currently sees the line.
+  if (lineAngel == true)
   {
-    Line_approached = true;
-    LineAngle_approached = LineAngle;
-  }
-  else if (lineAngel == false)
-  {
-    Line_approached = false;
-  }
+    use_buzzer_in_algo = true;
+    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
 
-  // 角度差を -180〜180 の範囲に正規化
-  LineAngle_diff = LineAngle_approached - LineAngle;
-  while (LineAngle_diff > 180)
-    LineAngle_diff -= 360;
-  while (LineAngle_diff < -180)
-    LineAngle_diff += 360;
+    mv_deg = LineAngle + 180;
+    mv_power = 90;
 
-  if (abs(LineAngle_diff) > 130 && lineAngel == true)
-  {
-    outside_of_Line = true;
-  }
-  else
-  {
-    outside_of_Line = false;
-  }
-
-  LineAngle_diff_before = LineAngle_approached - LineAngle_before;
-  while (LineAngle_diff_before > 180)
-    LineAngle_diff_before -= 360;
-  while (LineAngle_diff_before < -180)
-    LineAngle_diff_before += 360;
-
-  /*if ((lineAngel == false && abs(LineAngle_diff_before) > 135) &&
-      out_of_Line == false)
-  {
-    out_of_Line = true;
-  }
-  else if (lineAngel == true && out_of_Line == true)
-  {
-    out_of_Line = false;
-  }*/
-
-  //  out_of_Line = false;
-
-  if (lineAngel == true || out_of_Line == true)
-  {
-    if ((outside_of_Line == true || out_of_Line == true) &&
-        holding_ball == false)
-    {
-      if (out_of_Line == true)
-      {
-        mv_deg = LineAngle_before;
-      }
-      else
-      {
-        mv_deg = LineAngle;
-      }
-    }
-    else if (lineAngel == true)
-    {
-      mv_deg = LineAngle + 180;
-    }
-
-    if (lineAngel == true)
-    {
-      if ((lineSideLeft < 3 && lineSideRight < 3) && abs(ball_deg) < 45 &&
-          abs(enemyGoal_Angle) > 55 && holding_ball == false &&
-          abs(LineAngle) <
-              30)
-      { // かめら角とボール角とサイドラインのじょうけんにする
-        mv_power = sin(ball_deg * M_PI / 180) * 80 * 1.5;
-        mv_deg = 90;
-      }
-      else
-      {
-        if (dribbleAccelerationActive())
-        {
-          mv_power = lineDribbleRampPower();
-        }
-        else
-        {
-          mv_power = 90;
-        }
-      }
+    if ((lineSideLeft < 3 && lineSideRight < 3) && abs(ball_deg) < 45 &&
+        abs(enemyGoal_Angle) > 55 && holding_ball == false &&
+        abs(LineAngle) < 30)
+    { // かめら角とボール角とサイドラインのじょうけんにする
+    	if(LineDepth < 100){
+    		mv_deg = LineAngle + 180;
+    	}else{
+    		mv_power = sin(ball_deg * M_PI / 180) * 80 * 1.5;
+		    mv_deg = 90;
+    	}
     }
     else
     {
-      // mv_power = 90;
-    }
-  }
+      if (dribbleAccelerationActive())
+      {
+    	  if(lineAngel && LineDepth < 100){
+    		  mv_deg = LineAngle + 180;
+    	  }else{
+    		  mv_power = lineDribbleRampPower();
+    	  }
 
-  if (lineAngel == true)
-  {
-    LineAngle_before = LineAngle;
+      }
+      else
+      {
+        mv_power = 90;
+      }
+    }
   }
 
   if (holding_ball && lineAngel && LineDepth > 70 &&
@@ -619,24 +606,18 @@ void forward()
   // 自陣側の後ろにボールがある時のラインの処理
   // 後ろだけ反応して、後ろにボールがある時のライントレース
   if(lineSideBack&&!lineAngel&&!lineSideLeft&&!lineSideRight&&abs(ball_deg) > 90){
-    out_of_Line=false;
-    outside_of_Line=false;
     double out_vec[2] = {sin(ball_deg * M_PI / 180.0)*20*(4-lineSideBack), (lineSideBack-1)*30};
 		mv_deg = atan2(out_vec[0], out_vec[1]) * (180.0 / M_PI);
 		mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
   }
   // 自陣側のフィールドの外側にある時(右)
   else if(!lineAngel&&lineSideBack&&!lineSideLeft&&lineSideRight&&(ball_deg > 75||ball_deg < -150)&&(160 > left_goal_angle||myGoal_Width==0)){
-    out_of_Line=false;
-    outside_of_Line=false;
     double out_vec[2] = {-(lineSideRight-1)*40, (lineSideBack-1)*40};
 		mv_deg = atan2(out_vec[0], out_vec[1]) * (180.0 / M_PI);
 		mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
   }
   // 自陣側のフィールドの外側にある時(左)
   else if(!lineAngel&&lineSideBack&&lineSideLeft&&!lineSideRight&&(ball_deg < -75||ball_deg > 150)&&(-160 < right_goal_angle||myGoal_Width==0)){
-    out_of_Line=false;
-    outside_of_Line=false;
     double out_vec[2] = {(lineSideLeft-1)*40, (lineSideBack-1)*40};
 		mv_deg = atan2(out_vec[0], out_vec[1]) * (180.0 / M_PI);
 		mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
@@ -651,8 +632,6 @@ void forward()
   // ゴール前
   // TODO: ボールとの距離でライントレースするかを決めるようにする
   if(lineSideBack&&!lineAngel&&!lineSideLeft&&!lineSideRight&&(abs(myGoal_Angle) > 135||myGoal_Angle*ball_deg>0)&&abs(ball_deg)>30){
-    out_of_Line=false;
-    outside_of_Line=false;
     double out_vec[2] = {sin(ball_deg * M_PI / 180.0)*80, (lineSideBack-1)*20};
     // if(comm_state != STATE_STANDALONE&&false){
     //   out_vec[0] = -out_vec[0];
@@ -670,8 +649,6 @@ void forward()
   // ゴール左
   if(left_goal_angle>0&&ball_deg>0&&ball_deg<left_goal_angle&&((lineAngel&&LineAngle>135&&LineDepth)||lineSideRight||lineSideBack)&&myGoal_Radius<120&&myGoal_Radius!=0){
     GYRO_AngleOffset = 0;
-    out_of_Line=false;
-    outside_of_Line=false;
     if(lineAngel){
       mv_deg = LineAngle-67.5;
     }
@@ -685,8 +662,6 @@ void forward()
   }
   // ゴール右
   else if(right_goal_angle<0&&ball_deg<0&&ball_deg>right_goal_angle&&((lineAngel&&LineAngle<-135&&LineDepth)||lineSideLeft||lineSideBack)&&myGoal_Radius<120&&myGoal_Radius!=0){
-    out_of_Line=false;
-    outside_of_Line=false;
     GYRO_AngleOffset = 0;
     if(lineAngel){
       mv_deg = LineAngle+67.5;
