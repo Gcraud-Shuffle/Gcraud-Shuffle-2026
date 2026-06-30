@@ -15,9 +15,15 @@ using namespace std;
   ROLE_KEEPER or ROLE_FORWARD が利用可能です。
   TODO:書き込み時にこれを確認する、
 
+ *-MY_DEFAULT_STRATEGYについて
+  戦略的にFORWARDとKEEPERのどちらを常に存在させるかを決めます。
+  2機体とも揃っていないといけません。
+  STRATEGY_FORWARD_HEAVY or STRATEGY_KEEPER_HEAVY が利用可能です。
+  TODO:試合開始前にこれを決定する。
  */
 
 #define my_default_role ROLE_FORWARD
+#define MY_DEFAULT_STRATEGY STRATEGY_FORWARD_HEAVY
 
 /*----------------------------*/
 /*--- 書き込み時に必ず確認！！ ---*/
@@ -278,120 +284,261 @@ uint32_t role_lock_time = 0;
 bool is_role_change_pending = false;
 RoleState pending_role = my_default_role;
 bool first_run_fsm = true;
+bool has_ever_connected = false;
 bool is_role_changed = false; // ロール変更通知フラグ
 bool use_buzzer_in_algo = false;
+bool force_forward_locked = false;     // ボタン強制切替ロック中 (プロトコル確認まで維持)
+bool force_keeper_locked = false;      // 相手からの指示によるKeeperロック中
+uint8_t starting_partner_forceACK = 0; // 要求開始時の相手のforceACKの値 (0 or 1)
+uint32_t role_changed_by_partner_time = 0; // 通信相手によってロール変更された時刻
 
-void update_role_management() {
+#define STRATEGY_FORWARD_HEAVY 1
+#define STRATEGY_KEEPER_HEAVY 2
+int current_strategy = MY_DEFAULT_STRATEGY;
+
+/**
+ * @brief swGreenボタン押下によるForward強制切替
+ *
+ * 押された機体を即座にForwardにし、
+ * ESP32通信経由でforceForwardフラグを相手に送信して相手をKeeperにする。
+ * ヒステリシスを経由せず即座に切り替える。
+ */
+void force_role_forward()
+{
+  // 自分を即座にForwardに切替
+  my_role = ROLE_FORWARD;
+  role_lock_time = HAL_GetTick();
+  is_role_change_pending = false;
+  is_role_changed = true;
+
+  // ボタンを押した時点の相手のforceACKを記憶
+  if (!ESP32_Failed_Connection && ESP32_RX_Data.partnerDead == 0)
+  {
+    starting_partner_forceACK = ESP32_RX_Data.forceACK;
+  }
+  else
+  {
+    starting_partner_forceACK = 0;
+  }
+
+  // プロトコルロック開始: 相手がACKを反転させるまでFSMをロック
+  force_forward_locked = true;
+
+  ESP32_TX_Data.role = my_role;
+}
+
+void update_role_management()
+{
   uint32_t now = HAL_GetTick();
   bool partner_active = false;
 
   // 1. パケット有効性チェックと Mutual Confirmation
-  if (!ESP32_Failed_Connection && ESP32_RX_Data.no_connection) {
+  // ESP側がMSB(bit7: partnerDead)で相手の死活を判定する
+  if (!ESP32_Failed_Connection && ESP32_RX_Data.partnerDead == 0)
+  {
     last_valid_packet_time = now;
     ESP32_TX_Data.local_ACK = 1;
-  } else {
+  }
+  else
+  {
     ESP32_TX_Data.local_ACK = 0;
   }
 
-  if ((now - last_valid_packet_time) > 5000) {
+  if ((now - last_valid_packet_time) > 5000)
+  {
     if (comm_state == STATE_COORDINATED ||
-        comm_state == STATE_RECOVERING) {
+        comm_state == STATE_RECOVERING)
+    {
       // 通信が確立していた状態から切断された: 相手の電源が落ちたと判断
-      ESP32_TX_Data.youWereDead = 1; // 「お前はすでに死んでいる」
+      ESP32_TX_Data.youWereDead = 1;
     }
     comm_state = STATE_STANDALONE;
     partner_active = false;
-  } else {
+  }
+  else
+  {
     partner_active = true;
   }
 
   bool mutual_confirmed = (partner_active && ESP32_RX_Data.local_ACK == 1 &&
                            ESP32_TX_Data.local_ACK == 1);
 
-  if (mutual_confirmed) {
-    if (comm_state == STATE_STANDALONE) {
+  if (mutual_confirmed)
+  {
+    has_ever_connected = true;
+    if (comm_state == STATE_STANDALONE)
+    {
       comm_state = STATE_RECOVERING;
     }
-    // 相手からyouWereDeadを受けた場合もRECOVERINGに戻す
-    // (COORDINATED中にchange_role()でロールを変えた直後に復帰した場合の競合解決)
-    if (ESP32_RX_Data.youWereDead && comm_state == STATE_COORDINATED) {
-      comm_state = STATE_RECOVERING;
-    }
-  } else {
-    if (comm_state != STATE_STANDALONE) {
+  }
+  else
+  {
+    if (comm_state != STATE_STANDALONE)
+    {
       comm_state = STATE_STANDALONE;
       ESP32_TX_Data.youWereDead = 1; // 相手が落ちたことを記録
     }
   }
 
   // 2. ロール管理 FSM
+
+  // ボタン強制切替のプロトコルロック中はFSMによるロール変更をスキップ
+  // 相手が要求を確認(forceACKの値が要求開始時の状態から反転したことを返答)するまでロックを維持する
+  if (force_forward_locked)
+  {
+    if (!ESP32_Failed_Connection &&
+        ESP32_RX_Data.partnerDead == 0 &&
+        ESP32_RX_Data.forceACK != starting_partner_forceACK)
+    {
+      // 相手のACK反転を確認 → ロック解除
+      force_forward_locked = false;
+    }
+    else
+    {
+      // まだ相手が応答していない: ロール管理をスキップしてTXデータだけ更新
+      ESP32_TX_Data.role = my_role;
+      return;
+    }
+  }
+
+  // 受信側Keeperロック中もFSMによるロール変更をスキップ
+  if (force_keeper_locked)
+  {
+    ESP32_TX_Data.role = my_role;
+    return;
+  }
+
   RoleState target_role = my_role;
 
-  if (comm_state == STATE_STANDALONE) {
-    // STANDALONE時は現在のロールを維持（change_role()で手動変更可能）
-    target_role = my_role;
-  } else if (comm_state == STATE_RECOVERING) {
-    // 復帰時: 現在のロールを維持しつつフラグをクリア
-    target_role = my_role;
-    ESP32_TX_Data.youWereDead = 0;
-
-    // ロール競合チェック:
-    // 両機体が同じロールの場合、my_default_roleから離れている方が譲歩
-    if (my_role == ESP32_RX_Data.role) {
-      if (my_role != my_default_role) {
-        target_role = my_default_role;
+  if (comm_state == STATE_STANDALONE)
+  {
+    if (has_ever_connected)
+    {
+      // 通信が一度でも確立したのちに単独動作になった場合は戦略に従う
+      if (current_strategy == STRATEGY_FORWARD_HEAVY)
+      {
+        target_role = ROLE_FORWARD;
+      }
+      else if (current_strategy == STRATEGY_KEEPER_HEAVY)
+      {
+        target_role = ROLE_KEEPER;
       }
     }
-
-    if (my_role == target_role) {
-      comm_state = STATE_COORDINATED;
+    else
+    {
+      // 起動直後などで一度も通信が確立していない時は初期ロールを維持する
+      target_role = my_role;
     }
-  } else if (comm_state == STATE_COORDINATED) {
+  }
+  else if (comm_state == STATE_RECOVERING)
+  {
+    if (ESP32_RX_Data.youWereDead == 1 && ESP32_TX_Data.youWereDead == 1)
+    {
+      // 両者が「相手が死んでいた」と主張している =
+      // 単なる電波障害（両方とも稼働し続けていた）
+      // 双方とも現在のロールを維持し、フラグを下ろす
+      target_role = my_role;
+      if (my_role == target_role)
+      {
+        ESP32_TX_Data.youWereDead = 0;
+        comm_state = STATE_COORDINATED;
+      }
+    }
+    else if (ESP32_RX_Data.youWereDead == 1)
+    {
+      // 相手から「お前は死んでいた(電源が落ちていた)」と言われた ->
+      // 自分が復帰機
+      target_role =
+          (ESP32_RX_Data.role == ROLE_FORWARD) ? ROLE_KEEPER : ROLE_FORWARD;
+
+      // 実際にロールが切り替わる（ヒステリシス完了）まで待機してから遷移
+      if (my_role == target_role)
+      {
+        comm_state = STATE_COORDINATED; // 譲歩完了
+      }
+    }
+    else if (ESP32_TX_Data.youWereDead == 1)
+    {
+      // 自分は「相手が死んでいた」と伝えている -> 自分が稼働していた既存機
+      target_role = my_role; // 自分のロールを維持(Lock)
+
+      // 相手がこちらの意図を汲んで相補的な役割になったらフラグを下ろす
+      if (ESP32_RX_Data.role != my_role)
+      {
+        ESP32_TX_Data.youWereDead = 0;
+        comm_state = STATE_COORDINATED;
+      }
+    }
+    else
+    {
+      // 両方とも youWereDead == 0 の場合 (初期起動で同時に繋がった等)
+      if (my_role == ESP32_RX_Data.role)
+      {
+        // 今回の運用に合わせて my_default_role で競合を回避させる
+        if (my_role != my_default_role)
+        {
+          target_role = my_default_role;
+        }
+        else
+        {
+          target_role = my_role;
+        }
+      }
+      if (my_role == target_role)
+      {
+        comm_state = STATE_COORDINATED;
+      }
+    }
+  }
+  else if (comm_state == STATE_COORDINATED)
+  {
     // 重複の絶対回避
-    if (my_role == ESP32_RX_Data.role) {
+    if (my_role == ESP32_RX_Data.role)
+    {
       // お互いが同じロールになってしまった場合、本来の役割(デフォルト)から離れている方が譲歩(退避)する
-      if (my_role != my_default_role) {
+      if (my_role != my_default_role)
+      {
         target_role = my_default_role;
-      } else {
+      }
+      else
+      {
         target_role = my_role;
       }
     }
   }
 
   // 3. チャタリング防止と安定性 (Hysteresis & Lock)
-  if (target_role != my_role) {
-    if ((uint16_t)(now - role_lock_time) < 1000) {
+  if (target_role != my_role)
+  {
+    if ((uint16_t)(now - role_lock_time) < 1000)
+    {
       is_role_change_pending = false;
-    } else {
-      if (!is_role_change_pending || pending_role != target_role) {
+    }
+    else
+    {
+      if (!is_role_change_pending || pending_role != target_role)
+      {
         is_role_change_pending = true;
         pending_role = target_role;
         role_change_pending_time = now;
-      } else if (now - role_change_pending_time >= 200) {
+      }
+      else if (now - role_change_pending_time >= 200)
+      {
         my_role = target_role;
         role_lock_time = now;
         is_role_change_pending = false;
-        is_role_changed =
-            true; // ロールが実際に切り替わった瞬間にフラグを立てる
+        is_role_changed = true; // ロールが実際に切り替わった瞬間にフラグを立てる
       }
     }
-  } else {
+  }
+  else
+  {
     is_role_change_pending = false;
   }
 
   ESP32_TX_Data.role = my_role;
 }
 
-// STANDALONE時のみロール変更を許可する関数
-// forward.cpp / keeper.cpp のアルゴリズム内から呼び出し可能
-void change_role(RoleState new_role) {
-  if (comm_state == STATE_STANDALONE && my_role != new_role) {
-    ESP32_TX_Data.youWereDead = 1; // 「お前はすでに死んでいる」
-    my_role = new_role;
-    ESP32_TX_Data.role = my_role;
-    is_role_changed = true;
-  }
-}
 void Japan()
 {
 

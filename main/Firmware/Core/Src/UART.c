@@ -14,6 +14,7 @@ volatile uint8_t ESP32_Comm_flag = 0;
 ESP_data ESP32_TX_Data = {0};
 ESP_data ESP32_RX_Data = {0};
 bool ESP32_Failed_Connection = 0;
+RoleState partner_role = ROLE_KEEPER;
 
 bool IR_Failed_Connection = 0;
 bool LINE_Failed_Connection = 0;

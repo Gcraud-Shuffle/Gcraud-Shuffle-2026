@@ -66,7 +66,7 @@ void keeper()
 			is_role_changed = true;
 			now_keeper_state = MOVING_AS_FORWARD;
 			forward();
-			change_role(ROLE_FORWARD);
+			force_role_forward();
 			return;
 		}
 		GYRO_AngleOffset = (ball_deg - static_cast<int>(e.z))*1.5;
@@ -275,20 +275,20 @@ void keeper()
 			// --------------------------------------- //
 			// Section: STANDALONE時のボールへのアプローチ(フリーズ検知)
 			// --------------------------------------- //
-			if(Ball_Closeness > 40 && abs(ball_deg) < 90 && abs(freeze_ball_deg - low_passed_ball_deg) < 10 && !holding_ball && !got_push){
-				if(int(now_cnt - last_ball_moved_time) > (comm_state == STATE_STANDALONE) ? 3800 : 5800){
-					now_keeper_state = APPROACHING;
-					start_approach_time = now_cnt;
-				}
-				else if(int(now_cnt - last_ball_moved_time) % 1000 > 800){
-					use_buzzer_in_algo = true;
-					__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
-				}
-			}
-			else{
-				last_ball_moved_time = now_cnt;
-				freeze_ball_deg = ball_deg;
-			}
+			// if(Ball_Closeness > 40 && abs(ball_deg) < 90 && abs(freeze_ball_deg - low_passed_ball_deg) < 10 && !holding_ball && !got_push){
+			// 	if(int(now_cnt - last_ball_moved_time) > (comm_state == STATE_STANDALONE) ? 3800 : 5800){
+			// 		now_keeper_state = APPROACHING;
+			// 		start_approach_time = now_cnt;
+			// 	}
+			// 	else if(int(now_cnt - last_ball_moved_time) % 1000 > 800){
+			// 		use_buzzer_in_algo = true;
+			// 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
+			// 	}
+			// }
+			// else{
+			// 	last_ball_moved_time = now_cnt;
+			// 	freeze_ball_deg = ball_deg;
+			// }
 
 			//
 			// mv_power = mv_power - min(max((double)mv_power, -mv_gap), mv_gap);

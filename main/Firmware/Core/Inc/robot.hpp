@@ -27,9 +27,6 @@ extern bool is_role_changed;
 extern RobotState comm_state;
 extern RoleState my_role;
 
-// STANDALONE時のみロール変更を許可する関数
-void change_role(RoleState new_role);
-
 void request_kick();
 
 // chassis helper for omni drive
@@ -204,6 +201,11 @@ void keeper();
 void Japan();
 
 void BNO_init();
+
+
+void force_role_forward();
+
+extern bool force_forward_locked;
 
 #endif /*ROBOT_HPP_*/
 

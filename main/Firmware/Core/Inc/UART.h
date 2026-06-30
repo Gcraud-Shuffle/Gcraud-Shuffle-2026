@@ -36,10 +36,10 @@ extern volatile uint8_t UART4_flag;
 extern volatile uint8_t ESP32_Comm_flag;
 
 // --- Role Management ENUMs ---
-enum RoleState {
+typedef enum RoleState {
     ROLE_KEEPER = 0,
     ROLE_FORWARD = 1
-};
+} RoleState;
 
 enum RobotState {
     STATE_STANDALONE = 0,
@@ -50,19 +50,21 @@ enum RobotState {
 typedef union {
   uint8_t byte;
   struct {
-    unsigned char local_ACK : 1; // 0: NACK / 1: ACK
-    unsigned char role : 1; // FORWARD or KEEPER
-    unsigned char youWereDead : 1;
-    unsigned char ImDIE : 1;
-    unsigned char goal_pos : 2;
-    unsigned char hold_flag : 1;
-    unsigned char no_connection : 1;
+    unsigned char role : 1;          // bit0: 自分のロール (0=KEEPER, 1=FORWARD)
+    unsigned char goal : 1;          // bit1: ゴール関連フラグ
+    unsigned char hold_flag : 1;     // bit2: ボール保持フラグ
+    unsigned char forceForward : 1;  // bit3: swGreenによるForward強制指令
+    unsigned char local_ACK : 1;     // bit4: 通信確認ACK
+    unsigned char youWereDead : 1;   // bit5: 「お前は死んでいた」フラグ
+    unsigned char forceACK : 1;      // bit6: 強制指令に対する応答(確認完了)フラグ
+    unsigned char partnerDead : 1;   // bit7: ESP側判定: 相手機体が死んでいる (0=生存, 1=死亡)
   };
 } ESP_data;
 
 extern ESP_data ESP32_TX_Data;
 extern ESP_data ESP32_RX_Data;
 extern bool ESP32_Failed_Connection;
+extern RoleState partner_role;
 
 extern bool IR_Failed_Connection;
 extern bool LINE_Failed_Connection;
