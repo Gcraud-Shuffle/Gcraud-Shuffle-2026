@@ -64,13 +64,19 @@ int main(void) {
         ADCHS_ChannelConversionStart(ADCHS_CH16);
         while (!ADCHS_ChannelResultIsReady(ADCHS_CH16));
         ANALOG_VALUE = ADCHS_ChannelResultGet(ADCHS_CH16);
-        U5.head().send_int32(UART_Data.data[0]-128).send_int32(UART_Data.data[1] - 128).tail();
+//        int j = 0;
+//        for(int i = 0;i < 32;i++){
+//            if(get_Angel(i))j++;
+//        }
+//        U5.Write(j);
+//        U5.head().send_int32(UART_Data.data[0]-128).send_int32(UART_Data.data[1] - 128).tail();
 //        for(int i = 0;i < 32;i++){
 //            if(get_Angel(i)){
 //                U5.Write(i+1);
 //                __delay_ms(1);
 //            }
 //        }
+        U5.head().send_int32(ANALOG_VALUE).tail();
     }
 
     /* Execution should not come here during normal operation */

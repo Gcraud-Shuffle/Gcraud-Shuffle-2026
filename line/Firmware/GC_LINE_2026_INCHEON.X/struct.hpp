@@ -22,6 +22,7 @@ typedef union {
                 unsigned char back : 2;
                 unsigned char left : 2;
                 unsigned char Angel_flag : 1;
+                unsigned char ImDIE_flag : 1;
             };
         };
     };

@@ -26,7 +26,11 @@ void T2_Callback(uint32_t,uintptr_t) {
     vec2 = calc_line();
     UART_Data.data[0] = vec2.x*127.0+128;
     UART_Data.data[1] = vec2.y*127.0+128;
-
+    int j = 0;
+    for(int i = 0;i < 32;i++){
+        if(get_Angel(i))j++;
+    }
+    UART_Data.ImDIE_flag = (j > 16);
     LED1=a<100?LED1:~LED1;
     LED2 = UART_Data.Angel_flag;
     LED3 = (bool)(B|L|R);
