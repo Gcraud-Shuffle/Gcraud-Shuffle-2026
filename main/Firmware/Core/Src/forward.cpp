@@ -41,6 +41,24 @@ constexpr int16_t kHoldingDribbleTargetPower = 50;
 constexpr int16_t kLineDribbleTargetPower = 50;
 constexpr uint8_t kMotorCurrentCount = 4;
 constexpr uint16_t kCurrentAdcCenter = 2048;
+constexpr int16_t kLineOverCenterEnterDeg = 130;
+constexpr int16_t kLineOverCenterExitDeg = 70;
+constexpr uint32_t kLineOverCenterMinHoldMs = 30;
+constexpr uint32_t kLineOutReturnTimeoutMs = 300;
+constexpr int16_t kLineOutReturnMinPower = 90;
+
+struct LineOverrunState
+{
+  bool line_seen = false;
+  bool over_center = false;
+  bool returning_after_loss = false;
+  int approach_angle = 0;
+  int last_line_angle = 0;
+  uint32_t over_center_start_ms = 0;
+  uint32_t return_start_ms = 0;
+};
+
+LineOverrunState line_overrun;
 
 bool &dribbleAccelerationActive()
 {
@@ -136,6 +154,125 @@ void updateMotorCurrentSense()
 
   motor_current_average_abs_adc =
       static_cast<uint16_t>(totalCurrent / kMotorCurrentCount);
+}
+
+int normalizeAngleDiff(int diff)
+{
+  while (diff > 180)
+  {
+    diff -= 360;
+  }
+
+  while (diff < -180)
+  {
+    diff += 360;
+  }
+
+  return diff;
+}
+
+int angleDiffAbs(int fromAngle, int toAngle)
+{
+  const int diff = normalizeAngleDiff(fromAngle - toAngle);
+  return diff < 0 ? -diff : diff;
+}
+
+void resetLineOverrunState()
+{
+  line_overrun.line_seen = false;
+  line_overrun.over_center = false;
+  line_overrun.returning_after_loss = false;
+  line_overrun.over_center_start_ms = 0;
+}
+
+void updateLineOverrunState(uint32_t nowMs)
+{
+  if (lineAngel)
+  {
+    if (!line_overrun.line_seen && !line_overrun.returning_after_loss)
+    {
+      line_overrun.approach_angle = LineAngle;
+      line_overrun.over_center = false;
+    }
+
+    line_overrun.line_seen = true;
+    line_overrun.returning_after_loss = false;
+    line_overrun.last_line_angle = LineAngle;
+
+    const int angle_diff =
+        angleDiffAbs(line_overrun.approach_angle, LineAngle);
+
+    if (line_overrun.over_center)
+    {
+      if (angle_diff <= kLineOverCenterExitDeg)
+      {
+        line_overrun.over_center = false;
+        line_overrun.over_center_start_ms = 0;
+      }
+    }
+    else if (angle_diff >= kLineOverCenterEnterDeg)
+    {
+      line_overrun.over_center = true;
+      line_overrun.over_center_start_ms = nowMs;
+    }
+
+    return;
+  }
+
+  if (line_overrun.line_seen && line_overrun.over_center)
+  {
+    const bool over_center_stable =
+        (nowMs - line_overrun.over_center_start_ms) >=
+        kLineOverCenterMinHoldMs;
+
+    if (!over_center_stable)
+    {
+      resetLineOverrunState();
+      return;
+    }
+
+    line_overrun.line_seen = false;
+    line_overrun.returning_after_loss = true;
+    line_overrun.return_start_ms = nowMs;
+    return;
+  }
+
+  if (line_overrun.returning_after_loss)
+  {
+    if ((nowMs - line_overrun.return_start_ms) > kLineOutReturnTimeoutMs)
+    {
+      resetLineOverrunState();
+    }
+    return;
+  }
+
+  resetLineOverrunState();
+}
+
+void keepLineReturnPower()
+{
+  if (mv_power < kLineOutReturnMinPower)
+  {
+    mv_power = kLineOutReturnMinPower;
+  }
+}
+
+void applyLineOverCenterCorrection()
+{
+  if (lineAngel && line_overrun.over_center)
+  {
+    mv_deg = LineAngle;
+    keepLineReturnPower();
+  }
+}
+
+void applyLineLossReturnCorrection()
+{
+  if (line_overrun.returning_after_loss)
+  {
+    mv_deg = line_overrun.last_line_angle;
+    keepLineReturnPower();
+  }
 }
 }
 
@@ -298,7 +435,7 @@ void forward()
 //	}
 //  }
 
-  //	mv_power = 0;
+//  	mv_deg = 0;
 //    	holding_ball = true;
 
   updateDribbleAccelerationRamp(holding_ball, cnt);
@@ -546,6 +683,8 @@ void forward()
     }
   }
 
+  updateLineOverrunState(HAL_GetTick());
+
   // lineAngel is handled only while the sensor currently sees the line.
   if (lineAngel == true)
   {
@@ -686,6 +825,8 @@ void forward()
 //  //
 //
 //  // --- 押し込み処理：ボールを敵ゴールに押し込むための状態管理 ---
+  applyLineOverCenterCorrection();
+
   switch (push_state)
   {
   case PushBallToGoalState::PREPARE_WAITING:
@@ -792,4 +933,6 @@ void forward()
       is_role_changed = false;
     }
   }
+
+  applyLineLossReturnCorrection();
 }
