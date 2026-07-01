@@ -22,8 +22,8 @@ using namespace std;
   TODO:試合開始前にこれを決定する。
  */
 
-#define my_default_role ROLE_FORWARD
-#define MY_DEFAULT_STRATEGY STRATEGY_FORWARD_HEAVY
+#define my_default_role ROLE_KEEPER
+#define MY_DEFAULT_STRATEGY STRATEGY_KEEPER_HEAVY
 
 /*----------------------------*/
 /*--- 書き込み時に必ず確認！！ ---*/
@@ -743,7 +743,7 @@ void Japan()
       holding_ball = false;
       ball_counting_ballHoldtime = false;
       ball_counting_ballReleasetime = false;
-    } else if (ADC_ch2 > 550) {
+    } else if (ADC_ch1 > 550) {
       ball_counting_ballHoldtime =
           false; // Release判定に入ったらHoldタイマーをリセット
       if (!ball_counting_ballReleasetime) {
@@ -754,7 +754,7 @@ void Japan()
           holding_ball = false;
         }
       }
-    } else if (ADC_ch2 < 350) {
+    } else if (ADC_ch1 < 350) {
       ball_counting_ballReleasetime =
           false; // Hold判定に入ったらReleaseタイマーをリセット
       if (!ball_counting_ballHoldtime) {
@@ -848,6 +848,12 @@ void Japan()
       rotateMotor = !rotateMotor;
     }
 
+    // swGreen立ち上がりエッジ: 自分をForward、相手をKeeperに強制切替
+	if (swGreen == 1 && pre_swGreen == 0)
+	{
+	  force_role_forward();
+	}
+
     if (rotateMotor)
     {
       HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
@@ -901,100 +907,100 @@ void Japan()
 //    double a1 = *omni.get_motor(3);
 
 ////         front right
-    if (*(omni.get_motor(3)) > 0)
-    {
-      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
-                            (period_8 / 2) + abs(*omni.get_motor(3)));
-    }
-    else
-    {
-      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
-                            (period_8 / 2) - abs(*omni.get_motor(3)));
-    }
-
-    //     back right
-    if (*(omni.get_motor(2)) > 0)
-    {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
-                            (period_1 / 2) + abs(*omni.get_motor(2)));
-    }
-    else
-    {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
-                            (period_1 / 2) - abs(*omni.get_motor(2)));
-    }
-
-    //     back left
-    if (*(omni.get_motor(1)) > 0)
-    {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
-                            (period_1 / 2) + abs(*omni.get_motor(1)));
-    }
-    else
-    {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
-                            (period_1 / 2) - abs(*omni.get_motor(1)));
-    }
-
-    //     front left
-    if (*(omni.get_motor(0)) < 0)
-    {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
-                            (period_1 / 2) + abs(*omni.get_motor(0)));
-    }
-    else
-    {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
-                            (period_1 / 2) - abs(*omni.get_motor(0)));
-    }
+//    if (*(omni.get_motor(3)) > 0)
+//    {
+//      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+//                            (period_8 / 2) + abs(*omni.get_motor(3)));
+//    }
+//    else
+//    {
+//      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+//                            (period_8 / 2) - abs(*omni.get_motor(3)));
+//    }
+//
+//    //     back right
+//    if (*(omni.get_motor(2)) > 0)
+//    {
+//      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+//                            (period_1 / 2) + abs(*omni.get_motor(2)));
+//    }
+//    else
+//    {
+//      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+//                            (period_1 / 2) - abs(*omni.get_motor(2)));
+//    }
+//
+//    //     back left
+//    if (*(omni.get_motor(1)) > 0)
+//    {
+//      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+//                            (period_1 / 2) + abs(*omni.get_motor(1)));
+//    }
+//    else
+//    {
+//      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+//                            (period_1 / 2) - abs(*omni.get_motor(1)));
+//    }
+//
+//    //     front left
+//    if (*(omni.get_motor(0)) < 0)
+//    {
+//      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+//                            (period_1 / 2) + abs(*omni.get_motor(0)));
+//    }
+//    else
+//    {
+//      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+//                            (period_1 / 2) - abs(*omni.get_motor(0)));
+//    }
 //
 //
 ////     front right
-//	if (*(omni.get_motor(3)) > 0)
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
-//							(period_8 / 2) + abs(*omni.get_motor(3)));
-//	}
-//	else
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
-//							(period_8 / 2) - abs(*omni.get_motor(3)));
-//	}
-//
-////	     back right
-//	if (*(omni.get_motor(2)) > 0)
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
-//							(period_1 / 2) + abs(*omni.get_motor(2)));
-//	}
-//	else
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
-//							(period_1 / 2) - abs(*omni.get_motor(2)));
-//	}
-//
-//	//     back left
-//	if (*(omni.get_motor(1)) < 0)
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
-//							(period_1 / 2) + abs(*omni.get_motor(1)));
-//	}
-//	else
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
-//							(period_1 / 2) - abs(*omni.get_motor(1)));
-//	}
-//
-//	//     front left
-//	if (*(omni.get_motor(0)) < 0)
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
-//							(period_1 / 2) + abs(*omni.get_motor(0)));
-//	}
-//	else
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
-//							(period_1 / 2) - abs(*omni.get_motor(0)));
-//	}
+	if (*(omni.get_motor(3)) > 0)
+	{
+	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+							(period_8 / 2) + abs(*omni.get_motor(3)));
+	}
+	else
+	{
+	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+							(period_8 / 2) - abs(*omni.get_motor(3)));
+	}
+
+//	     back right
+	if (*(omni.get_motor(2)) > 0)
+	{
+	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+							(period_1 / 2) + abs(*omni.get_motor(2)));
+	}
+	else
+	{
+	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+							(period_1 / 2) - abs(*omni.get_motor(2)));
+	}
+
+	//     back left
+	if (*(omni.get_motor(1)) < 0)
+	{
+	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+							(period_1 / 2) + abs(*omni.get_motor(1)));
+	}
+	else
+	{
+	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+							(period_1 / 2) - abs(*omni.get_motor(1)));
+	}
+
+	//     front left
+	if (*(omni.get_motor(0)) < 0)
+	{
+	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+							(period_1 / 2) + abs(*omni.get_motor(0)));
+	}
+	else
+	{
+	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+							(period_1 / 2) - abs(*omni.get_motor(0)));
+	}
   }
 }

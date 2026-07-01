@@ -331,11 +331,11 @@ void forward()
     else if (ball_deg <= 30)
     {
       //	           mv_deg = ball_deg*ball_deg / 10;
-      mv_deg = ball_deg * 2.5;
+      mv_deg = ball_deg * 2.4;
     }
     else if (ball_deg <= 90)
     {
-      mv_deg = ball_deg * 2.5;
+      mv_deg = ball_deg * 2.4;
       //			  mv_deg = ball_deg * 1.5;
       // mv_deg = ball_deg*ball_deg / 45;
     }
@@ -358,11 +358,11 @@ void forward()
     else if (ball_deg >= -30)
     {
       //	           mv_deg = (ball_deg*ball_deg / 10)*-1;
-      mv_deg = ball_deg * 2.5;
+      mv_deg = ball_deg * 2.6;
     }
     else if (ball_deg >= -90)
     {
-      mv_deg = ball_deg * 2.5;
+      mv_deg = ball_deg * 2.6;
       //			  mv_deg = ball_deg * 1.5;
       // mv_deg = (ball_deg*ball_deg / 45)*-1;
     }
@@ -414,11 +414,11 @@ void forward()
   { // 距離による回り込み角度ゲイン減衰
     if (ball_deg > 0)
     {
-      mv_deg -= (abs(mv_deg - ball_deg) * ball_dis / 90);
+      mv_deg -= (abs(mv_deg - ball_deg) * ball_dis / 70);
     }
     else
     {
-      mv_deg += (abs(mv_deg - ball_deg) * ball_dis / 90);
+      mv_deg += (abs(mv_deg - ball_deg) * ball_dis / 70);
     }
   }
 //
