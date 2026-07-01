@@ -22,8 +22,8 @@ using namespace std;
   TODO:試合開始前にこれを決定する。
  */
 
-#define my_default_role ROLE_KEEPER
-#define MY_DEFAULT_STRATEGY STRATEGY_KEEPER_HEAVY
+#define my_default_role ROLE_FORWARD
+#define MY_DEFAULT_STRATEGY STRATEGY_FORWARD_HEAVY
 
 /*----------------------------*/
 /*--- 書き込み時に必ず確認！！ ---*/
@@ -58,6 +58,7 @@ constexpr double DEBUG_DRIBBLER_REVERSE_POWER = -400.0;
 constexpr uint16_t KICK_HOLD_COUNT = 300;
 constexpr uint16_t KICK_INTERVAL_COUNT = 2000;
 constexpr uint8_t ADC_FILTER_SHIFT = 5;
+constexpr uint32_t FORCE_ACK_BUZZER_MS = 1000;
 
 bool kick_interval_active = false;
 uint16_t kick_interval_start_time = 0;
@@ -291,10 +292,36 @@ bool force_forward_locked = false;     // ボタン強制切替ロック中 (プ
 bool force_keeper_locked = false;      // 相手からの指示によるKeeperロック中
 uint8_t starting_partner_forceACK = 0; // 要求開始時の相手のforceACKの値 (0 or 1)
 uint32_t role_changed_by_partner_time = 0; // 通信相手によってロール変更された時刻
+bool force_ack_buzzer_active = false;
+uint32_t force_ack_buzzer_start_time = 0;
 
 #define STRATEGY_FORWARD_HEAVY 1
 #define STRATEGY_KEEPER_HEAVY 2
 int current_strategy = MY_DEFAULT_STRATEGY;
+
+void start_force_ack_buzzer(uint32_t now)
+{
+  force_ack_buzzer_active = true;
+  force_ack_buzzer_start_time = now;
+}
+
+void update_force_ack_buzzer(uint32_t now)
+{
+  if (!force_ack_buzzer_active)
+  {
+    return;
+  }
+
+  if ((uint32_t)(now - force_ack_buzzer_start_time) < FORCE_ACK_BUZZER_MS)
+  {
+    use_buzzer_in_algo = true;
+    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
+  }
+  else
+  {
+    force_ack_buzzer_active = false;
+  }
+}
 
 /**
  * @brief swGreenボタン押下によるForward強制切替
@@ -704,6 +731,7 @@ void Japan()
         force_keeper_locked = true;
         // 自分のackbitを反転させて返答 (「見たよ」)
         ESP32_TX_Data.forceACK = ESP32_TX_Data.forceACK ? 0 : 1;
+        start_force_ack_buzzer(role_changed_by_partner_time);
       }
 
       // C. 受信側ロックの解除: 相手が確認を受け取りforceForwardを下ろしたのを確認したらロックを解除する
@@ -889,6 +917,8 @@ void Japan()
 
     swRed = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8);
     swGreen = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_9);
+
+    update_force_ack_buzzer(HAL_GetTick());
 
     if (!use_buzzer_in_algo) {
       __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);
