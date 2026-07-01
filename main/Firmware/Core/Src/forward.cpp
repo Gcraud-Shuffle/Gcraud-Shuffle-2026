@@ -194,11 +194,11 @@ void forward()
     else if (ball_deg <= 30)
     {
       //	           mv_deg = ball_deg*ball_deg / 10;
-      mv_deg = ball_deg * 2.2;
+      mv_deg = ball_deg * 2.5;
     }
     else if (ball_deg <= 90)
     {
-      mv_deg = ball_deg * 2.2;
+      mv_deg = ball_deg * 2.5;
       //			  mv_deg = ball_deg * 1.5;
       // mv_deg = ball_deg*ball_deg / 45;
     }
@@ -221,11 +221,11 @@ void forward()
     else if (ball_deg >= -30)
     {
       //	           mv_deg = (ball_deg*ball_deg / 10)*-1;
-      mv_deg = ball_deg * 2.2;
+      mv_deg = ball_deg * 2.5;
     }
     else if (ball_deg >= -90)
     {
-      mv_deg = ball_deg * 2.2;
+      mv_deg = ball_deg * 2.5;
       //			  mv_deg = ball_deg * 1.5;
       // mv_deg = (ball_deg*ball_deg / 45)*-1;
     }
@@ -443,32 +443,32 @@ void forward()
   sideLine_y = 0;
   sideLine = false;
 
-  //  if (lineSideRight > 0) {
-  //    if (lineSideRight < 3 && (ball_deg > 0 && ball_deg < 180)) {
-  //      if ((ball_deg * enemyGoal_Angle) > 0 && ball_deg > 55 &&
-  //          abs(enemyGoal_Angle) > 45) {
-  //        mv_deg = 180;
-  //      } else if ((ball_deg * myGoal_Angle) > 0 && abs(myGoal_Angle) < 135) {
-  //        mv_deg = 0;
-  //      } else {
-  //        if (ball_deg < 100) {
-  //          mv_power = cos((ball_deg - GYRO_AngleOffset + 50) * M_PI / 180) *
-  //                     mv_power * 1.5;
-  //          mv_deg = 0;
-  //          //			    mv_power = 60;
-  //          if (ball_outofreach == false) {
-  //            ball_outofreach = true;
-  //            ball_outofreach_time = cnt;
-  //          }
-  //        } else {
-  //          mv_deg = -90;
-  //        }
-  //      }
-  //    } else {
-  //      mv_deg = -90;
-  //    }
-  //  } else {
-  //  }
+//    if (lineSideRight > 0) {
+//      if (lineSideRight < 3 && (ball_deg > 0 && ball_deg < 180)) {
+//        if ((ball_deg * enemyGoal_Angle) > 0 && ball_deg > 55 &&
+//            abs(enemyGoal_Angle) > 45) {
+//          mv_deg = 180;
+//        } else if ((ball_deg * myGoal_Angle) > 0 && abs(myGoal_Angle) < 135) {
+//          mv_deg = 0;
+//        } else {
+//          if (ball_deg < 100) {
+//            mv_power = cos((ball_deg - GYRO_AngleOffset + 50) * M_PI / 180) *
+//                       mv_power * 1.5;
+//            mv_deg = 0;
+//            //			    mv_power = 60;
+//            if (ball_outofreach == false) {
+//              ball_outofreach = true;
+//              ball_outofreach_time = cnt;
+//            }
+//          } else {
+//            mv_deg = -90;
+//          }
+//        }
+//      } else {
+//        mv_deg = -90;
+//      }
+//    } else {
+//    }
   if (!lineAngel && lineSideRight > 0 && !holding_ball)
   {
     if (lineSideRight < 3 && (ball_deg > 0 && ball_deg < 100))
@@ -553,7 +553,7 @@ void forward()
     __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
 
     mv_deg = LineAngle + 180;
-    mv_power = 90;
+    mv_power = 200;
 
     if ((lineSideLeft < 3 && lineSideRight < 3) && abs(ball_deg) < 45 &&
         abs(enemyGoal_Angle) > 55 && holding_ball == false &&
@@ -599,12 +599,12 @@ void forward()
     }
   }
 
-	// --------------------------------------- //
-	// Section: 自陣側のライン処理
-	// --------------------------------------- //
-
-  // 自陣側の後ろにボールがある時のラインの処理
-  // 後ろだけ反応して、後ろにボールがある時のライントレース
+//	 --------------------------------------- //
+//	 Section: 自陣側のライン処理
+//	 --------------------------------------- //
+//
+//   自陣側の後ろにボールがある時のラインの処理
+//   後ろだけ反応して、後ろにボールがある時のライントレース
   if(lineSideBack&&!lineAngel&&!lineSideLeft&&!lineSideRight&&abs(ball_deg) > 90){
     double out_vec[2] = {sin(ball_deg * M_PI / 180.0)*20*(4-lineSideBack), (lineSideBack-1)*30};
 		mv_deg = atan2(out_vec[0], out_vec[1]) * (180.0 / M_PI);
@@ -623,14 +623,14 @@ void forward()
 		mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
   }
 
-	// --------------------------------------- //
-	// Section: 自陣側のゴール前でのライン処理
-	// --------------------------------------- //
+//	// --------------------------------------- //
+//	// Section: 自陣側のゴール前でのライン処理
+//	// --------------------------------------- //
   uint32_t now_cnt = HAL_GetTick();
-  // ゴール前のラインの動き
-
-  // ゴール前
-  // TODO: ボールとの距離でライントレースするかを決めるようにする
+//  // ゴール前のラインの動き
+//
+//  // ゴール前
+//  // TODO: ボールとの距離でライントレースするかを決めるようにする
   if(lineSideBack&&!lineAngel&&!lineSideLeft&&!lineSideRight&&(abs(myGoal_Angle) > 135||myGoal_Angle*ball_deg>0)&&abs(ball_deg)>30){
     double out_vec[2] = {sin(ball_deg * M_PI / 180.0)*80, (lineSideBack-1)*20};
     // if(comm_state != STATE_STANDALONE&&false){

@@ -950,18 +950,18 @@ void Japan()
 
 
 //     front right
-//	if (*(omni.get_motor(3)) > 0)
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
-//							(period_8 / 2) + abs(*omni.get_motor(3)));
-//	}
-//	else
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
-//							(period_8 / 2) - abs(*omni.get_motor(3)));
-//	}
-//
-//	//     back right
+	if (*(omni.get_motor(3)) > 0)
+	{
+	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+							(period_8 / 2) + abs(*omni.get_motor(3)));
+	}
+	else
+	{
+	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+							(period_8 / 2) - abs(*omni.get_motor(3)));
+	}
+
+	//     back right
 //	if (*(omni.get_motor(2)) > 0)
 //	{
 //	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
