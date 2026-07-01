@@ -412,23 +412,8 @@ void update_role_management()
 
   if (comm_state == STATE_STANDALONE)
   {
-    if (has_ever_connected)
-    {
-      // 通信が一度でも確立したのちに単独動作になった場合は戦略に従う
-      if (current_strategy == STRATEGY_FORWARD_HEAVY)
-      {
-        target_role = ROLE_FORWARD;
-      }
-      else if (current_strategy == STRATEGY_KEEPER_HEAVY)
-      {
-        target_role = ROLE_KEEPER;
-      }
-    }
-    else
-    {
-      // 起動直後などで一度も通信が確立していない時は初期ロールを維持する
-      target_role = my_role;
-    }
+    // 通信切断を検知するのみ。ロールの自動変更は行わず、現在のロールを維持する。
+    target_role = my_role;
   }
   else if (comm_state == STATE_RECOVERING)
   {
@@ -661,14 +646,81 @@ void Japan()
     get_LINE(&huart6);
     get_MAIN_SUB(&huart3);
 
-    if (ESP32_Comm_flag)
+ if (ESP32_Comm_flag)
     {
       ESP32_Comm_flag = 0;
+
+      // 通信不良または相手が死んでいると判定された場合、強制切替のロック状態をすべて解除
+      if (ESP32_Failed_Connection || ESP32_RX_Data.partnerDead == 1)
+      {
+        force_forward_locked = false;
+        force_keeper_locked = false;
+      }
 
       // 送信データのセット
       ESP32_TX_Data.hold_flag = 1;
 
+      // forceForward: 送信ロック中は相手が確認(forceACK反転)するまで送り続ける
+      ESP32_TX_Data.forceForward = force_forward_locked ? 1 : 0;
+
       get_ESP32(&huart4, ESP32_TX_Data);
+
+      // 相手のロールをグローバル変数に格納 (通信が成功している場合)
+      if (!ESP32_Failed_Connection && ESP32_RX_Data.partnerDead == 0)
+      {
+        partner_role = (RoleState)ESP32_RX_Data.role;
+      }
+
+      // 相手のforceACKが要求開始時の相手のACKから変化した（反転した）かどうか
+      bool partner_ack_changed = (!ESP32_Failed_Connection &&
+                                  ESP32_RX_Data.partnerDead == 0 &&
+                                  ESP32_RX_Data.forceACK != starting_partner_forceACK);
+
+      // A. 両者同時にボタン押下（競合）を検出した場合:
+      // ロールは変更せず却下、ただし「見たよ」として自機のackbitを反転させる
+      if (ESP32_RX_Data.forceForward == 1 && force_forward_locked)
+      {
+        // 自分の要求ロックを解除し、ロールは変更しない
+        force_forward_locked = false;
+        role_lock_time = HAL_GetTick();
+
+        // 「見た」ことを示すために自分のackbitを反転
+        ESP32_TX_Data.forceACK = ESP32_TX_Data.forceACK ? 0 : 1;
+        ESP32_TX_Data.forceForward = 0; // 自身の要求は取り下げる
+      }
+      // B. 相手からの一方向の強制指令を受信した場合 (許可):
+      // 自分のroleを相手のroleの反対に変更し、自分のackbitを反転させて返答
+      // force_keeper_locked中は再実行しない (相手のrequestが下りるまでロール変更とACK反転を1回だけ行う)
+      else if (ESP32_RX_Data.forceForward == 1 && !force_forward_locked && !force_keeper_locked)
+      {
+        // 相手のroleの反対を自分のroleにする
+        my_role = (ESP32_RX_Data.role == ROLE_FORWARD) ? ROLE_KEEPER : ROLE_FORWARD;
+        role_lock_time = HAL_GetTick();
+        is_role_change_pending = false;
+        is_role_changed = true;
+        role_changed_by_partner_time = HAL_GetTick(); // ブザー用タイムスタンプ記録
+
+        // 受信側としてロック
+        force_keeper_locked = true;
+        // 自分のackbitを反転させて返答 (「見たよ」)
+        ESP32_TX_Data.forceACK = ESP32_TX_Data.forceACK ? 0 : 1;
+      }
+
+      // C. 受信側ロックの解除: 相手が確認を受け取りforceForwardを下ろしたのを確認したらロックを解除する
+      if (force_keeper_locked &&
+          ESP32_RX_Data.forceForward == 0)
+      {
+        force_keeper_locked = false;
+        role_lock_time = HAL_GetTick(); // 解除直後の状態を一定時間保護
+      }
+
+      // D. 送信側ロックの解除: 相手がackbitを反転させてきたのを確認 → 要求成功、requestを下ろす
+      if (force_forward_locked && partner_ack_changed)
+      {
+        force_forward_locked = false;
+        role_lock_time = HAL_GetTick(); // 解除直後の状態を一定時間保護
+      }
+
       update_role_management();
     }
 
