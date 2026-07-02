@@ -180,6 +180,7 @@ extern bool swRed;
 extern bool pre_swRed;
 extern bool swGreen;
 extern bool pre_swGreen;
+extern bool play;
 extern bool rotateMotor;
 extern uint8_t i_spkr;
 

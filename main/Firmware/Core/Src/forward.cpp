@@ -723,20 +723,20 @@ void forward()
     }
   }
 
-  if (holding_ball && lineAngel && LineDepth > 70 &&
-      (current_state == HoldState::PULL_OUT || current_state == HoldState::ORBIT_AVOID) &&
-      (LineAngle * enemyGoal_Angle > 0) && (abs(LineAngle) > 25))
-  {
-     mv_power = cos((mv_deg) * M_PI / 180) * mv_power;
-    if (enemyGoal_Angle > 0)
-    {
-      mv_deg = LineAngle - 90;
-    }
-    else
-    {
-      mv_deg = LineAngle + 90;
-    }
-  }
+//  if (holding_ball && lineAngel && LineDepth > 70 &&
+//      (current_state == HoldState::PULL_OUT || current_state == HoldState::ORBIT_AVOID) &&
+//      (LineAngle * enemyGoal_Angle > 0) && (abs(LineAngle) > 25))
+//  {
+//     mv_power = cos((mv_deg) * M_PI / 180) * mv_power;
+//    if (enemyGoal_Angle > 0)
+//    {
+//      mv_deg = LineAngle - 90;
+//    }
+//    else
+//    {
+//      mv_deg = LineAngle + 90;
+//    }
+//  }
 
 //	 --------------------------------------- //
 //	 Section: 自陣側のライン処理

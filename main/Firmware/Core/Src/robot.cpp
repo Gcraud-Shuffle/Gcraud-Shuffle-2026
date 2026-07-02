@@ -117,6 +117,7 @@ bool swRed = 0;
 bool pre_swRed = 0;
 bool swGreen = 0;
 bool pre_swGreen = 0;
+bool play = false;
 bool rotateMotor = 0;
 uint8_t i_spkr = 0;
 
