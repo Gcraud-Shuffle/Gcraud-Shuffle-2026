@@ -304,18 +304,18 @@ void keeper()
 	}
 
 
-	// float diff = myGoal_Angle - LineAngle;
+	float diff = myGoal_Angle - LineAngle;
 
-	// while (diff > 180.0f) diff -= 360.0f;
-	// while (diff < -180.0f) diff += 360.0f;
+	while (diff > 180.0f) diff -= 360.0f;
+	while (diff < -180.0f) diff += 360.0f;
 
-	// if (lineAngel&&diff >= 90.0f&&LineDepth>80&&!got_push) {
-	// 	before_push = LineAngle;
-	// 	got_push = true;
-	// }
-	// else if((LineDepth<40&&lineAngel)|| left_goal_angle > 0 || right_goal_angle < 0 || myGoal_Radius > 150){
+	if (lineAngel&&diff >= 90.0f&&LineDepth>80&&!got_push&&!(left_goal_angle > 0 || right_goal_angle < 0)) {
+		before_push = LineAngle;
+		got_push = true;
+	}
+	else if((LineDepth<40&&lineAngel)|| left_goal_angle > 0 || right_goal_angle < 0 || myGoal_Radius > 150){
 		got_push = false;
-	// }
+	}
 
 	if (got_push)
 	{
