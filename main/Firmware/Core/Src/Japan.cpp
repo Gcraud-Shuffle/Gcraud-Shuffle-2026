@@ -21,9 +21,11 @@ using namespace std;
   STRATEGY_FORWARD_HEAVY or STRATEGY_KEEPER_HEAVY が利用可能です。
   TODO:試合開始前にこれを決定する。
  */
-
+//
 #define my_default_role ROLE_FORWARD
 #define MY_DEFAULT_STRATEGY STRATEGY_FORWARD_HEAVY
+//#define my_default_role ROLE_KEEPER
+//#define MY_DEFAULT_STRATEGY STRATEGY_KEEPER_HEAVY
 
 /*----------------------------*/
 /*--- 書き込み時に必ず確認！！ ---*/
@@ -59,6 +61,9 @@ constexpr uint16_t KICK_HOLD_COUNT = 300;
 constexpr uint16_t KICK_INTERVAL_COUNT = 2000;
 constexpr uint8_t ADC_FILTER_SHIFT = 5;
 constexpr uint32_t FORCE_ACK_BUZZER_MS = 1000;
+constexpr double GYRO_STRAIGHT_KP = 0.8;
+constexpr double GYRO_AIM_KP = 0.3;
+
 
 bool kick_interval_active = false;
 uint16_t kick_interval_start_time = 0;
@@ -818,7 +823,7 @@ void Japan()
     const bool holding_ball_allowed = !kicking_active && !kick_interval_is_active();
 
 //    ADC_ch1 = 700;
-
+    //siro
     if (!holding_ball_allowed) {
       holding_ball = false;
       ball_counting_ballHoldtime = false;
@@ -847,9 +852,41 @@ void Japan()
       }
     }
 
+
+    //kuro
+//    if (!holding_ball_allowed) {
+//      holding_ball = false;
+//      ball_counting_ballHoldtime = false;
+//      ball_counting_ballReleasetime = false;
+//    } else if (ADC_ch1 > 400) {
+//      ball_counting_ballHoldtime =
+//          false; // Release判定に入ったらHoldタイマーをリセット
+//      if (!ball_counting_ballReleasetime) {
+//        ball_startedReleasing_time = cnt;
+//        ball_counting_ballReleasetime = true;
+//      } else {
+//        if ((uint16_t)(cnt - ball_startedReleasing_time) > 400) {
+//          holding_ball = false;
+//        }
+//      }
+//    } else if (ADC_ch1 < 300) {
+//      ball_counting_ballReleasetime =
+//          false; // Hold判定に入ったらReleaseタイマーをリセット
+//      if (!ball_counting_ballHoldtime) {
+//        ball_startedHolding_time = cnt;
+//        ball_counting_ballHoldtime = true;
+//      } else {
+//        if ((uint16_t)(cnt - ball_startedHolding_time) > 300) {
+//          holding_ball = true;
+//        }
+//      }
+//    }
+
 //     if(kicking){
 //    	 holding_bal = false;
 //     }
+
+
 
     // --- Dynamic Algorithm Execution ---
     if (my_role == ROLE_KEEPER)
@@ -873,11 +910,12 @@ void Japan()
     if (!(GYRO_AngleOffset == 0))
     {
       GYRO_E = static_cast<int>(e.z) + GYRO_AngleOffset;
-      GYRO_kp = 0.5;
+      GYRO_kp = GYRO_AIM_KP;
     }
     else
     {
       GYRO_E = static_cast<int>(e.z);
+      GYRO_kp = GYRO_STRAIGHT_KP;
     }
 
     // I項の計算
@@ -918,9 +956,13 @@ void Japan()
     swRed = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8);
     swGreen = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_9);
 
-    play = (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_14) == GPIO_PIN_SET) ||
-           (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15) == GPIO_PIN_SET);
-    static bool playStoppedBySwitch = false;
+    const bool playIn0 =
+        (HAL_GPIO_ReadPin(COMMODULE_IN0_GPIO_Port, COMMODULE_IN0_Pin) ==
+         GPIO_PIN_SET);
+    const bool playIn1 =
+        (HAL_GPIO_ReadPin(COMMODULE_IN1_GPIO_Port, COMMODULE_IN1_Pin) ==
+         GPIO_PIN_SET);
+    play = playIn0 || playIn1;
     const bool swRedPressed = (swRed == 1 && pre_swRed == 0);
 
     update_force_ack_buzzer(HAL_GetTick());
@@ -930,15 +972,9 @@ void Japan()
     }
     use_buzzer_in_algo = false;
 
-    if (!play)
-    {
-      playStoppedBySwitch = false;
-    }
-
     if (play && swRed == 1)
     {
       rotateMotor = false;
-      playStoppedBySwitch = true;
     }
     else if (swRedPressed)
     {
@@ -951,7 +987,7 @@ void Japan()
 	  force_role_forward();
 	}
 
-    if (rotateMotor || (play && !playStoppedBySwitch))
+    if (rotateMotor || (play && swRed == 0))
     {
       HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
       HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
@@ -1003,7 +1039,7 @@ void Japan()
 
 //    double a1 = *omni.get_motor(3);
 
-////         front right
+////         front right siro
     if (*(omni.get_motor(3)) > 0)
     {
       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
@@ -1026,8 +1062,8 @@ void Japan()
       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
                             (period_1 / 2) - abs(*omni.get_motor(2)));
     }
-
-    //     back left
+//
+//    //     back left
     if (*(omni.get_motor(1)) > 0)
     {
       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
@@ -1052,7 +1088,7 @@ void Japan()
     }
 //
 //
-////     front right
+////     front right kuro
 //	if (*(omni.get_motor(3)) > 0)
 //	{
 //	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,

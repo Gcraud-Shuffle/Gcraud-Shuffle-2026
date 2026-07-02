@@ -306,7 +306,7 @@ void forward()
 
   updateMotorCurrentSense();
 
-	mv_power = 90;
+	mv_power = 85;
   if (holding_ball)
   {
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
@@ -331,7 +331,7 @@ void forward()
     else if (ball_deg <= 30)
     {
       //	           mv_deg = ball_deg*ball_deg / 10;
-      mv_deg = ball_deg * 2.4;
+      mv_deg = ball_deg * 2.6;
     }
     else if (ball_deg <= 90)
     {
@@ -362,7 +362,7 @@ void forward()
     }
     else if (ball_deg >= -90)
     {
-      mv_deg = ball_deg * 2.6;
+      mv_deg = ball_deg * 2.4;
       //			  mv_deg = ball_deg * 1.5;
       // mv_deg = (ball_deg*ball_deg / 45)*-1;
     }
@@ -427,13 +427,13 @@ void forward()
 //    mv_power = 85;
 //  }
 
-//  if(abs(enemyGoal_Angle) < 55 && abs(ball_deg) < 60 && (MainSub_SafeUltrasonic_mm[0] > 400 && MainSub_SafeUltrasonic_mm[1] > 400) && !lineAngel){
-//	  if(enemyGoal_Angle > 0){
-//		GYRO_AngleOffset = enemy_rightmiddle_goal_angle;
-//	}else{
-//		GYRO_AngleOffset = enemy_leftmiddle_goal_angle;
-//	}
-//  }
+  if(abs(enemyGoal_Angle) < 55 && abs(ball_deg) < 60 && (MainSub_SafeUltrasonic_mm[0] > 400 && MainSub_SafeUltrasonic_mm[1] > 400) && !lineAngel){
+	  if(enemyGoal_Angle > 0){
+		GYRO_AngleOffset = enemy_rightmiddle_goal_angle;
+	}else{
+		GYRO_AngleOffset = enemy_leftmiddle_goal_angle;
+	}
+  }
 
 //  	mv_deg = 0;
 //    	holding_ball = true;
@@ -865,7 +865,7 @@ void forward()
 
         if(abs(ball_deg)>45 && enemyGoal_Radius < 105){
           mv_deg = ball_deg/abs(ball_deg)*100;
-          mv_power = fmax((abs(ball_deg) - 30)*3.5,60.0);
+          mv_power = fmax(abs(ball_deg)*4,80.0);
         }
 
       }
@@ -905,7 +905,7 @@ void forward()
     mv_deg = LineAngle_before_Approaching + 180;
     GYRO_AngleOffset = 0;
     mv_power = 80;
-    if (!lineAngel && (now_cnt - push_escape_start_time) > 250)
+    if (!lineAngel && (now_cnt - push_escape_start_time) > 400)
     {
       push_state = PushBallToGoalState::PREPARE_WAITING;
     }

@@ -34,7 +34,7 @@ void keeper()
 {
 	uint32_t now_cnt = HAL_GetTick();
 	static uint32_t pre_cnt = now_cnt;
-	low_passed_ball_deg += (ball_deg - low_passed_ball_deg)/10;
+	low_passed_ball_deg += (ball_deg - low_passed_ball_deg)/64;
 	// --------------------------------------- //
 	// Section: A New Role
 	// --------------------------------------- //
@@ -62,14 +62,14 @@ void keeper()
 	// --------------------------------------- //
 
 	if(now_keeper_state == APPROACHING){
-		if(!lineAngel && !lineSideBack && !lineSideLeft && !lineSideRight && (start_approach_time - now_cnt > 300)){
+		if((now_cnt - start_approach_time) > 100){
 			is_role_changed = true;
-			now_keeper_state = MOVING_AS_FORWARD;
+			now_keeper_state = NOT_NEED2APPROACH;
 			forward();
 			force_role_forward();
 			return;
 		}
-		GYRO_AngleOffset = (ball_deg - static_cast<int>(e.z))*1.5;
+		GYRO_AngleOffset = (ball_deg - static_cast<int>(e.z));
 		mv_power = 50;
 		mv_deg = ball_deg*1.5;
 		return;
@@ -94,7 +94,7 @@ void keeper()
 	if (restart)
 	{
 		now_keeper_state = NOT_NEED2APPROACH;
-		if (lineAngel && (myGoal_Width != 0) && (90 < abs(myGoal_Angle)) && rotateMotor)
+		if (lineAngel && (myGoal_Width != 0) && (90 < abs(myGoal_Angle))/* && rotateMotor*/)
 		{
 			restart = false;
 		}
@@ -182,13 +182,13 @@ void keeper()
 
 		if (lineAngel || lineSideBack || lineSideRight || lineSideLeft)
 		{
-			double trace_gain = 120.0;
-			double Line_gain = 0.6;
+			double trace_gain = 110.0;
+			double Line_gain = 0.7;
 			double mv_gap = 10.0;
 			double trace_vec[2] = {0, 0}; // ライン追従調整用
 
-			double trace_ignore_goal_abs_thr[3] = {140, 130, 120};
-
+//			double trace_ignore_goal_abs_thr[3] = {140, 130, 120}; // Japan
+			double trace_ignore_goal_abs_thr[3] = {145, 135, 120}; // World
 
 
 			//				double test_deg = 45.0; // デバッグ用
@@ -275,28 +275,22 @@ void keeper()
 			// --------------------------------------- //
 			// Section: STANDALONE時のボールへのアプローチ(フリーズ検知)
 			// --------------------------------------- //
-			// if(Ball_Closeness > 40 && abs(ball_deg) < 90 && abs(freeze_ball_deg - low_passed_ball_deg) < 10 && !holding_ball && !got_push){
-			// 	if(int(now_cnt - last_ball_moved_time) > (comm_state == STATE_STANDALONE) ? 3800 : 5800){
-			// 		now_keeper_state = APPROACHING;
-			// 		start_approach_time = now_cnt;
-			// 	}
-			// 	else if(int(now_cnt - last_ball_moved_time) % 1000 > 800){
-			// 		use_buzzer_in_algo = true;
-			// 		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
-			// 	}
-			// }
-			// else{
-			// 	last_ball_moved_time = now_cnt;
-			// 	freeze_ball_deg = ball_deg;
-			// }
-
-			//
-			// mv_power = mv_power - min(max((double)mv_power, -mv_gap), mv_gap);
-			if (got_push)
-			{
-				mv_deg = 0;
-				mv_power = 100;
+			if(ball_dis < 50 && abs(ball_deg) < 90 && abs(freeze_ball_deg - low_passed_ball_deg) < 15 /*&& !holding_ball*/ && !got_push){
+				if((comm_state == STATE_STANDALONE)&&(int(now_cnt - last_ball_moved_time) > 3600)){
+					now_keeper_state = APPROACHING;
+					start_approach_time = now_cnt;
+				}
+				else if(int(now_cnt - last_ball_moved_time) % 1000 > 800){
+					use_buzzer_in_algo = true;
+					__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
+				}
 			}
+			else{
+				last_ball_moved_time = now_cnt;
+				freeze_ball_deg = low_passed_ball_deg;
+			}
+
+			// mv_power = mv_power - min(max((double)mv_power, -mv_gap), mv_gap);
 		}
 		else
 		{
@@ -305,10 +299,28 @@ void keeper()
 		}
 	}
 
+	if(holding_ball){
+		request_kick();
+	}
+
+
+	// float diff = myGoal_Angle - LineAngle;
+
+	// while (diff > 180.0f) diff -= 360.0f;
+	// while (diff < -180.0f) diff += 360.0f;
+
+	// if (lineAngel&&diff >= 90.0f&&LineDepth>80&&!got_push) {
+	// 	before_push = LineAngle;
+	// 	got_push = true;
+	// }
+	// else if((LineDepth<40&&lineAngel)|| left_goal_angle > 0 || right_goal_angle < 0 || myGoal_Radius > 150){
+		got_push = false;
+	// }
+
 	if (got_push)
 	{
 		last_ball_moved_time = now_cnt;
-		mv_deg = 0;
+		mv_deg = before_push;
 		mv_power = 100;
 	}
 }
