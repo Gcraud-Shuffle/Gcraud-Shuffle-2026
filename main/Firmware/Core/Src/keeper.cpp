@@ -20,6 +20,7 @@ double use_IR_deg;
 bool jyro_ok_flag = true;
 uint32_t last_IR_exist_time;
 uint32_t pw_start_time;
+float diff;
 
 typedef enum
 {
@@ -135,7 +136,6 @@ void keeper()
 	// Section: キーパーの移動ベクトルの算出
 	// --------------------------------------- //
 	{
-
 		/*
 				input: Line(x=LineX, y=LineY) IR(r=ball_dis, theta=ball_deg) Goal(theta=myGoal_Angle)
 				output: mv_deg, mv_power;
@@ -156,6 +156,10 @@ void keeper()
 			Goal_vec(x,y) 				ゴール方向の単位ベクトル
 
 			trace_vec(x,y) 				IR_vecをtrace_norvec方向に射影した成分（ラインに沿ったボール方向成分）
+
+		ultrasonic memo
+		1	robot 	0
+			  2
 		*/
 
 		if (lineAngel || ((lineSideBack || lineSideRight || lineSideLeft) && (!got_push)))
@@ -164,7 +168,7 @@ void keeper()
 			double Line_gain = 0.7;
 			double mv_gap = 10.0;
 
-			double trace_ignore_goal_abs_thr[3] = {160, 150, 145};
+			double trace_ignore_goal_abs_thr[3] = {155, 145, 130};
 			// 0:traceを完全に無効化する境界 (停止)
 			// 1:前進成分への補間開始・ゴール横脱出条件 (中途前進)
 			// 2:完全に前進のみへ置き換える境界 (完全前進)
@@ -220,16 +224,6 @@ void keeper()
 				}
 			}
 
-			// ゴール横脱出
-			if ((abs(myGoal_Angle) < trace_ignore_goal_abs_thr[1]))
-			{
-				line_vec[0] = 0.0;
-				line_vec[1] = 0.0;
-				trace_vec[0] = 0;
-				trace_vec[1] = 1.0;
-				trace_gain = 100.0;
-			}
-
 			// --- out ---
 			double out_vec[2] = {line_vec[0] * Line_gain + trace_vec[0] * trace_gain, line_vec[1] * Line_gain + trace_vec[1] * trace_gain};
 
@@ -237,13 +231,91 @@ void keeper()
 			mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
 			pre_line_vec[0] = line_vec[0];
 			pre_line_vec[1] = line_vec[1];
+
+			if(myGoal_Width==0){
+				if(MainSub_SafeUltrasonic_mm[0] < MainSub_SafeUltrasonic_mm[1])//左が広い
+				{
+					mv_deg = -45;
+					mv_power = 80;
+				}
+				else{
+					mv_deg = 45;
+					mv_power = 80;
+				}
+			}
+			else if(left_goal_angle*right_goal_angle > 0 && myGoal_Width != 0 && 150 >  max(abs(left_goal_angle),abs(right_goal_angle))){
+				// ゴール横脱出(横棒)
+				if(((lineSideLeft&&lineSideRight&&lineAngel)||((!lineSideLeft)&&(!lineSideRight)&&(!lineAngel)&&(lineSideBack)))){
+					if(myGoal_Angle < 0){//左側
+						mv_deg = -70;
+						mv_power = 80;
+					}
+					else{
+						mv_deg = 70;
+						mv_power = 80;
+					}
+				}
+				// ゴール横脱出(縦棒)
+				else{
+					if(myGoal_Angle < 0){//左側
+						mv_deg = -70;
+						mv_power = 80;
+					}
+					else{
+						mv_deg = 70;
+						mv_power = 80;
+					}
+				}
+			}
 		}
 		else
 		{
-			mv_deg = myGoal_Angle;
-			mv_power = 80;
+			if(myGoal_Width==0){
+				if(MainSub_SafeUltrasonic_mm[0] < MainSub_SafeUltrasonic_mm[1])//左が広い
+				{
+					mv_deg = -45;
+					mv_power = 80;
+				}
+				else{
+					mv_deg = -45;
+					mv_power = 80;
+				}
+			}
+			else{
+				mv_deg = myGoal_Angle;
+				mv_power = 80;
+			}
 		}
 	}
+	mv_deg = 0;
+	mv_power = 0;
+
+	// ---------------------------------------------- //
+	// Section: 押し出され対応
+	// ---------------------------------------------- //
+	{
+		diff = myGoal_Angle - LineAngle;
+
+		while (diff > 180.0f) diff -= 360.0f;
+		while (diff < -180.0f) diff += 360.0f;
+
+		if (lineAngel&&(diff<135&&(abs(LineAngle)<100))&&LineDepth>100&&!got_push&&(((160 <  max(abs(left_goal_angle),abs(right_goal_angle)))||left_goal_angle*right_goal_angle < 0)&& myGoal_Width!=0)) {
+			before_push = LineAngle;
+			got_push = true;
+		}
+		else if((abs(LineAngle)<135&&LineDepth<80&&lineAngel)){
+			got_push = false;
+		}
+
+		if (got_push)
+		{
+			last_ball_moved_time = now_cnt;
+			mv_deg = before_push/2;
+			mv_power = 100;
+		}
+	}
+
+	return;
 
 	// --------------------------------------------- //
 	// Section: 故障判定回避
