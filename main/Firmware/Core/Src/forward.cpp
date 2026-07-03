@@ -36,19 +36,32 @@ double LineAngle_before_Approaching;
 namespace
 {
 constexpr uint16_t kTimer7CountsPerMs = 2;
-constexpr uint16_t kDefaultDribbleRampTimeMs = 1000;
-constexpr int16_t kHoldingDribbleTargetPower = 50;
+constexpr int16_t kForwardDefaultMovePower = 85;
+constexpr uint16_t kLineDribbleRampTimeMs = 1000;
 constexpr int16_t kLineDribbleTargetPower = 50;
 constexpr uint8_t kMotorCurrentCount = 4;
 constexpr uint16_t kCurrentAdcCenter = 2048;
 constexpr int16_t kLineOverCenterEnterDeg = 130;
-constexpr int16_t kLineOverCenterExitDeg = 70;
+constexpr int16_t kLineOverCenterExitDeg = 45;
 constexpr int16_t kLineOverCenterMaxDepth = 45;
 constexpr uint32_t kLineOverCenterMinHoldMs = 30;
 constexpr uint32_t kLineOutReturnTimeoutMs = 300;
-constexpr int16_t kLineOutReturnMinPower = 90;
+constexpr int16_t kLineOutReturnMinPower = kForwardDefaultMovePower;
 constexpr double kForwardOrbitDeadbandDeg = 2.0;
 constexpr double kForwardOrbitBackOffsetDeg = 90.0;
+
+struct DribblePowerRampConfig
+{
+  int16_t maxPower;
+  uint16_t accelerationPowerPerSec;
+};
+
+struct DribblePowerRampState
+{
+  int32_t powerMilli = 0;
+  uint16_t lastUpdateCnt = 0;
+  bool initialized = false;
+};
 
 struct LineOverrunState
 {
@@ -62,6 +75,10 @@ struct LineOverrunState
   uint32_t return_start_ms = 0;
 };
 
+constexpr DribblePowerRampConfig kPullOutDribbleRamp = {80, 80};
+constexpr DribblePowerRampConfig kOrbitAvoidDribbleRamp = {50, 50};
+
+DribblePowerRampState holding_dribble_power_ramp;
 LineOverrunState line_overrun;
 
 bool &dribbleAccelerationActive()
@@ -84,12 +101,20 @@ uint16_t timer7CountsToMs(uint16_t counts)
   return counts / kTimer7CountsPerMs;
 }
 
+void resetHoldingDribblePowerRamp(uint16_t nowCnt)
+{
+  holding_dribble_power_ramp.powerMilli = 0;
+  holding_dribble_power_ramp.lastUpdateCnt = nowCnt;
+  holding_dribble_power_ramp.initialized = false;
+}
+
 void updateDribbleAccelerationRamp(bool holding, uint16_t nowCnt)
 {
   if (!holding)
   {
     dribbleAccelerationActive() = false;
     dribbleAccelerationElapsedMs() = 0;
+    resetHoldingDribblePowerRamp(nowCnt);
     return;
   }
 
@@ -98,6 +123,7 @@ void updateDribbleAccelerationRamp(bool holding, uint16_t nowCnt)
     dribbleAccelerationActive() = true;
     dribbleAccelerationBaseCnt() = nowCnt;
     dribbleAccelerationElapsedMs() = 0;
+    resetHoldingDribblePowerRamp(nowCnt);
     return;
   }
 
@@ -118,18 +144,55 @@ int16_t linearRampPower(uint16_t elapsedMs, int16_t targetPower,
       (static_cast<int32_t>(targetPower) * elapsedMs) / rampTimeMs);
 }
 
-int16_t holdingDribbleRampPower()
+int16_t holdingDribbleRampPower(const DribblePowerRampConfig &config,
+                                uint16_t nowCnt)
 {
-  return linearRampPower(dribbleAccelerationElapsedMs(),
-                         kHoldingDribbleTargetPower,
-                         kDefaultDribbleRampTimeMs);
+  if (!holding_dribble_power_ramp.initialized)
+  {
+    holding_dribble_power_ramp.powerMilli = 0;
+    holding_dribble_power_ramp.lastUpdateCnt = nowCnt;
+    holding_dribble_power_ramp.initialized = true;
+  }
+
+  const uint16_t elapsedCounts = static_cast<uint16_t>(
+      nowCnt - holding_dribble_power_ramp.lastUpdateCnt);
+  const uint16_t elapsedMs = timer7CountsToMs(elapsedCounts);
+  holding_dribble_power_ramp.lastUpdateCnt = nowCnt;
+
+  const int32_t targetMilli = static_cast<int32_t>(config.maxPower) * 1000;
+  if (config.accelerationPowerPerSec == 0)
+  {
+    holding_dribble_power_ramp.powerMilli = targetMilli;
+    return config.maxPower;
+  }
+
+  const int32_t stepMilli =
+      static_cast<int32_t>(config.accelerationPowerPerSec) * elapsedMs;
+  if (holding_dribble_power_ramp.powerMilli < targetMilli)
+  {
+    holding_dribble_power_ramp.powerMilli += stepMilli;
+    if (holding_dribble_power_ramp.powerMilli > targetMilli)
+    {
+      holding_dribble_power_ramp.powerMilli = targetMilli;
+    }
+  }
+  else if (holding_dribble_power_ramp.powerMilli > targetMilli)
+  {
+    holding_dribble_power_ramp.powerMilli -= stepMilli;
+    if (holding_dribble_power_ramp.powerMilli < targetMilli)
+    {
+      holding_dribble_power_ramp.powerMilli = targetMilli;
+    }
+  }
+
+  return static_cast<int16_t>(holding_dribble_power_ramp.powerMilli / 1000);
 }
 
 int16_t lineDribbleRampPower()
 {
   return linearRampPower(dribbleAccelerationElapsedMs(),
                          kLineDribbleTargetPower,
-                         kDefaultDribbleRampTimeMs);
+                         kLineDribbleRampTimeMs);
 }
 
 uint16_t currentAbsFromAdc(uint16_t rawAdc)
@@ -317,7 +380,10 @@ void forward()
 
   updateMotorCurrentSense();
 
-	mv_power = 85;
+	mv_power = kForwardDefaultMovePower;
+	if(abs(enemyGoal_Angle) > 45 && abs(ball_deg) > 45){
+		mv_power = 75;
+	}
   if (holding_ball)
   {
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
@@ -572,7 +638,7 @@ void forward()
     case HoldState::PULL_OUT:
       // ゴール横から引き出すため後退
       mv_deg = 180;
-      mv_power = holdingDribbleRampPower();
+      mv_power = holdingDribbleRampPower(kPullOutDribbleRamp, cnt);
       break;
 
     case HoldState::ORBIT_AVOID:
@@ -583,7 +649,7 @@ void forward()
                            mv_holding_y, mv_holding_x);
       mv_deg = atan2(mv_holding_x, mv_holding_y) * (180.0 / M_PI);
 
-      mv_power = holdingDribbleRampPower();
+      mv_power = holdingDribbleRampPower(kOrbitAvoidDribbleRamp, cnt);
       break;
     }
     }
@@ -604,7 +670,7 @@ void forward()
       if ((uint16_t)(cnt - ball_notfoundtime) > 6000)
       {
         mv_deg = 180;
-        mv_power = 70;
+        mv_power = 60;
       }
       else
       {
@@ -770,7 +836,7 @@ void forward()
       }
       else
       {
-        mv_power = 90;
+//        mv_power = 90;
       }
     }
   }
@@ -885,7 +951,7 @@ void forward()
 //  //
 //
 //  // --- 押し込み処理：ボールを敵ゴールに押し込むための状態管理 ---
-  if (self_area_line_handled)
+  if (self_area_line_handled && !lineAngel)
   {
     resetLineOverrunState();
   }
