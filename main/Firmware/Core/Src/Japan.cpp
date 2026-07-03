@@ -847,7 +847,7 @@ void Japan()
         ball_counting_ballHoldtime = false;
         ball_counting_ballReleasetime = false;
       }
-      else if (ADC_ch2 > 220)
+      else if (ADC_ch1 > 500)
       {
         ball_counting_ballHoldtime = false;
         if (!ball_counting_ballReleasetime)
@@ -863,7 +863,7 @@ void Japan()
           }
         }
       }
-      else if (ADC_ch2 < 90)
+      else if (ADC_ch1 < 350)
       {
         ball_counting_ballReleasetime = false;
         if (!ball_counting_ballHoldtime)

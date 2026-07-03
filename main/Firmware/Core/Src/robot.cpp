@@ -80,7 +80,7 @@ const uint16_t BALL_FREEZE_TH = 6500;
 int ball_deg_before = 0;
 double ball_dis_before = 0;
 bool side_of_Goal = false;
-const uint8_t side_of_goal_thr = 65;
+const uint8_t side_of_goal_thr = 60;
 
 // Forward holding vector
 int16_t mv_vector_holding_x = 0;

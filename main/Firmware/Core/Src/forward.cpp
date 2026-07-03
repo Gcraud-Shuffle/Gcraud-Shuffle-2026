@@ -43,10 +43,12 @@ constexpr uint8_t kMotorCurrentCount = 4;
 constexpr uint16_t kCurrentAdcCenter = 2048;
 constexpr int16_t kLineOverCenterEnterDeg = 130;
 constexpr int16_t kLineOverCenterExitDeg = 70;
-constexpr int16_t kLineOverCenterMaxDepth = 70;
+constexpr int16_t kLineOverCenterMaxDepth = 45;
 constexpr uint32_t kLineOverCenterMinHoldMs = 30;
 constexpr uint32_t kLineOutReturnTimeoutMs = 300;
 constexpr int16_t kLineOutReturnMinPower = 90;
+constexpr double kForwardOrbitDeadbandDeg = 2.0;
+constexpr double kForwardOrbitBackOffsetDeg = 90.0;
 
 struct LineOverrunState
 {
@@ -218,7 +220,8 @@ void updateLineOverrunState(uint32_t nowMs)
         line_overrun.over_center_start_ms = 0;
       }
     }
-    else if (angle_diff >= kLineOverCenterEnterDeg)
+    else if (angle_diff >= kLineOverCenterEnterDeg &&
+            line_overrun.min_line_depth <= kLineOverCenterMaxDepth)
     {
       line_overrun.over_center = true;
       line_overrun.over_center_start_ms = nowMs;
@@ -330,59 +333,42 @@ void forward()
   //		softHold = true;
   //	}
 
-  if (ball_deg >= 0)
+  double ball_deg_abs = static_cast<double>(ball_deg);
+  if (ball_deg_abs < 0.0)
   {
-    if (ball_deg <= 2)
-    {
-      mv_deg = 0;
-    }
-    else if (ball_deg <= 30)
-    {
-      //	           mv_deg = ball_deg*ball_deg / 10;
-      mv_deg = ball_deg * 2.6;
-    }
-    else if (ball_deg <= 90)
-    {
-      mv_deg = ball_deg * 2.2;
-      //			  mv_deg = ball_deg * 1.5;
-      // mv_deg = ball_deg*ball_deg / 45;
-    }
-    else if (ball_deg <= 150)
-    {
-      mv_deg = ball_deg * 1.7;
-    }
-    else
-    {
-      mv_deg = ball_deg + 90;
-    }
+    ball_deg_abs = -ball_deg_abs;
   }
 
-  if (ball_deg <= 0)
+  double orbit_mv_deg = 0.0;
+  if (ball_deg_abs <= kForwardOrbitDeadbandDeg)
   {
-    if (ball_deg >= -2)
-    {
-      mv_deg = 0;
-    }
-    else if (ball_deg >= -30)
-    {
-      //	           mv_deg = (ball_deg*ball_deg / 10)*-1;
-      mv_deg = ball_deg * 2.6;
-    }
-    else if (ball_deg >= -90)
-    {
-      mv_deg = ball_deg * 2.2;
-      //			  mv_deg = ball_deg * 1.5;
-      // mv_deg = (ball_deg*ball_deg / 45)*-1;
-    }
-    else if (ball_deg >= -150)
-    {
-      mv_deg = ball_deg * 1.7;
-    }
-    else
-    {
-      mv_deg = ball_deg + -90;
-    }
+    orbit_mv_deg = 0.0;
   }
+  else if (ball_deg_abs <= 45.0)
+  {
+    const double x = ball_deg_abs;
+    // 0.0 <= ball_deg <= 45.0 の近似式はここに貼る
+    orbit_mv_deg = -0.00016460905349794238 * x * x * x +
+                   3.3333333333333335 * x;
+  }
+  else if (ball_deg_abs <= 135.0)
+  {
+    const double x = ball_deg_abs - 45.0;
+    // 45.0 <= ball_deg <= 135.0 の近似式はここに貼る
+    orbit_mv_deg = 0.00008230452674897119 * x * x * x -
+                   0.022222222222222223 * x * x +
+                   2.3333333333333335 * x + 135.0;
+  }
+  else
+  {
+    orbit_mv_deg = ball_deg_abs + kForwardOrbitBackOffsetDeg;
+  }
+
+  if (ball_deg < 0)
+  {
+    orbit_mv_deg = -orbit_mv_deg;
+  }
+  mv_deg = static_cast<int16_t>(orbit_mv_deg);
 
   //    if (ball_deg >= 0) {
   //      if (ball_deg <= 2) {
@@ -418,6 +404,60 @@ void forward()
   //      }
   //    }
 
+//  if (ball_deg >= 0)
+//  {
+//    if (ball_deg <= 2)
+//    {
+//      mv_deg = 0;
+//    }
+//    else if (ball_deg <= 30)
+//    {
+//      //	           mv_deg = ball_deg*ball_deg / 10;
+//      mv_deg = ball_deg * 2.4;
+//    }
+//    else if (ball_deg <= 90)
+//    {
+//      mv_deg = ball_deg * 2.4;
+//      //			  mv_deg = ball_deg * 1.5;
+//      // mv_deg = ball_deg*ball_deg / 45;
+//    }
+//    else if (ball_deg <= 150)
+//    {
+//      mv_deg = ball_deg * 1.7;
+//    }
+//    else
+//    {
+//      mv_deg = ball_deg + 90;
+//    }
+//  }
+//
+//  if (ball_deg <= 0)
+//  {
+//    if (ball_deg >= -2)
+//    {
+//      mv_deg = 0;
+//    }
+//    else if (ball_deg >= -30)
+//    {
+//      //	           mv_deg = (ball_deg*ball_deg / 10)*-1;
+//      mv_deg = ball_deg * 2.4;
+//    }
+//    else if (ball_deg >= -90)
+//    {
+//      mv_deg = ball_deg * 2.4;
+//      //			  mv_deg = ball_deg * 1.5;
+//      // mv_deg = (ball_deg*ball_deg / 45)*-1;
+//    }
+//    else if (ball_deg >= -150)
+//    {
+//      mv_deg = ball_deg * 1.7;
+//    }
+//    else
+//    {
+//      mv_deg = ball_deg + -90;
+//    }
+//  }
+
   if (ball_dis > 0)
   { // 距離による回り込み角度ゲイン減衰
     if (ball_deg > 0)
@@ -435,7 +475,7 @@ void forward()
 //    mv_power = 85;
 //  }
 
-  if(abs(enemyGoal_Angle) < 55 && abs(ball_deg) < 60 && (MainSub_SafeUltrasonic_mm[0] > 400 && MainSub_SafeUltrasonic_mm[1] > 400) && !lineAngel){
+  if(abs(enemyGoal_Angle) < 55 && abs(ball_deg) < 60 && (MainSub_SafeUltrasonic_mm[0] > 300 && MainSub_SafeUltrasonic_mm[1] > 300) && !lineAngel){
 	  if(enemyGoal_Angle > 0){
 		GYRO_AngleOffset = enemy_rightmiddle_goal_angle;
 	}else{
@@ -616,7 +656,7 @@ void forward()
 //    }
   if (!lineAngel && lineSideRight > 0 && !holding_ball)
   {
-    if (lineSideRight < 3 && (ball_deg > 0 && ball_deg < 100))
+    if (lineSideRight < 3 && (ball_deg > 0 && ball_deg < 120))
     {
       mv_power =
           cos((ball_deg - GYRO_AngleOffset + 50) * M_PI / 180) * mv_power * 1.5;
@@ -639,7 +679,7 @@ void forward()
 
   if (!lineAngel && lineSideLeft > 0 && !holding_ball)
   {
-    if (lineSideLeft < 3 && (ball_deg < 0 && ball_deg > -100))
+    if (lineSideLeft < 3 && (ball_deg < 0 && ball_deg > -120))
     {
       mv_power =
           cos((ball_deg - GYRO_AngleOffset - 50) * M_PI / 180) * mv_power * 1.5;
@@ -670,13 +710,17 @@ void forward()
 
   if ((uint16_t)(cnt - ball_outofreach_time) > 3000 && holding_ball == false)
   {
-    if ((uint16_t)(cnt - ball_outofreach_time) < 6000)
+    if ((uint16_t)(cnt - ball_outofreach_time) < 6000 &&
+        (lineSideRight > 0 || lineSideLeft > 0))
     {
       takingBall_fromSide = true;
       HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
       if (abs(ball_deg - static_cast<int>(e.z)) < 60)
       {
         GYRO_AngleOffset = ball_deg - static_cast<int>(e.z);
+        if(holding_ball){
+        	request_kick();
+        }
       }
       else
       {
@@ -700,7 +744,7 @@ void forward()
     __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
 
     mv_deg = LineAngle + 180;
-    mv_power = 200;
+    mv_power = 100;
 
     if ((lineSideLeft < 3 && lineSideRight < 3) && abs(ball_deg) < 45 &&
         abs(enemyGoal_Angle) > 55 && holding_ball == false &&
@@ -754,21 +798,21 @@ void forward()
 //   後ろだけ反応して、後ろにボールがある時のライントレース
   bool self_area_line_handled = false;
 
-  if(lineSideBack&&!lineSideLeft&&!lineSideRight&&abs(ball_deg) > 90){
+  if(!lineAngel&&lineSideBack&&!lineSideLeft&&!lineSideRight&&abs(ball_deg) > 90){
     double out_vec[2] = {sin(ball_deg * M_PI / 180.0)*20*(4-lineSideBack), (lineSideBack-1)*30};
 		mv_deg = atan2(out_vec[0], out_vec[1]) * (180.0 / M_PI);
 		mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
     self_area_line_handled = true;
   }
   // 自陣側のフィールドの外側にある時(右)
-  else if(lineSideBack&&!lineSideLeft&&lineSideRight&&(ball_deg > 75||ball_deg < -150)&&(160 > left_goal_angle||myGoal_Width==0)){
+  else if(!lineAngel&&lineSideBack&&!lineSideLeft&&lineSideRight&&(ball_deg > 75||ball_deg < -150)&&(160 > left_goal_angle||myGoal_Width==0)){
     double out_vec[2] = {-(lineSideRight-1)*40, (lineSideBack-1)*40};
 		mv_deg = atan2(out_vec[0], out_vec[1]) * (180.0 / M_PI);
 		mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
     self_area_line_handled = true;
   }
   // 自陣側のフィールドの外側にある時(左)
-  else if(lineSideBack&&lineSideLeft&&!lineSideRight&&(ball_deg < -75||ball_deg > 150)&&(-160 < right_goal_angle||myGoal_Width==0)){
+  else if(!lineAngel&&lineSideBack&&lineSideLeft&&!lineSideRight&&(ball_deg < -75||ball_deg > 150)&&(-160 < right_goal_angle||myGoal_Width==0)){
     double out_vec[2] = {(lineSideLeft-1)*40, (lineSideBack-1)*40};
 		mv_deg = atan2(out_vec[0], out_vec[1]) * (180.0 / M_PI);
 		mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
