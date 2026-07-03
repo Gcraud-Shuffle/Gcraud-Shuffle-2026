@@ -72,12 +72,12 @@ constexpr uint16_t KICK_HOLD_COUNT = 300;
 constexpr uint16_t KICK_INTERVAL_COUNT = 2000;
 constexpr uint8_t ADC_FILTER_SHIFT = 5;
 constexpr uint32_t FORCE_ACK_BUZZER_MS = 1000;
-constexpr double GYRO_STRAIGHT_KP = 0.8;
+constexpr double GYRO_STRAIGHT_KP = 0.6;
 constexpr double GYRO_STRAIGHT_KI = 0.0;
-constexpr double GYRO_STRAIGHT_KD = 0.2;
+constexpr double GYRO_STRAIGHT_KD = 1.0;
 constexpr double GYRO_AIM_KP = 0.3;
 constexpr double GYRO_AIM_KI = 0.0;
-constexpr double GYRO_AIM_KD = 0.2;
+constexpr double GYRO_AIM_KD = 0.1;
 constexpr double GYRO_I_LIMIT = 10000.0;
 
 

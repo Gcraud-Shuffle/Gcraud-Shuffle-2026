@@ -4865,8 +4865,8 @@ void Japan()
  8002a32:	e9c1 2300 	strd	r2, r3, [r1]
       GYRO_kd = GYRO_STRAIGHT_KD;
  8002a36:	4948      	ldr	r1, [pc, #288]	@ (8002b58 <_Z5Japanv+0xde0>)
- 8002a38:	a331      	add	r3, pc, #196	@ (adr r3, 8002b00 <_Z5Japanv+0xd88>)
- 8002a3a:	e9d3 2300 	ldrd	r2, r3, [r3]
+ 8002a38:	f04f 0200 	mov.w	r2, #0
+ 8002a3c:	4b40      	ldr	r3, [pc, #256]	@ (8002b40 <_Z5Japanv+0xdc8>)
  8002a3e:	e9c1 2300 	strd	r2, r3, [r1]
     }
 
@@ -4960,9 +4960,9 @@ void Japan()
  8002af8:	33333333 	.word	0x33333333
  8002afc:	3fd33333 	.word	0x3fd33333
  8002b00:	9999999a 	.word	0x9999999a
- 8002b04:	3fc99999 	.word	0x3fc99999
- 8002b08:	9999999a 	.word	0x9999999a
- 8002b0c:	3fe99999 	.word	0x3fe99999
+ 8002b04:	3fb99999 	.word	0x3fb99999
+ 8002b08:	33333333 	.word	0x33333333
+ 8002b0c:	3fe33333 	.word	0x3fe33333
  8002b10:	00000000 	.word	0x00000000
  8002b14:	40c38800 	.word	0x40c38800
  8002b18:	200008a8 	.word	0x200008a8
