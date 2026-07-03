@@ -287,8 +287,6 @@ void keeper()
 			}
 		}
 	}
-	mv_deg = 0;
-	mv_power = 0;
 
 	// ---------------------------------------------- //
 	// Section: 押し出され対応
@@ -299,11 +297,11 @@ void keeper()
 		while (diff > 180.0f) diff -= 360.0f;
 		while (diff < -180.0f) diff += 360.0f;
 
-		if (lineAngel&&(diff<135&&(abs(LineAngle)<100))&&LineDepth>100&&!got_push&&(((160 <  max(abs(left_goal_angle),abs(right_goal_angle)))||left_goal_angle*right_goal_angle < 0)&& myGoal_Width!=0)) {
+		if (lineAngel&&(abs(diff)>90&&(abs(LineAngle)<135))&&LineDepth>100&&(((150 <  max(abs(left_goal_angle),abs(right_goal_angle)))||left_goal_angle*right_goal_angle < 0)&& myGoal_Width!=0)) {
 			before_push = LineAngle;
 			got_push = true;
 		}
-		else if((abs(LineAngle)<135&&LineDepth<80&&lineAngel)){
+		else if((abs(LineAngle)<135&&LineDepth<80&&lineAngel)||(0 < left_goal_angle&&left_goal_angle < 150)||(0>right_goal_angle&&right_goal_angle>-150)||(myGoal_Radius > 110)||(myGoal_Width==0)){
 			got_push = false;
 		}
 
@@ -314,8 +312,6 @@ void keeper()
 			mv_power = 100;
 		}
 	}
-
-	return;
 
 	// --------------------------------------------- //
 	// Section: 故障判定回避
