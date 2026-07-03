@@ -191,7 +191,7 @@ void keeper()
 			//				double IR_vec[2] = {sin(test_deg * M_PI
 			/// 180.0), cos(test_deg * M_PI / 180.0)};
 
-			double Goal_vec[2] = {sin(myGoal_Angle * M_PI / 180.0), cos(myGoal_Angle * M_PI / 180.0)};
+			double Goal_vec[2] = {sin(myGoal_Angle * M_PI / 180.0)*1.6, cos(myGoal_Angle * M_PI / 180.0)};
 
 							//  double trace_vec[2] = {0, 0}; //
 			// ライン追従調整用
@@ -201,9 +201,15 @@ void keeper()
 			double trace_vec[2] = {trace_norvec[0] * IR_trace_dot, trace_norvec[1] * IR_trace_dot};
 
 			// アウト回避(後ろ方向にボールがいる時)
-			if ((160 < abs(ball_deg)) && (0 < ball_deg * myGoal_Angle) && (trace_vec[1] < 0.0) && (abs(myGoal_Angle) < trace_ignore_goal_abs_thr[0]))
+			if((0 < ball_deg * myGoal_Angle)&&trace_vec[1] < 0.0)
+			{
+				trace_gain = -2.5*trace_gain;
+			}
+			else if ((160 < abs(ball_deg)) && (170 > abs(ball_deg)) && (0 < ball_deg * myGoal_Angle) && (trace_vec[1] < 0.0) && (abs(myGoal_Angle) < trace_ignore_goal_abs_thr[0]))
 			{
 				trace_gain = -trace_gain;
+				use_buzzer_in_algo = true;
+				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
 			}
 			else if ((trace_vec[1] < 0.0))
 			{
