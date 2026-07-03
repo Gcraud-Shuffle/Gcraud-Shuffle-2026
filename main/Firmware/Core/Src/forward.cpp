@@ -462,11 +462,11 @@ void forward()
   { // 距離による回り込み角度ゲイン減衰
     if (ball_deg > 0)
     {
-      mv_deg -= (abs(mv_deg - ball_deg) * ball_dis / 70);
+      mv_deg -= (abs(mv_deg - ball_deg) * ball_dis / 90);
     }
     else
     {
-      mv_deg += (abs(mv_deg - ball_deg) * ball_dis / 70);
+      mv_deg += (abs(mv_deg - ball_deg) * ball_dis / 90);
     }
   }
 //
