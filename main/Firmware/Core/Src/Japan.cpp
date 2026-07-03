@@ -27,6 +27,17 @@ using namespace std;
 //#define my_default_role ROLE_KEEPER
 //#define MY_DEFAULT_STRATEGY STRATEGY_KEEPER_HEAVY
 
+#define KURO 0
+#define SIRO 1
+
+#ifndef WHO_AM_I
+#define WHO_AM_I SIRO
+#endif
+
+#if (WHO_AM_I != KURO) && (WHO_AM_I != SIRO)
+#error "WHO_AM_I must be KURO or SIRO"
+#endif
+
 /*----------------------------*/
 /*--- 書き込み時に必ず確認！！ ---*/
 /*----------------------------*/
@@ -62,7 +73,12 @@ constexpr uint16_t KICK_INTERVAL_COUNT = 2000;
 constexpr uint8_t ADC_FILTER_SHIFT = 5;
 constexpr uint32_t FORCE_ACK_BUZZER_MS = 1000;
 constexpr double GYRO_STRAIGHT_KP = 0.8;
+constexpr double GYRO_STRAIGHT_KI = 0.0;
+constexpr double GYRO_STRAIGHT_KD = 0.2;
 constexpr double GYRO_AIM_KP = 0.3;
+constexpr double GYRO_AIM_KI = 0.0;
+constexpr double GYRO_AIM_KD = 0.2;
+constexpr double GYRO_I_LIMIT = 10000.0;
 
 
 bool kick_interval_active = false;
@@ -72,6 +88,7 @@ int32_t adc_ch2_filter_accum = 0;
 bool adc_ch1_filter_initialized = false;
 bool adc_ch2_filter_initialized = false;
 uint32_t control_period_prev_cycle = 0;
+bool gyro_was_aiming = false;
 
 void init_control_period_measurement()
 {
@@ -822,6 +839,90 @@ void Japan()
 
     const bool holding_ball_allowed = !kicking_active && !kick_interval_is_active();
 
+    if (WHO_AM_I == SIRO)
+    {
+      if (!holding_ball_allowed)
+      {
+        holding_ball = false;
+        ball_counting_ballHoldtime = false;
+        ball_counting_ballReleasetime = false;
+      }
+      else if (ADC_ch2 > 220)
+      {
+        ball_counting_ballHoldtime = false;
+        if (!ball_counting_ballReleasetime)
+        {
+          ball_startedReleasing_time = cnt;
+          ball_counting_ballReleasetime = true;
+        }
+        else
+        {
+          if ((uint16_t)(cnt - ball_startedReleasing_time) > 400)
+          {
+            holding_ball = false;
+          }
+        }
+      }
+      else if (ADC_ch2 < 90)
+      {
+        ball_counting_ballReleasetime = false;
+        if (!ball_counting_ballHoldtime)
+        {
+          ball_startedHolding_time = cnt;
+          ball_counting_ballHoldtime = true;
+        }
+        else
+        {
+          if ((uint16_t)(cnt - ball_startedHolding_time) > 300)
+          {
+            holding_ball = true;
+          }
+        }
+      }
+    }
+    else if (WHO_AM_I == KURO)
+    {
+      if (!holding_ball_allowed)
+      {
+        holding_ball = false;
+        ball_counting_ballHoldtime = false;
+        ball_counting_ballReleasetime = false;
+      }
+      else if (ADC_ch1 > 400)
+      {
+        ball_counting_ballHoldtime = false;
+        if (!ball_counting_ballReleasetime)
+        {
+          ball_startedReleasing_time = cnt;
+          ball_counting_ballReleasetime = true;
+        }
+        else
+        {
+          if ((uint16_t)(cnt - ball_startedReleasing_time) > 400)
+          {
+            holding_ball = false;
+          }
+        }
+      }
+      else if (ADC_ch1 < 300)
+      {
+        ball_counting_ballReleasetime = false;
+        if (!ball_counting_ballHoldtime)
+        {
+          ball_startedHolding_time = cnt;
+          ball_counting_ballHoldtime = true;
+        }
+        else
+        {
+          if ((uint16_t)(cnt - ball_startedHolding_time) > 300)
+          {
+            holding_ball = true;
+          }
+        }
+      }
+    }
+
+#if 0 // Old manual per-robot adjustment.
 //    ADC_ch1 = 700;
     //siro
     if (!holding_ball_allowed) {
@@ -882,6 +983,7 @@ void Japan()
 //      }
 //    }
 
+#endif
 //     if(kicking){
 //    	 holding_bal = false;
 //     }
@@ -911,15 +1013,41 @@ void Japan()
     {
       GYRO_E = static_cast<int>(e.z) + GYRO_AngleOffset;
       GYRO_kp = GYRO_AIM_KP;
+      GYRO_ki = GYRO_AIM_KI;
+      GYRO_kd = GYRO_AIM_KD;
     }
     else
     {
       GYRO_E = static_cast<int>(e.z);
       GYRO_kp = GYRO_STRAIGHT_KP;
+      GYRO_ki = GYRO_STRAIGHT_KI;
+      GYRO_kd = GYRO_STRAIGHT_KD;
     }
 
-    // I項の計算
-    GYRO_I += GYRO_E * dt;
+    const bool gyro_is_aiming = (GYRO_AngleOffset != 0);
+    if (gyro_is_aiming != gyro_was_aiming)
+    {
+      GYRO_I = 0.0;
+      GYRO_preE = GYRO_E;
+    }
+    gyro_was_aiming = gyro_is_aiming;
+
+    if (GYRO_ki == 0.0)
+    {
+      GYRO_I = 0.0;
+    }
+    else
+    {
+      GYRO_I += GYRO_E * dt;
+      if (GYRO_I > GYRO_I_LIMIT)
+      {
+        GYRO_I = GYRO_I_LIMIT;
+      }
+      else if (GYRO_I < -GYRO_I_LIMIT)
+      {
+        GYRO_I = -GYRO_I_LIMIT;
+      }
+    }
 
     // D項含めPIDによるduty計算 (D項は時間変化で割る)
     GYRO_duty = (int)(GYRO_E * GYRO_kp + GYRO_I * GYRO_ki +
@@ -1036,7 +1164,100 @@ void Japan()
     // PWM order: front right -> back right -> back left -> front left.
     // omni index order: front left -> back left -> back right -> front right.
 
+    if (WHO_AM_I == SIRO)
+    {
+      if (*(omni.get_motor(3)) > 0)
+      {
+        __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+                              (period_8 / 2) + abs(*omni.get_motor(3)));
+      }
+      else
+      {
+        __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+                              (period_8 / 2) - abs(*omni.get_motor(3)));
+      }
 
+      if (*(omni.get_motor(2)) > 0)
+      {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+                              (period_1 / 2) + abs(*omni.get_motor(2)));
+      }
+      else
+      {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+                              (period_1 / 2) - abs(*omni.get_motor(2)));
+      }
+
+      if (*(omni.get_motor(1)) > 0)
+      {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+                              (period_1 / 2) + abs(*omni.get_motor(1)));
+      }
+      else
+      {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+                              (period_1 / 2) - abs(*omni.get_motor(1)));
+      }
+
+      if (*(omni.get_motor(0)) < 0)
+      {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+                              (period_1 / 2) + abs(*omni.get_motor(0)));
+      }
+      else
+      {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+                              (period_1 / 2) - abs(*omni.get_motor(0)));
+      }
+    }
+    else if (WHO_AM_I == KURO)
+    {
+      if (*(omni.get_motor(3)) > 0)
+      {
+        __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+                              (period_8 / 2) + abs(*omni.get_motor(3)));
+      }
+      else
+      {
+        __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+                              (period_8 / 2) - abs(*omni.get_motor(3)));
+      }
+
+      if (*(omni.get_motor(2)) > 0)
+      {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+                              (period_1 / 2) + abs(*omni.get_motor(2)));
+      }
+      else
+      {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+                              (period_1 / 2) - abs(*omni.get_motor(2)));
+      }
+
+      if (*(omni.get_motor(1)) < 0)
+      {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+                              (period_1 / 2) + abs(*omni.get_motor(1)));
+      }
+      else
+      {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+                              (period_1 / 2) - abs(*omni.get_motor(1)));
+      }
+
+      if (*(omni.get_motor(0)) < 0)
+      {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+                              (period_1 / 2) + abs(*omni.get_motor(0)));
+      }
+      else
+      {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+                              (period_1 / 2) - abs(*omni.get_motor(0)));
+      }
+    }
+
+#if 0 // Old manual per-robot adjustment.
 //    double a1 = *omni.get_motor(3);
 
 ////         front right siro
@@ -1135,5 +1356,6 @@ void Japan()
 //	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
 //							(period_1 / 2) - abs(*omni.get_motor(0)));
 //	}
+#endif
   }
 }

@@ -43,6 +43,7 @@ constexpr uint8_t kMotorCurrentCount = 4;
 constexpr uint16_t kCurrentAdcCenter = 2048;
 constexpr int16_t kLineOverCenterEnterDeg = 130;
 constexpr int16_t kLineOverCenterExitDeg = 70;
+constexpr int16_t kLineOverCenterMaxDepth = 70;
 constexpr uint32_t kLineOverCenterMinHoldMs = 30;
 constexpr uint32_t kLineOutReturnTimeoutMs = 300;
 constexpr int16_t kLineOutReturnMinPower = 90;
@@ -54,6 +55,7 @@ struct LineOverrunState
   bool returning_after_loss = false;
   int approach_angle = 0;
   int last_line_angle = 0;
+  int min_line_depth = 0;
   uint32_t over_center_start_ms = 0;
   uint32_t return_start_ms = 0;
 };
@@ -182,6 +184,7 @@ void resetLineOverrunState()
   line_overrun.line_seen = false;
   line_overrun.over_center = false;
   line_overrun.returning_after_loss = false;
+  line_overrun.min_line_depth = 0;
   line_overrun.over_center_start_ms = 0;
 }
 
@@ -193,11 +196,16 @@ void updateLineOverrunState(uint32_t nowMs)
     {
       line_overrun.approach_angle = LineAngle;
       line_overrun.over_center = false;
+      line_overrun.min_line_depth = LineDepth;
     }
 
     line_overrun.line_seen = true;
     line_overrun.returning_after_loss = false;
     line_overrun.last_line_angle = LineAngle;
+    if (LineDepth < line_overrun.min_line_depth)
+    {
+      line_overrun.min_line_depth = LineDepth;
+    }
 
     const int angle_diff =
         angleDiffAbs(line_overrun.approach_angle, LineAngle);
@@ -335,7 +343,7 @@ void forward()
     }
     else if (ball_deg <= 90)
     {
-      mv_deg = ball_deg * 2.4;
+      mv_deg = ball_deg * 2.2;
       //			  mv_deg = ball_deg * 1.5;
       // mv_deg = ball_deg*ball_deg / 45;
     }
@@ -362,7 +370,7 @@ void forward()
     }
     else if (ball_deg >= -90)
     {
-      mv_deg = ball_deg * 2.4;
+      mv_deg = ball_deg * 2.2;
       //			  mv_deg = ball_deg * 1.5;
       // mv_deg = (ball_deg*ball_deg / 45)*-1;
     }
@@ -744,22 +752,27 @@ void forward()
 //
 //   自陣側の後ろにボールがある時のラインの処理
 //   後ろだけ反応して、後ろにボールがある時のライントレース
-  if(lineSideBack&&!lineAngel&&!lineSideLeft&&!lineSideRight&&abs(ball_deg) > 90){
+  bool self_area_line_handled = false;
+
+  if(lineSideBack&&!lineSideLeft&&!lineSideRight&&abs(ball_deg) > 90){
     double out_vec[2] = {sin(ball_deg * M_PI / 180.0)*20*(4-lineSideBack), (lineSideBack-1)*30};
 		mv_deg = atan2(out_vec[0], out_vec[1]) * (180.0 / M_PI);
 		mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
+    self_area_line_handled = true;
   }
   // 自陣側のフィールドの外側にある時(右)
-  else if(!lineAngel&&lineSideBack&&!lineSideLeft&&lineSideRight&&(ball_deg > 75||ball_deg < -150)&&(160 > left_goal_angle||myGoal_Width==0)){
+  else if(lineSideBack&&!lineSideLeft&&lineSideRight&&(ball_deg > 75||ball_deg < -150)&&(160 > left_goal_angle||myGoal_Width==0)){
     double out_vec[2] = {-(lineSideRight-1)*40, (lineSideBack-1)*40};
 		mv_deg = atan2(out_vec[0], out_vec[1]) * (180.0 / M_PI);
 		mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
+    self_area_line_handled = true;
   }
   // 自陣側のフィールドの外側にある時(左)
-  else if(!lineAngel&&lineSideBack&&lineSideLeft&&!lineSideRight&&(ball_deg < -75||ball_deg > 150)&&(-160 < right_goal_angle||myGoal_Width==0)){
+  else if(lineSideBack&&lineSideLeft&&!lineSideRight&&(ball_deg < -75||ball_deg > 150)&&(-160 < right_goal_angle||myGoal_Width==0)){
     double out_vec[2] = {(lineSideLeft-1)*40, (lineSideBack-1)*40};
 		mv_deg = atan2(out_vec[0], out_vec[1]) * (180.0 / M_PI);
 		mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
+    self_area_line_handled = true;
   }
 
 //	// --------------------------------------- //
@@ -778,6 +791,7 @@ void forward()
 	  mv_deg = atan2(out_vec[0], out_vec[1]) * (180.0 / M_PI);
 		mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
     last_front_line_trace_time = now_cnt;
+    self_area_line_handled = true;
   }
   else if(now_cnt - last_front_line_trace_time < 500 && abs(ball_deg) > 30 && left_goal_angle < 0 && right_goal_angle > 0 && abs(mv_deg) > 90 && !lineAngel && !lineSideLeft && !lineSideRight)
   {
@@ -795,6 +809,7 @@ void forward()
       mv_deg = 30;
     }
     mv_power = 80;
+    self_area_line_handled = true;
     // if(comm_state != STATE_STANDALONE&&false){
     //   mv_power = -80;
     // }
@@ -809,6 +824,7 @@ void forward()
       mv_deg = -30;
     }
     mv_power = 80;
+    self_area_line_handled = true;
     // if(comm_state != STATE_STANDALONE&&false){
     //   mv_power = -80;
     // }
@@ -825,6 +841,11 @@ void forward()
 //  //
 //
 //  // --- 押し込み処理：ボールを敵ゴールに押し込むための状態管理 ---
+  if (self_area_line_handled)
+  {
+    resetLineOverrunState();
+  }
+
   applyLineOverCenterCorrection();
 
   switch (push_state)
@@ -836,7 +857,7 @@ void forward()
     {
       if (lineAngel)
       {
-          if(50<sqrt(LINE_X*LineX+LineY*LineY)&&abs(enemyGoal_Angle)<30&&abs(LineAngle)<30&&!(lineSideLeft>1||lineSideRight>1) && (now_cnt - push_wait_start_time) > 200){
+          if(50<sqrt(LINE_X*LineX+LineY*LineY)&&abs(enemyGoal_Angle)<45&&abs(LineAngle)<45&&!(lineSideLeft>1||lineSideRight>1) && (now_cnt - push_wait_start_time) > 200){
             mv_power = 0;
           }
 
