@@ -22,10 +22,10 @@ using namespace std;
   TODO:試合開始前にこれを決定する。
  */
 //
-#define my_default_role ROLE_FORWARD
-#define MY_DEFAULT_STRATEGY STRATEGY_FORWARD_HEAVY
-//#define my_default_role ROLE_KEEPER
-//#define MY_DEFAULT_STRATEGY STRATEGY_KEEPER_HEAVY
+// #define my_default_role ROLE_FORWARD
+// #define MY_DEFAULT_STRATEGY STRATEGY_FORWARD_HEAVY
+#define my_default_role ROLE_KEEPER
+#define MY_DEFAULT_STRATEGY STRATEGY_KEEPER_HEAVY
 
 /*----------------------------*/
 /*--- 書き込み時に必ず確認！！ ---*/
@@ -824,63 +824,63 @@ void Japan()
 
 //    ADC_ch1 = 700;
     //siro
-    if (!holding_ball_allowed) {
-      holding_ball = false;
-      ball_counting_ballHoldtime = false;
-      ball_counting_ballReleasetime = false;
-    } else if (ADC_ch2 > 550) {
-      ball_counting_ballHoldtime =
-          false; // Release判定に入ったらHoldタイマーをリセット
-      if (!ball_counting_ballReleasetime) {
-        ball_startedReleasing_time = cnt;
-        ball_counting_ballReleasetime = true;
-      } else {
-        if ((uint16_t)(cnt - ball_startedReleasing_time) > 400) {
-          holding_ball = false;
-        }
-      }
-    } else if (ADC_ch2 < 350) {
-      ball_counting_ballReleasetime =
-          false; // Hold判定に入ったらReleaseタイマーをリセット
-      if (!ball_counting_ballHoldtime) {
-        ball_startedHolding_time = cnt;
-        ball_counting_ballHoldtime = true;
-      } else {
-        if ((uint16_t)(cnt - ball_startedHolding_time) > 300) {
-          holding_ball = true;
-        }
-      }
-    }
+    // if (!holding_ball_allowed) {
+    //   holding_ball = false;
+    //   ball_counting_ballHoldtime = false;
+    //   ball_counting_ballReleasetime = false;
+    // } else if (ADC_ch2 > 550) {
+    //   ball_counting_ballHoldtime =
+    //       false; // Release判定に入ったらHoldタイマーをリセット
+    //   if (!ball_counting_ballReleasetime) {
+    //     ball_startedReleasing_time = cnt;
+    //     ball_counting_ballReleasetime = true;
+    //   } else {
+    //     if ((uint16_t)(cnt - ball_startedReleasing_time) > 400) {
+    //       holding_ball = false;
+    //     }
+    //   }
+    // } else if (ADC_ch2 < 350) {
+    //   ball_counting_ballReleasetime =
+    //       false; // Hold判定に入ったらReleaseタイマーをリセット
+    //   if (!ball_counting_ballHoldtime) {
+    //     ball_startedHolding_time = cnt;
+    //     ball_counting_ballHoldtime = true;
+    //   } else {
+    //     if ((uint16_t)(cnt - ball_startedHolding_time) > 300) {
+    //       holding_ball = true;
+    //     }
+    //   }
+    // }
 
 
     //kuro
-//    if (!holding_ball_allowed) {
-//      holding_ball = false;
-//      ball_counting_ballHoldtime = false;
-//      ball_counting_ballReleasetime = false;
-//    } else if (ADC_ch1 > 400) {
-//      ball_counting_ballHoldtime =
-//          false; // Release判定に入ったらHoldタイマーをリセット
-//      if (!ball_counting_ballReleasetime) {
-//        ball_startedReleasing_time = cnt;
-//        ball_counting_ballReleasetime = true;
-//      } else {
-//        if ((uint16_t)(cnt - ball_startedReleasing_time) > 400) {
-//          holding_ball = false;
-//        }
-//      }
-//    } else if (ADC_ch1 < 300) {
-//      ball_counting_ballReleasetime =
-//          false; // Hold判定に入ったらReleaseタイマーをリセット
-//      if (!ball_counting_ballHoldtime) {
-//        ball_startedHolding_time = cnt;
-//        ball_counting_ballHoldtime = true;
-//      } else {
-//        if ((uint16_t)(cnt - ball_startedHolding_time) > 300) {
-//          holding_ball = true;
-//        }
-//      }
-//    }
+   if (!holding_ball_allowed) {
+     holding_ball = false;
+     ball_counting_ballHoldtime = false;
+     ball_counting_ballReleasetime = false;
+   } else if (ADC_ch1 > 400) {
+     ball_counting_ballHoldtime =
+         false; // Release判定に入ったらHoldタイマーをリセット
+     if (!ball_counting_ballReleasetime) {
+       ball_startedReleasing_time = cnt;
+       ball_counting_ballReleasetime = true;
+     } else {
+       if ((uint16_t)(cnt - ball_startedReleasing_time) > 400) {
+         holding_ball = false;
+       }
+     }
+   } else if (ADC_ch1 < 300) {
+     ball_counting_ballReleasetime =
+         false; // Hold判定に入ったらReleaseタイマーをリセット
+     if (!ball_counting_ballHoldtime) {
+       ball_startedHolding_time = cnt;
+       ball_counting_ballHoldtime = true;
+     } else {
+       if ((uint16_t)(cnt - ball_startedHolding_time) > 300) {
+         holding_ball = true;
+       }
+     }
+   }
 
 //     if(kicking){
 //    	 holding_bal = false;
@@ -1040,100 +1040,100 @@ void Japan()
 //    double a1 = *omni.get_motor(3);
 
 ////         front right siro
-    if (*(omni.get_motor(3)) > 0)
-    {
-      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
-                            (period_8 / 2) + abs(*omni.get_motor(3)));
-    }
-    else
-    {
-      __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
-                            (period_8 / 2) - abs(*omni.get_motor(3)));
-    }
+//     if (*(omni.get_motor(3)) > 0)
+//     {
+//       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+//                             (period_8 / 2) + abs(*omni.get_motor(3)));
+//     }
+//     else
+//     {
+//       __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+//                             (period_8 / 2) - abs(*omni.get_motor(3)));
+//     }
 
-    //     back right
-    if (*(omni.get_motor(2)) > 0)
-    {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
-                            (period_1 / 2) + abs(*omni.get_motor(2)));
-    }
-    else
-    {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
-                            (period_1 / 2) - abs(*omni.get_motor(2)));
-    }
-//
-//    //     back left
-    if (*(omni.get_motor(1)) > 0)
-    {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
-                            (period_1 / 2) + abs(*omni.get_motor(1)));
-    }
-    else
-    {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
-                            (period_1 / 2) - abs(*omni.get_motor(1)));
-    }
+//     //     back right
+//     if (*(omni.get_motor(2)) > 0)
+//     {
+//       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+//                             (period_1 / 2) + abs(*omni.get_motor(2)));
+//     }
+//     else
+//     {
+//       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+//                             (period_1 / 2) - abs(*omni.get_motor(2)));
+//     }
+// //
+// //    //     back left
+//     if (*(omni.get_motor(1)) > 0)
+//     {
+//       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+//                             (period_1 / 2) + abs(*omni.get_motor(1)));
+//     }
+//     else
+//     {
+//       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+//                             (period_1 / 2) - abs(*omni.get_motor(1)));
+//     }
 
-    //     front left
-    if (*(omni.get_motor(0)) < 0)
-    {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
-                            (period_1 / 2) + abs(*omni.get_motor(0)));
-    }
-    else
-    {
-      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
-                            (period_1 / 2) - abs(*omni.get_motor(0)));
-    }
+//     //     front left
+//     if (*(omni.get_motor(0)) < 0)
+//     {
+//       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+//                             (period_1 / 2) + abs(*omni.get_motor(0)));
+//     }
+//     else
+//     {
+//       __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+//                             (period_1 / 2) - abs(*omni.get_motor(0)));
+//     }
 //
 //
-////     front right kuro
-//	if (*(omni.get_motor(3)) > 0)
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
-//							(period_8 / 2) + abs(*omni.get_motor(3)));
-//	}
-//	else
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
-//							(period_8 / 2) - abs(*omni.get_motor(3)));
-//	}
-//
-////	     back right
-//	if (*(omni.get_motor(2)) > 0)
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
-//							(period_1 / 2) + abs(*omni.get_motor(2)));
-//	}
-//	else
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
-//							(period_1 / 2) - abs(*omni.get_motor(2)));
-//	}
-//
-//	//     back left
-//	if (*(omni.get_motor(1)) < 0)
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
-//							(period_1 / 2) + abs(*omni.get_motor(1)));
-//	}
-//	else
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
-//							(period_1 / 2) - abs(*omni.get_motor(1)));
-//	}
-//
-//	//     front left
-//	if (*(omni.get_motor(0)) < 0)
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
-//							(period_1 / 2) + abs(*omni.get_motor(0)));
-//	}
-//	else
-//	{
-//	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
-//							(period_1 / 2) - abs(*omni.get_motor(0)));
-//	}
+//     front right kuro
+	if (*(omni.get_motor(3)) > 0)
+	{
+	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+							(period_8 / 2) + abs(*omni.get_motor(3)));
+	}
+	else
+	{
+	  __HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_3,
+							(period_8 / 2) - abs(*omni.get_motor(3)));
+	}
+
+//	     back right
+	if (*(omni.get_motor(2)) > 0)
+	{
+	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+							(period_1 / 2) + abs(*omni.get_motor(2)));
+	}
+	else
+	{
+	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,
+							(period_1 / 2) - abs(*omni.get_motor(2)));
+	}
+
+	//     back left
+	if (*(omni.get_motor(1)) < 0)
+	{
+	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+							(period_1 / 2) + abs(*omni.get_motor(1)));
+	}
+	else
+	{
+	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2,
+							(period_1 / 2) - abs(*omni.get_motor(1)));
+	}
+
+	//     front left
+	if (*(omni.get_motor(0)) < 0)
+	{
+	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+							(period_1 / 2) + abs(*omni.get_motor(0)));
+	}
+	else
+	{
+	  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3,
+							(period_1 / 2) - abs(*omni.get_motor(0)));
+	}
   }
 }

@@ -9,79 +9,30 @@ using namespace std;
 #define yelGoalWidth 3
 
 bool got_push = false;
-double pre_line_vec[2] = {0,0.1};
+double pre_line_vec[2];
 double before_push = 0;
 bool restart = true;
 uint32_t last_ball_moved_time;
 uint32_t start_approach_time;
-double freeze_ball_deg = 0;
-double low_passed_ball_deg = 0;
-uint32_t pw_start_time;
-bool jyro_ok_flag = true;
-uint32_t last_IR_exist_time;
+int last_ball_deg;
+double use_IR_deg;
 
 typedef enum
 {
 	NOT_NEED2APPROACH,
 	BALL_IS_FREEZE,
-	APPROACHING,
-	MOVING_AS_FORWARD
+	APPROACHING
 } approach_breakdown_state;
 
 approach_breakdown_state now_keeper_state = NOT_NEED2APPROACH;
 
 void keeper()
 {
-	uint32_t now_cnt = HAL_GetTick();
-	static uint32_t pre_cnt = now_cnt;
-	low_passed_ball_deg += (ball_deg - low_passed_ball_deg)/64;
-	// --------------------------------------- //
-	// Section: A New Role
-	// --------------------------------------- //
-
 	if (is_role_changed)
 	{
 		restart = true;
 		is_role_changed = false;
 		now_keeper_state = NOT_NEED2APPROACH;
-	}
-
-	if (Ball_Closeness > 30)
-	{
-		last_IR_exist_time = now_cnt;
-	}
-
-	if (((int)(now_cnt - last_IR_exist_time) % 2000) > 1500 && 8000 < (now_cnt - last_IR_exist_time) && (now_cnt - last_IR_exist_time) < 14000)
-	{
-		use_buzzer_in_algo = true;
-		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
-	}
-
-	// --------------------------------------- //
-	// Section: Revenge	of the keeper
-	// --------------------------------------- //
-
-	if(now_keeper_state == APPROACHING){
-		if((now_cnt - start_approach_time) > 100){
-			is_role_changed = true;
-			now_keeper_state = NOT_NEED2APPROACH;
-			forward();
-			force_role_forward();
-			return;
-		}
-		GYRO_AngleOffset = (ball_deg - static_cast<int>(e.z));
-		mv_power = 50;
-		mv_deg = ball_deg*1.5;
-		return;
-	}
-
-	// --------------------------------------- //
-	// Section: ロボ達(?)の帰還
-	// --------------------------------------- //
-
-	if (abs(ball_deg) > 90 || ((0 > ball_deg * myGoal_Angle) && ((!lineSideLeft && (ball_deg < -22.5)) || (!lineSideRight && (ball_deg > 22.5)))))
-	{
-		dribbler_power = 0;
 	}
 
 	if (40 < enemyGoal_Width)
@@ -94,23 +45,23 @@ void keeper()
 	if (restart)
 	{
 		now_keeper_state = NOT_NEED2APPROACH;
-		if (lineAngel && (myGoal_Width != 0) && (90 < abs(myGoal_Angle))/* && rotateMotor*/)
+		if (lineAngel && (myGoal_Width != 0) && (90 < abs(myGoal_Angle)) && rotateMotor)
 		{
 			restart = false;
 		}
 		else
 		{
-			if (jyro_ok_flag && abs(GYRO_E) < 5.0 && (myGoal_Width != 0) && (90 < abs(myGoal_Angle)))
-			{
-				mv_deg = myGoal_Angle;
-				mv_power = 60;
-			}
-			else if (jyro_ok_flag && abs(GYRO_E) < 10.0)
+			if (abs(GYRO_E) < 10.0)
 			{
 				mv_deg = 180;
 				mv_power = 60;
 			}
-			else if (jyro_ok_flag && (lineAngel || lineSideBack || lineSideRight || lineSideLeft))
+			else if ((myGoal_Width != 0) && (abs(myGoal_Angle) < 135))
+			{
+				mv_deg = myGoal_Angle;
+				mv_power = 120;
+			}
+			else if (lineAngel || lineSideBack || lineSideRight || lineSideLeft)
 			{
 				double line_vec[2] = {LineX != 0 ? LineX : (127.0 * ((bool)lineSideRight) - 127.0 * ((bool)lineSideLeft)),
 									  LineY != 0 ? LineY : ((((bool)lineSideBack) ? -127.0 : ((bool)lineSideRight) * ((bool)lineSideLeft) * 0.1))};
@@ -123,24 +74,9 @@ void keeper()
 			}
 			else
 			{
-				if (rotateMotor)
-				{
-					if (abs(GYRO_E) > 20.0)
-					{
-						__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
-						use_buzzer_in_algo = true;
-						jyro_ok_flag = false;
-						pw_start_time = HAL_GetTick();
-					}
-					else if (now_cnt - pw_start_time > 300)
-					{
-						jyro_ok_flag = true;
-					}
-				}
 				mv_deg = 0;
 				mv_power = 0;
 			}
-			last_ball_moved_time = now_cnt;
 			return;
 		}
 	}
@@ -175,28 +111,21 @@ void keeper()
 				--- pattern 1 ---
 			trace_vec(x,y)				IR_vecとGoal_vecを結ぶ直線上で、trace_norvecと平行（外積=0）となる点を補間で求めたベクトル
 			out_vec(x,y) 				line_vecとtrace_vecの線形結合（現在はline_vecのみ使用）
-
-				--- pattern 2 ---
-			trace_vec(x,y)				pattern1のtrace_dotをPID制御気によってゼロにしようとする制御が入った成分
 		*/
 
-		if (lineAngel || lineSideBack || lineSideRight || lineSideLeft)
+		if (lineAngel || ((lineSideBack || lineSideRight || lineSideLeft) && (!got_push)))
 		{
-			double trace_gain = 110.0;
-			double Line_gain = 0.7;
+			double trace_gain = 120.0;
+			double Line_gain = 0.6;
 			double mv_gap = 10.0;
-			double trace_vec[2] = {0, 0}; // ライン追従調整用
 
-//			double trace_ignore_goal_abs_thr[3] = {140, 130, 120}; // Japan
-			double trace_ignore_goal_abs_thr[3] = {145, 135, 120}; // World
-
+			double trace_ignore_goal_abs_thr[3] = {145, 135, 120};
 
 			//				double test_deg = 45.0; // デバッグ用
 
-			double line_vec[2] = {lineAngel? LineX : (127.0 * ((bool)lineSideRight) - 127.0 * ((bool)lineSideLeft)),
-								  lineAngel? LineY : ((((bool)lineSideBack) ? -127.0 : ((bool)lineSideRight) * ((bool)lineSideLeft) * 0.1))};
-
-			if (abs(line_vec[0]) < 0.1 && abs(line_vec[1]) < 0.1)
+			double line_vec[2] = {LineX != 0 ? LineX : (127.0 * ((bool)lineSideRight) - 127.0 * ((bool)lineSideLeft)),
+								  LineY != 0 ? LineY : ((((bool)lineSideBack) ? -127.0 : ((bool)lineSideRight) * ((bool)lineSideLeft) * 0.1))};
+			if (abs(line_vec[0]) < 1e-9 && abs(line_vec[1]) < 1e-9)
 			{
 				line_vec[0] = pre_line_vec[0];
 				line_vec[1] = pre_line_vec[1];
@@ -204,33 +133,44 @@ void keeper()
 
 			double DepthOfLine = sqrt(line_vec[0] * line_vec[0] + line_vec[1] * line_vec[1]);
 
+			got_push = (+64.0 < line_vec[1]);
+			if (got_push)
+			{
+				before_push = atan2(line_vec[0], line_vec[1]) * (180.0 / M_PI);
+			}
+
 			// double line_vec[2] = {LineX, LineY};
 			double trace_norvec[2] = {-line_vec[1] / DepthOfLine, line_vec[0] / DepthOfLine};
-			double IR_vec[2] = {sin(ball_deg * M_PI / 180.0) * 1.6, cos(ball_deg * M_PI / 180.0)};
+			double IR_vec[2] = {sin(ball_deg * M_PI / 180.0), cos(ball_deg * M_PI / 180.0)};
 			//				double IR_vec[2] = {sin(test_deg * M_PI
 			/// 180.0), cos(test_deg * M_PI / 180.0)};
 
 			double Goal_vec[2] = {sin(myGoal_Angle * M_PI / 180.0), cos(myGoal_Angle * M_PI / 180.0)};
 
-			double IR_trace_dot = IR_vec[0] * trace_norvec[0] + IR_vec[1] * trace_norvec[1];
+			//				 double trace_vec[2] = {0, 0}; //
+			// ライン追従調整用
 
-			trace_vec[0] = trace_norvec[0] * IR_trace_dot;
-			trace_vec[1] = trace_norvec[1] * IR_trace_dot;
+			// pattern 0 :
+			// IR_vecをtrace_norvec方向へ射影（内積）してライン接線方向成分を抽出
+			double IR_trace_dot = (IR_vec[0] * trace_norvec[0] + IR_vec[1] * trace_norvec[1]);
+			double trace_vec[2] = {trace_norvec[0] * IR_trace_dot, trace_norvec[1] * IR_trace_dot};
 
-			if (left_goal_angle > 0 || right_goal_angle < 0)
+			// pattern 1 :
+			// IR_vecとGoal_vec間の補間で、trace_norvecと平行（外積=0）となるベクトルを求める
+			if (Ball_Closeness < 50)
 			{
-				use_buzzer_in_algo = true;
-				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
+				double cross1 = IR_vec[0] * trace_norvec[1] - IR_vec[1] * trace_norvec[0];
+				double IR2GOAL[2] = {Goal_vec[0] - IR_vec[0], Goal_vec[1] - IR_vec[1]};
+				double cross2 = IR2GOAL[0] * trace_norvec[1] - IR2GOAL[1] * trace_norvec[0];
+				// trace_vec[0] = IR_vec[0] - cross1 / cross2 * IR2GOAL[0];
+				// trace_vec[1] = IR_vec[1] - cross1 / cross2 * IR2GOAL[1];
 			}
 
-			// 対岸時のゴール真横脱出
-			if ((160 < abs(ball_deg)) && (170 > abs(ball_deg)) && (0 < ball_deg * myGoal_Angle) && (trace_vec[1] < 0.0) && (abs(myGoal_Angle) < trace_ignore_goal_abs_thr[0]))
+			// アウト回避(後ろ方向にボールがいる時)
+			if ((160 < abs(ball_deg)) && (0 < ball_deg * myGoal_Angle) && (trace_vec[1] < 0.0) && (abs(myGoal_Angle) < trace_ignore_goal_abs_thr[0]))
 			{
 				trace_gain = -trace_gain;
-				use_buzzer_in_algo = true;
-				__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
 			}
-			// アウト回避(後ろ方向にボールがいる時/横にいきすぎないように)
 			else if ((trace_vec[1] < 0.0))
 			{
 				if (abs(myGoal_Angle) < trace_ignore_goal_abs_thr[2])
@@ -250,47 +190,29 @@ void keeper()
 				}
 			}
 
-			// ゴール真横脱出
+			// ゴール横脱出
 			if ((((line_vec[1] < -48.0)) || ((bool)lineSideRight && (bool)lineSideLeft)) && (abs(myGoal_Angle) < trace_ignore_goal_abs_thr[1]))
 			{
-				Line_gain = 0.0;
-				trace_vec[0] = 0.0;
+				line_vec[0] = 0.0;
+				line_vec[1] = 0.0;
+				trace_vec[0] = 0;
 				trace_vec[1] = 1.0;
 				trace_gain = 100.0;
 			}
 
 			// --- out ---
 			double out_vec[2] = {line_vec[0] * Line_gain + trace_vec[0] * trace_gain, line_vec[1] * Line_gain + trace_vec[1] * trace_gain};
+
 			mv_deg = atan2(out_vec[0], out_vec[1]) * (180.0 / M_PI);
 			mv_power = sqrt(out_vec[0] * out_vec[0] + out_vec[1] * out_vec[1]);
 			pre_line_vec[0] = line_vec[0];
 			pre_line_vec[1] = line_vec[1];
-
-			// ゴール真横ライン脱出
-			if(((bool)lineSideLeft||LineAngle>0.0)&&(0<left_goal_angle&&left_goal_angle<120)||((bool)lineSideRight||LineAngle<0.0)&&(0>right_goal_angle&&right_goal_angle>-120)||myGoal_Radius>110){
-				mv_deg = -atan2(line_vec[0], line_vec[1]) * (180.0 / M_PI);
-				mv_power = 100;
-			}
-
-			// --------------------------------------- //
-			// Section: STANDALONE時のボールへのアプローチ(フリーズ検知)
-			// --------------------------------------- //
-			if(ball_dis < 50 && abs(ball_deg) < 90 && abs(freeze_ball_deg - low_passed_ball_deg) < 15 /*&& !holding_ball*/ && !got_push){
-				if((comm_state == STATE_STANDALONE)&&(int(now_cnt - last_ball_moved_time) > 3600)){
-					now_keeper_state = APPROACHING;
-					start_approach_time = now_cnt;
-				}
-				else if(int(now_cnt - last_ball_moved_time) % 1000 > 800){
-					use_buzzer_in_algo = true;
-					__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, period_3 * 1 / 2);
-				}
-			}
-			else{
-				last_ball_moved_time = now_cnt;
-				freeze_ball_deg = low_passed_ball_deg;
-			}
-
 			// mv_power = mv_power - min(max((double)mv_power, -mv_gap), mv_gap);
+		}
+		else if (got_push)
+		{
+			mv_deg = before_push;
+			mv_power = 100;
 		}
 		else
 		{
@@ -299,28 +221,94 @@ void keeper()
 		}
 	}
 
-	if(holding_ball){
-		request_kick();
-	}
+	// --------------------------------------------- //
+	// Section: 故障判定回避
+	// -------------------------------------------- //
+	// {
+	/*
+			input: IR(r=ball_dis, theta=ball_deg) Goal(theta=myGoal_Angle) current_state
+			output: mv_deg, mv_power;
+
+				* * * 故障が取られるタイミングについて(前提知識) * * *
+			- ルールブックからの引用
+				Any robot must approach and touch the ball when it is placed on the nearest neutral spot.
+				It must do this before lack of progress is called.
+				When on its own side of the field,any robot must be able to move the ball from the nearest neutral spot to the opponent’s side of the field.
+				If a specific robot does not act this way, referees may deem it damaged at their discretion. (See Damaged Robots.)
+				This rule does not apply if the	robot is hindered from detecting or playing the ball by the opponent.
+
+				どのロボットも、ボールが最も近いニュートラルスポットに置かれたら、ボールに近づいて触れなければいけません。
+				ラックオブプログレスがコールされる前にこれを行わなければいけません。
+				自陣側にいる場合、どのロボットも最も近いニュートラルスポットから相手陣側へボールを移動させることができなければいけません。
+				特定のロボットがこのような行動をとった場合、審判はそのロボットをその裁量で故障とみなすことができます。
+				(ロボットの故障参照)このルールは、ロボットが相手によってボールを発見したりプレイしたりすることを妨げられた場合には適用されません
 
 
-	float diff = myGoal_Angle - LineAngle;
+			- 評価可能な方法
+				- ラックオブプログレスがコールされる前
+					-> 三秒間ボールが動かない(IR_degが一定偏差で保ち続ける)
+					-> current_state is STATE_STANDALONEであるとき(こちらサイドがラックオブプログレス前にアプローチすることができるのはキーパーだけだから)
 
-	while (diff > 180.0f) diff -= 360.0f;
-	while (diff < -180.0f) diff += 360.0f;
+				- 最も近いニュートラルスポットから
+					-> ball_degが特定の範囲内(abs(IR_deg) < 90は必ず成立)
 
-	if (lineAngel&&diff >= 90.0f&&LineDepth>80&&!got_push&&!(left_goal_angle > 0 || right_goal_angle < 0)) {
-		before_push = LineAngle;
-		got_push = true;
-	}
-	else if((LineDepth<40&&lineAngel)|| left_goal_angle > 0 || right_goal_angle < 0 || myGoal_Radius > 150){
-		got_push = false;
-	}
+				- ボールに近づいて触れなければいけません
+					-> 検知してから1.5~2秒ぐらい後に0.5~1秒間ぐらい直線運動でアプローチを試み2秒以内に戻る
 
-	if (got_push)
-	{
-		last_ball_moved_time = now_cnt;
-		mv_deg = before_push;
-		mv_power = 100;
-	}
+				- 相手陣側へボールを移動
+					-> ボールに与えられる慣性次第(何秒間押し続けるかの調整)
+	 */
+	/*
+			uint32_t now = HAL_GetTick();
+			use_IR_deg += (ball_deg - use_IR_deg) / 10;
+
+			if (
+				((current_state == STATE_STANDALONE) && !is_role_changed && !restart) && // ロボットの状態的なsomething
+				(abs(ball_deg) < 70.0) && (ball_dis < 40.0) &&							 // ボールの大体の位置
+				(abs(use_IR_deg - last_ball_deg) < 10) &&								 // 動いてるかどうか
+				(now_keeper_state != APPROACHING) && lineAngel)							 // アプローチ中は例外
+			{
+				if ((now - last_ball_moved_time) < 2222)
+				{
+					now_keeper_state = BALL_IS_FREEZE;
+				}
+				else
+				{
+					now_keeper_state = APPROACHING;
+					start_approach_time = now;
+				}
+			}
+			else if (now_keeper_state != APPROACHING)
+			{
+				now_keeper_state = NOT_NEED2APPROACH;
+			}
+
+			if (now_keeper_state == NOT_NEED2APPROACH)
+			{
+				last_ball_moved_time = now;
+				last_ball_deg = ball_deg;
+				use_IR_deg = ball_deg;
+			}
+			else if (now_keeper_state == APPROACHING)
+			{
+				if ((now - start_approach_time) < 200 && (50 < myGoal_Width))
+				{
+					mv_deg = ball_deg;
+					mv_power = 100;
+					if (holding_ball && !kicking_active)
+					{
+						kicking_active = true;
+						kicking_start_time = cnt;
+					}
+				}
+				else
+				{
+					now_keeper_state = NOT_NEED2APPROACH;
+					last_ball_moved_time = now;
+					last_ball_deg = ball_deg;
+					use_IR_deg = ball_deg;
+				}
+			}
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, 300 < (now - last_ball_moved_time) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+		}*/
 }
